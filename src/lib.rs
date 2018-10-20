@@ -16,7 +16,6 @@ macro_rules! impl_read_inputn {
                     .expect("Failed to read line");
                 match input.trim().parse() {
                     Ok(num) => {
-                        println!("");
                         break num;
                     }
                     Err(_) => {
