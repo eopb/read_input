@@ -2,5 +2,10 @@
 name = "read_input"
 version = "0.1.0"
 authors = ["Ethan Brierley <ethanboxx@gmail.com>"]
-
-[dependencies]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+description = """
+input
+"""
+[dev-dependencies]
+dont_disappear = "2"
