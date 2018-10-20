@@ -3,35 +3,30 @@ use std::io;
 pub trait ReadInput {
     fn read_input(msg: &str, err: &str) -> Self;
 }
-pub trait ReadInputn
-where
-    Self: std::marker::Sized,
-    Self: std::str::FromStr,
-{
-    fn read_input(msg: &str, err: &str) -> Self {
-        println!("{}", msg);
-        let mut input = String::new();
-        loop {
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
-            match input.trim().parse() {
-                Ok(num) => {
-                    println!("");
-                    break num;
-                }
-                Err(_) => {
-                    println!("{}", err);
-                    continue;
+
+macro_rules! impl_read_inputn {
+    ($($t:ty),*) => {$(
+    impl ReadInput for $t {
+        fn read_input(msg: &str, err: &str) -> Self {
+            println!("{}", msg);
+            let mut input = String::new();
+            loop {
+                io::stdin()
+                    .read_line(&mut input)
+                    .expect("Failed to read line");
+                match input.trim().parse() {
+                    Ok(num) => {
+                        println!("");
+                        break num;
+                    }
+                    Err(_) => {
+                        println!("{}", err);
+                        continue;
+                    }
                 }
             }
         }
     }
-}
-
-macro_rules! impl_read_inputn {
-    ($($t:ty),*) => {$(
-        impl ReadInputn for $t {}
     )*}
 }
 
