@@ -1,28 +1,26 @@
 use std::io;
 
 pub trait ReadInput {
-    fn read_input(msg: &str, err: &str) -> Self;
+    fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self;
 }
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
     impl ReadInput for $t {
-        fn read_input(msg: &str, err: &str) -> Self {
+        fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self {
             println!("{}", msg);
             let mut input = String::new();
             loop {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                match input.trim().parse() {
-                    Ok(num) => {
+                if let Ok(num) = input.trim().parse() {
+                    if test(&num) {
                         break num;
                     }
-                    Err(_) => {
-                        println!("{}", err);
-                        continue;
-                    }
-                }
+                };
+                println!("{}", err);
+                continue;
             }
         }
     }

@@ -8,6 +8,10 @@ use read_input::*;
 fn main() {
     println!(
         "output {}",
-        i32::read_input("Please input a number", "That does not look like a number")
+        i32::read_input(
+            "Please input a number",
+            "That does not look like a number",
+            |_| false
+        )
     );
 }
