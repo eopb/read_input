@@ -11,7 +11,15 @@ fn main() {
         i32::read_input(
             "Please input a number",
             "That does not look like a number",
-            |_| false
+            |_| true
+        )
+    );
+    println!(
+        "output {}",
+        String::read_input(
+            "Please input your name",
+            "That does not look like a number",
+            |_| true
         )
     );
 }
