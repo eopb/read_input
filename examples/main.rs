@@ -22,4 +22,5 @@ fn main() {
             |_| true
         )
     );
+    println!("output {}", i32::simple_input());
 }

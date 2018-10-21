@@ -1,6 +1,12 @@
 use std::io;
 
-pub trait ReadInput {
+pub trait ReadInput
+where
+    Self: std::marker::Sized,
+{
+    fn simple_input() -> Self {
+        Self::read_input("", "That value does not pass please try again", |_| true)
+    }
     fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self;
 }
 
