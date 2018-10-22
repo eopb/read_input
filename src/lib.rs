@@ -5,14 +5,16 @@ where
     Self: std::marker::Sized,
 {
     fn simple_input() -> Self {
-        Self::read_input("", "That value does not pass please try again", |_| true)
+        Self::read_input(None, "That value does not pass please try again", |_| true)
     }
-    fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self;
+    fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self;
 }
 
 impl ReadInput for String {
-    fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self {
-        println!("{}", msg);
+    fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self {
+        if let Some(msg) = msg {
+            println!("{}", msg);
+        };
         let mut input = String::new();
         loop {
             io::stdin()
@@ -31,8 +33,10 @@ impl ReadInput for String {
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
     impl ReadInput for $t {
-        fn read_input<F: Fn(&Self) -> bool>(msg: &str, err: &str, test: F) -> Self {
-            println!("{}", msg);
+        fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self {
+            if let Some(msg) = msg {
+                println!("{}", msg);
+            };
             let mut input = String::new();
             loop {
                 io::stdin()

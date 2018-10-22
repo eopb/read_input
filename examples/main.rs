@@ -9,7 +9,7 @@ fn main() {
     println!(
         "output {}",
         i32::read_input(
-            "Please input a number",
+            Some("Please input a number"),
             "That does not look like a number",
             |_| true
         )
@@ -17,7 +17,7 @@ fn main() {
     println!(
         "output {}",
         String::read_input(
-            "Please input your name",
+            Some("Please input your name"),
             "That does not look like a number",
             |_| true
         )
