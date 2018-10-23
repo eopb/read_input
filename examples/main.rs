@@ -23,4 +23,5 @@ fn main() {
         )
     );
     println!("output {}", i32::simple_input());
+    println!("output {}", i32::valid_input(|x| 4 < *x && *x < 9));
 }
