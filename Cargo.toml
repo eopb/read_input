@@ -5,7 +5,11 @@ authors = ["Ethan Brierley <ethanboxx@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 description = """
-input
+A simple tool that asks for data until the data is valid.
 """
+documentation = "https://docs.rs/read_input/"
+homepage = "http://efunb.com/"
+repository = "https://gitlab.com/efunb/read_input"
+
 [dev-dependencies]
 dont_disappear = "2"
