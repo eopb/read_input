@@ -1,3 +1,6 @@
+//TODO only impl convert function that convets String to Self.
+//TODO Add option for default values for when the user just presses enter.
+
 use std::io;
 
 pub trait ReadInput
