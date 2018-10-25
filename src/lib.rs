@@ -4,6 +4,9 @@ pub trait ReadInput
 where
     Self: std::marker::Sized,
 {
+    fn input_read<F: Fn(&Self) -> bool>(test: F, err: &str) -> Self {
+        Self::read_input(None, err, |x| test(x))
+    }
     fn valid_input<F: Fn(&Self) -> bool>(test: F) -> Self {
         Self::read_input(None, "That value does not pass please try again", |x| {
             test(x)
