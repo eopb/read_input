@@ -1,4 +1,6 @@
 //TODO Add option for default values for when the user just presses enter.
+//TODO add char support
+//TODO make api more simple (naming is a problem)
 
 use std::io;
 
