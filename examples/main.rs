@@ -18,7 +18,7 @@ fn main() {
         "output {}",
         String::read_input(
             Some("Please input your name"),
-            "That does not look like a number",
+            "That does not look like a name",
             |_| true
         )
     );
