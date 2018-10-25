@@ -11,6 +11,7 @@ fn main() {
         i32::read_input(
             Some("Please input a number"),
             "That does not look like a number",
+            Some(32),
             |_| true
         )
     );
@@ -19,6 +20,7 @@ fn main() {
         String::read_input(
             Some("Please input your name"),
             "That does not look like a name",
+            Some("boi".to_string()),
             |_| true
         )
     );

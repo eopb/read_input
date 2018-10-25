@@ -1,5 +1,5 @@
-//TODO Add option for default values for when the user just presses enter.
 //TODO make api more simple (naming is a problem)
+//TODO fix repeat code.
 use std::io;
 
 pub trait ReadInput
@@ -7,21 +7,49 @@ where
     Self: std::marker::Sized,
 {
     fn input_read<F: Fn(&Self) -> bool>(test: F, err: &str) -> Self {
-        Self::read_input(None, err, |x| test(x))
+        Self::read_input(None, err, None, |x| test(x))
     }
     fn valid_input<F: Fn(&Self) -> bool>(test: F) -> Self {
-        Self::read_input(None, "That value does not pass please try again", |x| {
-            test(x)
-        })
+        Self::read_input(
+            None,
+            "That value does not pass please try again",
+            None,
+            |x| test(x),
+        )
     }
     fn simple_input() -> Self {
-        Self::read_input(None, "That value does not pass please try again", |_| true)
+        Self::read_input(
+            None,
+            "That value does not pass please try again",
+            None,
+            |_| true,
+        )
     }
-    fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self {
+    fn read_input<F: Fn(&Self) -> bool>(
+        msg: Option<&str>,
+        err: &str,
+        default: Option<Self>,
+        test: F,
+    ) -> Self {
         if let Some(msg) = msg {
             println!("{}", msg);
         };
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+        if let Some(x) = default {
+            if input.trim() == "" {
+                return x;
+            }
+        }
+        if let Some(num) = Self::string_to_self(input) {
+            if test(&num) {
+                return num;
+            }
+        };
         loop {
+            println!("{}", err);
             let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
@@ -31,8 +59,6 @@ where
                     break num;
                 }
             };
-            println!("{}", err);
-            continue;
         }
     }
     fn string_to_self(string: String) -> Option<Self>;
