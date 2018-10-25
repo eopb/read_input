@@ -1,5 +1,4 @@
 //TODO Add option for default values for when the user just presses enter.
-//TODO add char support
 //TODO make api more simple (naming is a problem)
 
 use std::io;
@@ -56,4 +55,4 @@ macro_rules! impl_read_inputn {
     )*}
 }
 
-impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32,f64, i64, u64, i128, u128 }
+impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32,f64, i64, u64, i128, u128, char }
