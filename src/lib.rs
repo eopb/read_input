@@ -1,4 +1,3 @@
-//TODO only impl convert function that convets String to Self.
 //TODO Add option for default values for when the user just presses enter.
 
 use std::io;
@@ -18,10 +17,6 @@ where
     fn simple_input() -> Self {
         Self::read_input(None, "That value does not pass please try again", |_| true)
     }
-    fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self;
-}
-
-impl ReadInput for String {
     fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self {
         if let Some(msg) = msg {
             println!("{}", msg);
@@ -31,38 +26,31 @@ impl ReadInput for String {
             io::stdin()
                 .read_line(&mut input)
                 .expect("Failed to read line");
-            if test(&input) {
-                break input;
-            }
-
+            if let Some(num) = Self::string_to_self(input) {
+                if test(&num) {
+                    break num;
+                }
+            };
             println!("{}", err);
             continue;
         }
+    }
+    fn string_to_self(string: String) -> Option<Self>;
+}
+
+impl ReadInput for String {
+    fn string_to_self(string: String) -> Option<Self> {
+        Some(string)
     }
 }
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
-    impl ReadInput for $t {
-        fn read_input<F: Fn(&Self) -> bool>(msg: Option<&str>, err: &str, test: F) -> Self {
-            if let Some(msg) = msg {
-                println!("{}", msg);
-            };
-            loop {
-                let mut input = String::new();
-                io::stdin()
-                    .read_line(&mut input)
-                    .expect("Failed to read line");
-                if let Ok(num) = input.trim().parse() {
-                    if test(&num) {
-                        break num;
-                    }
-                };
-                println!("{}", err);
-                continue;
+        impl ReadInput for $t {
+            fn string_to_self(string: String) -> Option<Self> {
+                match string.trim().parse() {Ok(val) => Some(val), Err(_) => None,}
             }
         }
-    }
     )*}
 }
 
