@@ -7,13 +7,13 @@ where
     Self: std::marker::Sized,
 {
     fn input_read<F: Fn(&Self) -> bool>(test: F, err: &str) -> Self {
-        Self::read_input(None, Some(err), None, Some(|x| test(x)))
+        Self::read_input(None, Some(err), None, Some(test))
     }
     fn valid_input<F: Fn(&Self) -> bool>(test: F) -> Self {
-        Self::read_input(None, None, None, Some(|x| test(x)))
+        Self::read_input(None, None, None, Some(test))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None)
+        Self::read_input(None, None, None, None::<fn(&Self)->bool>)
     }
     fn read_input<F: Fn(&Self) -> bool>(
         msg: Option<&str>,
@@ -34,7 +34,7 @@ where
             }
         }
         if let Some(num) = Self::string_to_self(input) {
-            if match test {
+            if match &test {
                 Some(v) => v(&num),
                 None => true,
             } {
@@ -54,7 +54,7 @@ where
                 .read_line(&mut input)
                 .expect("Failed to read line");
             if let Some(num) = Self::string_to_self(input) {
-                if match test {
+                if match &test {
                     Some(v) => v(&num),
                     None => true,
                 } {
