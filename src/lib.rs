@@ -2,20 +2,22 @@
 //TODO fix repeat code.
 use std::io;
 
-pub struct InputSet<'a, T>
+pub struct InputSet<'a, T, F>
 where
-    T: std::marker::Sized,
+    F: Fn(&T) -> bool,
 {
     msg: Option<&'a str>,
     err: Option<&'a str>,
     default: Option<T>,
-    test: Option<dyn dyn Fn(&T) -> bool>,
+    test: Option<F>,
 }
 
-impl<'a, T> InputSet<'a, T>
+impl<'a, T, F> InputSet<'a, T, F>
 where
     T: std::marker::Sized,
     T: ReadInput,
+    F: std::marker::Sized,
+    F: Fn(&T) -> bool,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         Self {
@@ -35,7 +37,7 @@ where
             ..self
         }
     }
-    pub fn test(self, test: Fn(&T) -> bool) -> Self {
+    pub fn test(self, test: F) -> Self {
         Self {
             test: Some(test),
             ..self
@@ -50,7 +52,11 @@ pub trait ReadInput
 where
     Self: std::marker::Sized,
 {
-    fn input_new<'a>() -> InputSet<'a, Self> {
+    fn input_new<'a, F>() -> InputSet<'a, Self, F>
+    where
+        F: std::marker::Sized,
+        F: Fn(&Self) -> bool,
+    {
         InputSet {
             msg: None,
             err: None,
@@ -63,13 +69,13 @@ where
         Self::read_input(None, None, None, Some(test))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None)
+        Self::read_input(None, None, None, None::<fn(&Self) -> bool>)
     }
-    fn read_input(
+    fn read_input<F: Fn(&Self) -> bool>(
         msg: Option<&str>,
         err: Option<&str>,
         default: Option<Self>,
-        test: Option<Fn(&Self) -> bool>,
+        test: Option<F>,
     ) -> Self {
         if let Some(msg) = msg {
             println!("{}", msg);
