@@ -2,15 +2,74 @@
 //TODO fix repeat code.
 use std::io;
 
+pub struct InputSet<'a, T, F>
+where
+    F: Fn(&T) -> bool,
+{
+    msg: Option<&'a str>,
+    err: Option<&'a str>,
+    default: Option<T>,
+    test: Option<F>,
+}
+
+impl<'a, T, F> InputSet<'a, T, F>
+where
+    T: std::marker::Sized,
+    T: ReadInput,
+    F: std::marker::Sized,
+    F: Fn(&T) -> bool,
+{
+    pub fn msg(self, msg: &'a str) -> Self {
+        Self {
+            msg: Some(msg),
+            ..self
+        }
+    }
+    pub fn err(self, err: &'a str) -> Self {
+        Self {
+            err: Some(err),
+            ..self
+        }
+    }
+    pub fn default(self, default: T) -> Self {
+        Self {
+            default: Some(default),
+            ..self
+        }
+    }
+    pub fn test(self, test: F) -> Self {
+        Self {
+            test: Some(test),
+            ..self
+        }
+    }
+    pub fn get(self) -> T {
+        T::read_input(self.msg, self.err, self.default, self.test)
+    }
+}
+
 pub trait ReadInput
 where
     Self: std::marker::Sized,
 {
+    fn input_new<'a, F>() -> InputSet<'a, Self, F>
+    where
+        F: std::marker::Sized,
+        F: Fn(&Self) -> bool,
+    {
+        InputSet {
+            msg: None,
+            err: None,
+            default: None,
+            test: None,
+        }
+    }
+
     fn valid_input<F: Fn(&Self) -> bool>(test: F) -> Self {
         Self::read_input(None, None, None, Some(test))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None::<fn(&Self)->bool>)
+        Self::read_input(None, None, None, None::<fn(&Self) -> bool>)
     }
     fn read_input<F: Fn(&Self) -> bool>(
         msg: Option<&str>,
