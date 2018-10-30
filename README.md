@@ -42,7 +42,7 @@ let input = Type::simple_input();
 
 Where `Type` is the type you want. Currently the types you can use include `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128` and `String`.
 
-So if you want a valid unsigned 32bit value you could write.
+For example, if you want a valid unsigned 32bit value you could write.
 
 ```rust
 let input = u32::simple_input();
