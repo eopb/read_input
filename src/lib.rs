@@ -1,5 +1,3 @@
-//TODO make api more simple (naming is a problem)
-//TODO fix repeat code.
 use std::io;
 
 pub struct InputSet<'a, T, F>
