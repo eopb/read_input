@@ -16,7 +16,7 @@ where
 impl<'a, T, F> InputSet<'a, T, F>
 where
     T: Sized,
-    T: ReadInput<F>,
+    T: ReadBuilder<F>,
     F: Sized,
     F: Fn(&T) -> bool,
     F: std::clone::Clone,
@@ -57,7 +57,7 @@ where
     }
 }
 
-pub trait ReadInput<F>
+pub trait ReadBuilder<F>
 where
     Self: Sized,
     Self: StringToSelf,
@@ -133,7 +133,7 @@ impl StringToSelf for String {
         Some(string)
     }
 }
-impl<'b> ReadInput<&'b (dyn Fn(&Self) -> bool)> for String {}
+impl<'b> ReadBuilder<&'b (dyn Fn(&Self) -> bool)> for String {}
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
@@ -142,7 +142,7 @@ macro_rules! impl_read_inputn {
                 string.trim().parse().ok()
             }
         }
-        impl<'b> ReadInput<&'b (dyn Fn(&Self) -> bool)> for $t {}
+        impl<'b> ReadBuilder<&'b (dyn Fn(&Self) -> bool)> for $t {}
     )*}
 }
 
