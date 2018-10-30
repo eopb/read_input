@@ -13,9 +13,9 @@ where
 
 impl<'a, T, F> InputSet<'a, T, F>
 where
-    T: std::marker::Sized,
+    T: Sized,
     T: ReadInput<F>,
-    F: std::marker::Sized,
+    F: Sized,
     F: Fn(&T) -> bool,
 {
     pub fn msg(self, msg: &'a str) -> Self {
@@ -49,9 +49,9 @@ where
 
 pub trait ReadInput<F>
 where
-    Self: std::marker::Sized,
+    Self: Sized,
     Self: StringToSelf,
-    F: std::marker::Sized,
+    F: Sized,
     F: Fn(&Self) -> bool,
 {
     fn input_new<'a>() -> InputSet<'a, Self, F> {
@@ -122,7 +122,7 @@ where
 
 pub trait StringToSelf
 where
-    Self: std::marker::Sized,
+    Self: Sized,
 {
     fn string_to_self(string: String) -> Option<Self>;
 }
