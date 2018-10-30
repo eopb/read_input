@@ -112,20 +112,23 @@ where
         }
     };
     if let Some(num) = T::from_str(&input.trim()).ok() {
+        let mut test_err = None;
         if test.as_ref().map_or(true, |v| {
             v.iter().all(|f| {
                 if f.0(&num) {
                     true
                 } else {
-                    println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                    test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
                     false
                 }
             })
         }) {
             return num;
         } else {
-            println!("{}", err.unwrap_or(DEFAULT_ERR));
+            println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
         }
+    } else {
+        println!("{}", err.unwrap_or(DEFAULT_ERR));
     };
     loop {
         let mut input = String::new();
@@ -133,20 +136,23 @@ where
             .read_line(&mut input)
             .expect("Failed to read line");
         if let Some(num) = T::from_str(&input.trim()).ok() {
+            let mut test_err = None;
             if test.as_ref().map_or(true, |v| {
                 v.iter().all(|f| {
                     if f.0(&num) {
                         true
                     } else {
-                        println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                        test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
                         false
                     }
                 })
             }) {
                 break num;
+            } else {
+                println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
             }
         } else {
             println!("{}", err.unwrap_or(DEFAULT_ERR));
-        };
+        }
     }
 }
