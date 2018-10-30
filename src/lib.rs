@@ -15,7 +15,7 @@ where
 impl<'a, T, F> InputSet<'a, T, F>
 where
     T: std::marker::Sized,
-    T: ReadInput,
+    T: ReadInput<F>,
     F: std::marker::Sized,
     F: Fn(&T) -> bool,
 {
@@ -48,30 +48,29 @@ where
     }
 }
 
-pub trait ReadInput
+pub trait ReadInput<F>
 where
     Self: std::marker::Sized,
+    Self: StringToSelf,
+    F: std::marker::Sized,
+    F: Fn(&Self) -> bool,
 {
-    fn input_new<'a, F>() -> InputSet<'a, Self, F>
-    where
-        F: std::marker::Sized,
-        F: Fn(&Self) -> bool,
-    {
+    fn input_new<'a>() -> InputSet<'a, Self, F> {
         InputSet {
             msg: None,
             err: None,
             default: None,
-            test: None,
+            test: None::<F>,
         }
     }
 
-    fn valid_input<F: Fn(&Self) -> bool>(test: F) -> Self {
+    fn valid_input(test: F) -> Self {
         Self::read_input(None, None, None, Some(test))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None::<fn(&Self) -> bool>)
+        Self::read_input(None, None, None, None::<F>)
     }
-    fn read_input<F: Fn(&Self) -> bool>(
+    fn read_input(
         msg: Option<&str>,
         err: Option<&str>,
         default: Option<Self>,
@@ -119,22 +118,30 @@ where
             };
         }
     }
+}
+
+pub trait StringToSelf
+where
+    Self: std::marker::Sized,
+{
     fn string_to_self(string: String) -> Option<Self>;
 }
 
-impl ReadInput for String {
+impl StringToSelf for String {
     fn string_to_self(string: String) -> Option<Self> {
         Some(string)
     }
 }
+impl ReadInput<&'static (dyn Fn(&Self) -> bool)> for String {}
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
-        impl ReadInput for $t {
+        impl StringToSelf for $t {
             fn string_to_self(string: String) -> Option<Self> {
                 match string.trim().parse() {Ok(val) => Some(val), Err(_) => None,}
             }
         }
+        impl ReadInput<&'static (dyn Fn(&Self) -> bool)> for $t {}
     )*}
 }
 
