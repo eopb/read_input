@@ -130,7 +130,7 @@ impl StringToSelf for String {
         Some(string)
     }
 }
-impl<'b> ReadInput<&'static (dyn Fn(&Self) -> bool)> for String {}
+impl<'b> ReadInput<&'b (dyn Fn(&Self) -> bool)> for String {}
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
