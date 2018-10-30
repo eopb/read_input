@@ -1,4 +1,5 @@
 //TODO Add docs for how to implement.
+//TODO Update old readme
 use std::io;
 use std::io::Write;
 
