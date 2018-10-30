@@ -10,7 +10,7 @@ where
     msg: Option<&'a str>,
     err: Option<&'a str>,
     default: Option<T>,
-    test: Option<F>,
+    test: Option<Vec<F>>,
 }
 
 impl<'a, T, F> InputSet<'a, T, F>
@@ -19,6 +19,7 @@ where
     T: ReadInput<F>,
     F: Sized,
     F: Fn(&T) -> bool,
+    F: std::clone::Clone,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         Self {
@@ -40,7 +41,14 @@ where
     }
     pub fn test(self, test: F) -> Self {
         Self {
-            test: Some(test),
+            test: Some(match self.test {
+                Some(v) => {
+                    let mut x = v;
+                    x.push(test);
+                    x
+                }
+                None => vec![test],
+            }),
             ..self
         }
     }
@@ -61,21 +69,21 @@ where
             msg: None,
             err: None,
             default: None,
-            test: None::<F>,
+            test: None::<Vec<F>>,
         }
     }
 
     fn valid_input(test: F) -> Self {
-        Self::read_input(None, None, None, Some(test))
+        Self::read_input(None, None, None, Some(vec![test]))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None::<F>)
+        Self::read_input(None, None, None, None::<Vec<F>>)
     }
     fn read_input(
         msg: Option<&str>,
         err: Option<&str>,
         default: Option<Self>,
-        test: Option<F>,
+        test: Option<Vec<F>>,
     ) -> Self {
         if let Some(msg) = msg {
             print!("{}", msg);
@@ -91,7 +99,7 @@ where
             }
         }
         if let Some(num) = Self::string_to_self(input) {
-            if test.as_ref().map_or(true, |v| v(&num)) {
+            if test.as_ref().map_or(true, |v| v.iter().all(|f| f(&num))) {
                 return num;
             }
         };
@@ -105,7 +113,7 @@ where
                 .read_line(&mut input)
                 .expect("Failed to read line");
             if let Some(num) = Self::string_to_self(input) {
-                if test.as_ref().map_or(true, |v| v(&num)) {
+                if test.as_ref().map_or(true, |v| v.iter().all(|f| f(&num))) {
                     break num;
                 }
             };
