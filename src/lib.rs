@@ -1,7 +1,8 @@
 //TODO Add docs for how to implement.
-//TODO Allow more than one validator + Let user define an error handler/message per custom validator
 use std::io;
 use std::io::Write;
+
+const DEFAULT_ERR: &str = "That value does not pass please try again";
 
 pub struct InputSet<'a, T, F>
 where
@@ -10,7 +11,7 @@ where
     msg: Option<&'a str>,
     err: Option<&'a str>,
     default: Option<T>,
-    test: Option<Vec<F>>,
+    test: Option<Vec<(F, Option<&'a str>)>>,
 }
 
 impl<'a, T, F> InputSet<'a, T, F>
@@ -39,15 +40,15 @@ where
             ..self
         }
     }
-    pub fn test(self, test: F) -> Self {
+    pub fn test(self, test: F, err: Option<&'a str>) -> Self {
         Self {
             test: Some(match self.test {
                 Some(v) => {
                     let mut x = v;
-                    x.push(test);
+                    x.push((test, err));
                     x
                 }
-                None => vec![test],
+                None => vec![(test, err)],
             }),
             ..self
         }
@@ -69,21 +70,21 @@ where
             msg: None,
             err: None,
             default: None,
-            test: None::<Vec<F>>,
+            test: None::<Vec<(F, Option<&'a str>)>>,
         }
     }
 
     fn valid_input(test: F) -> Self {
-        Self::read_input(None, None, None, Some(vec![test]))
+        Self::read_input(None, None, None, Some(vec![(test, None)]))
     }
     fn simple_input() -> Self {
-        Self::read_input(None, None, None, None::<Vec<F>>)
+        Self::read_input(None, None, None, None)
     }
     fn read_input(
         msg: Option<&str>,
         err: Option<&str>,
         default: Option<Self>,
-        test: Option<Vec<F>>,
+        test: Option<Vec<(F, Option<&str>)>>,
     ) -> Self {
         if let Some(msg) = msg {
             print!("{}", msg);
@@ -93,29 +94,53 @@ where
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
-        if let Some(x) = default {
-            if input.trim().is_empty() {
+
+        if input.trim().is_empty() {
+            if let Some(x) = default {
                 return x;
+            } else {
+                println!("{}", err.unwrap_or(DEFAULT_ERR));
             }
+        } else {
+            println!("{}", err.unwrap_or(DEFAULT_ERR));
         }
+
         if let Some(num) = Self::string_to_self(input) {
-            if test.as_ref().map_or(true, |v| v.iter().all(|f| f(&num))) {
+            if test.as_ref().map_or(true, |v| {
+                v.iter().all(|f| {
+                    if f.0(&num) {
+                        true
+                    } else {
+                        println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                        false
+                    }
+                })
+            }) {
                 return num;
+            } else {
+                println!("{}", err.unwrap_or(DEFAULT_ERR));
             }
         };
         loop {
-            println!(
-                "{}",
-                err.unwrap_or("That value does not pass please try again")
-            );
             let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
                 .expect("Failed to read line");
             if let Some(num) = Self::string_to_self(input) {
-                if test.as_ref().map_or(true, |v| v.iter().all(|f| f(&num))) {
+                if test.as_ref().map_or(true, |v| {
+                    v.iter().all(|f| {
+                        if f.0(&num) {
+                            true
+                        } else {
+                            println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                            false
+                        }
+                    })
+                }) {
                     break num;
                 }
+            } else {
+                println!("{}", err.unwrap_or(DEFAULT_ERR));
             };
         }
     }
