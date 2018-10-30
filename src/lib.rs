@@ -17,7 +17,7 @@ where
 impl<'a, T, F> InputSet<'a, T, F>
 where
     T: Sized,
-    T: ReadBuilder<F>,
+    T: std::str::FromStr,
     F: Sized,
     F: Fn(&T) -> bool,
     F: std::clone::Clone,
@@ -54,56 +54,85 @@ where
         }
     }
     pub fn get(self) -> T {
-        T::read_input(self.msg, self.err, self.default, self.test)
+        read_input::<T, F>(self.msg, self.err, self.default, self.test)
     }
 }
 
-pub trait ReadBuilder<F>
-where
-    Self: Sized,
-    Self: std::str::FromStr,
-    Self: std::fmt::Debug,
-    F: Sized,
-    F: Fn(&Self) -> bool,
-{
-    fn input_new<'a>() -> InputSet<'a, Self, F> {
-        InputSet {
-            msg: None,
-            err: None,
-            default: None,
-            test: None::<Vec<(F, Option<&'a str>)>>,
-        }
+pub fn input_new<'a, T>() -> InputSet<'a, T, &'a (dyn Fn(&T) -> bool)> {
+    InputSet {
+        msg: None,
+        err: None,
+        default: None,
+        test: None::<Vec<(&'a (dyn Fn(&T) -> bool), Option<&'a str>)>>,
     }
+}
 
-    fn valid_input(test: F) -> Self {
-        Self::read_input(None, None, None, Some(vec![(test, None)]))
-    }
-    fn simple_input() -> Self {
-        Self::read_input(None, None, None, None)
-    }
-    fn read_input(
-        msg: Option<&str>,
-        err: Option<&str>,
-        default: Option<Self>,
-        test: Option<Vec<(F, Option<&str>)>>,
-    ) -> Self {
-        if let Some(msg) = msg {
-            print!("{}", msg);
-            io::stdout().flush().expect("could not flush output");
-        };
+pub fn valid_input<'a, T>(test: &'a (dyn Fn(&T) -> bool)) -> T
+where
+    T: Sized,
+    T: std::str::FromStr,
+{
+    input_new().test(&test, None).get()
+}
+
+pub fn simple_input<T>() -> T
+where
+    T: Sized,
+    T: std::str::FromStr,
+{
+    input_new().get()
+}
+
+fn read_input<T, F>(
+    msg: Option<&str>,
+    err: Option<&str>,
+    default: Option<T>,
+    test: Option<Vec<(F, Option<&str>)>>,
+) -> T
+where
+    T: Sized,
+    T: std::str::FromStr,
+    F: Sized,
+    F: Fn(&T) -> bool,
+{
+    if let Some(msg) = msg {
+        print!("{}", msg);
+        io::stdout().flush().expect("could not flush output");
+    };
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+
+    if input.trim().is_empty() {
+        if let Some(x) = default {
+            return x;
+        } else {
+            println!("{}", err.unwrap_or(DEFAULT_ERR));
+        }
+    };
+    if let Some(num) = T::from_str(&input.trim()).ok() {
+        if test.as_ref().map_or(true, |v| {
+            v.iter().all(|f| {
+                if f.0(&num) {
+                    true
+                } else {
+                    println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                    false
+                }
+            })
+        }) {
+            return num;
+        } else {
+            println!("{}", err.unwrap_or(DEFAULT_ERR));
+        }
+    };
+    loop {
         let mut input = String::new();
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
-
-        if input.trim().is_empty() {
-            if let Some(x) = default {
-                return x;
-            } else {
-                println!("{}", err.unwrap_or(DEFAULT_ERR));
-            }
-        };
-        if let Some(num) = Self::from_str(&input.trim()).ok() {
+        if let Some(num) = T::from_str(&input.trim()).ok() {
             if test.as_ref().map_or(true, |v| {
                 v.iter().all(|f| {
                     if f.0(&num) {
@@ -114,40 +143,10 @@ where
                     }
                 })
             }) {
-                return num;
-            } else {
-                println!("{}", err.unwrap_or(DEFAULT_ERR));
+                break num;
             }
+        } else {
+            println!("{}", err.unwrap_or(DEFAULT_ERR));
         };
-        loop {
-            let mut input = String::new();
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
-            if let Some(num) = Self::from_str(&input.trim()).ok() {
-                if test.as_ref().map_or(true, |v| {
-                    v.iter().all(|f| {
-                        if f.0(&num) {
-                            true
-                        } else {
-                            println!("{}", f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
-                            false
-                        }
-                    })
-                }) {
-                    break num;
-                }
-            } else {
-                println!("{}", err.unwrap_or(DEFAULT_ERR));
-            };
-        }
     }
 }
-
-macro_rules! impl_read_inputn {
-    ($($t:ty),*) => {$(
-        impl<'b> ReadBuilder<&'b (dyn Fn(&Self) -> bool)> for $t {}
-    )*}
-}
-
-impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32, f64, i64, u64, i128, u128, char, String }
