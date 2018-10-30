@@ -1,4 +1,5 @@
 use std::io;
+use std::io::Write;
 
 pub struct InputSet<'a, T, F>
 where
@@ -75,7 +76,8 @@ where
         test: Option<F>,
     ) -> Self {
         if let Some(msg) = msg {
-            println!("{}", msg);
+            print!("{}", msg);
+            std::io::stdout().flush().expect("could not flush output");
         };
         let mut input = String::new();
         io::stdin()
