@@ -107,34 +107,9 @@ where
     if input.trim().is_empty() {
         if let Some(x) = default {
             return x;
-        } else {
-            println!("{}", err.unwrap_or(DEFAULT_ERR));
         }
-    };
-    if let Ok(num) = T::from_str(&input.trim()) {
-        let mut test_err = None;
-        if test.as_ref().map_or(true, |v| {
-            v.iter().all(|f| {
-                if f.0(&num) {
-                    true
-                } else {
-                    test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
-                    false
-                }
-            })
-        }) {
-            return num;
-        } else {
-            println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
-        }
-    } else {
-        println!("{}", err.unwrap_or(DEFAULT_ERR));
     };
     loop {
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read line");
         if let Ok(num) = T::from_str(&input.trim()) {
             let mut test_err = None;
             if test.as_ref().map_or(true, |v| {
@@ -147,12 +122,16 @@ where
                     }
                 })
             }) {
-                break num;
+                return num;
             } else {
                 println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
             }
         } else {
             println!("{}", err.unwrap_or(DEFAULT_ERR));
         }
+        input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
     }
 }
