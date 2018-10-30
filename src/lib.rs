@@ -1,3 +1,4 @@
+//TODO Allow more than one validator + Let user define an error handler/message per custom validator
 use std::io;
 use std::io::Write;
 
