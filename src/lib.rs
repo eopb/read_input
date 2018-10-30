@@ -54,7 +54,7 @@ where
         }
     }
     pub fn get(self) -> T {
-        read_input::<T, F>(self.msg, self.err, self.default, self.test)
+        read_input::<T, F>(self.msg, self.err, self.default, &self.test)
     }
 }
 
@@ -87,7 +87,7 @@ fn read_input<T, F>(
     msg: Option<&str>,
     err: Option<&str>,
     default: Option<T>,
-    test: Option<Vec<(F, Option<&str>)>>,
+    test: &Option<Vec<(F, Option<&str>)>>,
 ) -> T
 where
     T: Sized,
@@ -111,7 +111,7 @@ where
             println!("{}", err.unwrap_or(DEFAULT_ERR));
         }
     };
-    if let Some(num) = T::from_str(&input.trim()).ok() {
+    if let Ok(num) = T::from_str(&input.trim()) {
         let mut test_err = None;
         if test.as_ref().map_or(true, |v| {
             v.iter().all(|f| {
@@ -135,7 +135,7 @@ where
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
-        if let Some(num) = T::from_str(&input.trim()).ok() {
+        if let Ok(num) = T::from_str(&input.trim()) {
             let mut test_err = None;
             if test.as_ref().map_or(true, |v| {
                 v.iter().all(|f| {
