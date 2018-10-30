@@ -143,4 +143,4 @@ macro_rules! impl_read_inputn {
     )*}
 }
 
-impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32,f64, i64, u64, i128, u128, char }
+impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32, f64, i64, u64, i128, u128, char }
