@@ -12,7 +12,7 @@ fn main() {
             .test(&|x| 4 < *x && *x < 9, None)
             .test(
                 &|x| *x != 6,
-                Some("That value is 6! I dont what7= 6. Please try again")
+                Some("That value is 6! I dont want 6. Please try again")
             )
             .err("That does not look like a number between 4 and 9. Please try again")
             .get()
