@@ -132,7 +132,7 @@ impl StringToSelf for String {
         Some(string)
     }
 }
-impl ReadInput<&'static (dyn Fn(&Self) -> bool)> for String {}
+impl<'b> ReadInput<&'static (dyn Fn(&Self) -> bool)> for String {}
 
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
@@ -141,7 +141,7 @@ macro_rules! impl_read_inputn {
                 match string.trim().parse() {Ok(val) => Some(val), Err(_) => None,}
             }
         }
-        impl ReadInput<&'static (dyn Fn(&Self) -> bool)> for $t {}
+        impl<'b> ReadInput<&'b (dyn Fn(&Self) -> bool)> for $t {}
     )*}
 }
 
