@@ -84,7 +84,7 @@ where
             .read_line(&mut input)
             .expect("Failed to read line");
         if let Some(x) = default {
-            if input.trim() == "" {
+            if input.trim().is_empty() {
                 return x;
             }
         }
