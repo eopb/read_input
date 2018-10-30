@@ -37,24 +37,37 @@ to your main file.
 You can get input with.
 
 ```rust
-let input = Type::simple_input();
+let input = Type::input_new().get();
 ```
 
-Where `Type` is the type you want. Currently the types you can use include `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128` and `String`.
+Where `Type` is the type you want. Currently the types you can use include `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char` and `String`.
 
 For example, if you want a valid unsigned 32bit value you could write.
 
 ```rust
-let input = u32::simple_input();
+let input = u32::input_new().get();
 ```
 
 You can also add your own checks to ensure the value meets your criteria. If you want a signed 16bit value between 4 and 9 you could write.
 
 ```rust
-let input = i16::valid_input(|x| 4 < *x && *x < 9);
+let input = i16::input_new().test(&|x| 4 < *x && *x < 9).get();
 ```
 
-The `read_input` associated function allows for custom error messages and validation at the same time.
+In the same style you can specify custom error messages. If you want a signed 16bit value between 4 and 9 you could write.
+
+```rust
+let input = i16::input_new()
+    .test(&|x| 4 < *x && *x < 9)
+    .err("That does not look like a number between 4 and 9. Please try again")
+    .get()
+```
+
+Default values are also supported. If the user presses enter before typing anything the program could return a default value.
+
+```rust
+let input = f64::input_new().default(3.141).get();
+```
 
 ## Docs
 

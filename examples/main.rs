@@ -5,8 +5,14 @@ extern crate read_input;
 use read_input::*;
 
 fn main() {
-    println!("output {}", String::input_new().get());
+    println!(
+        "output {}",
+        i16::input_new()
+            .test(&|x| 4 < *x && *x < 9)
+            .err("That does not look like a number between 4 and 9. Please try again")
+            .get()
+    );
     println!("output {}", i32::simple_input());
-    println!("output {}", i32::valid_input(&|x: &i32| 4 < *x && *x < 9));
+    println!("output {}", i32::valid_input(&|x| 4 < *x && *x < 9));
     println!("output {}", char::simple_input());
 }
