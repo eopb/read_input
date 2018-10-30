@@ -1,4 +1,3 @@
-#![warn(clippy::pedantic)]
 //To run example `cargo run --example main --release`
 
 extern crate read_input;
@@ -8,23 +7,12 @@ use read_input::*;
 fn main() {
     println!(
         "output {}",
-        i32::read_input(
-            Some("Please input a number"),
-            "That does not look like a number",
-            Some(32),
-            |_| true
-        )
-    );
-    println!(
-        "output {}",
-        String::read_input(
-            Some("Please input your name"),
-            "That does not look like a name",
-            Some("boi".to_string()),
-            |_| true
-        )
+        i16::input_new()
+            .test(&|x| 4 < *x && *x < 9)
+            .err("That does not look like a number between 4 and 9. Please try again")
+            .get()
     );
     println!("output {}", i32::simple_input());
-    println!("output {}", i32::valid_input(|x| 4 < *x && *x < 9));
+    println!("output {}", i32::valid_input(&|x| 4 < *x && *x < 9));
     println!("output {}", char::simple_input());
 }
