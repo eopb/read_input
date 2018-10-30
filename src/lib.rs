@@ -138,10 +138,7 @@ macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
         impl StringToSelf for $t {
             fn string_to_self(string: String) -> Option<Self> {
-                match string.trim().parse() {
-                    Ok(val) => Some(val),
-                    Err(_) => None,
-                }
+                string.trim().parse().ok()
             }
         }
         impl<'b> ReadInput<&'b (dyn Fn(&Self) -> bool)> for $t {}
