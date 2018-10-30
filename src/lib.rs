@@ -89,30 +89,21 @@ where
             }
         }
         if let Some(num) = Self::string_to_self(input) {
-            if match &test {
-                Some(v) => v(&num),
-                None => true,
-            } {
+            if test.as_ref().map_or(true, |v| v(&num)) {
                 return num;
             }
         };
         loop {
             println!(
                 "{}",
-                match err {
-                    Some(v) => v,
-                    None => "That value does not pass please try again",
-                }
+                err.unwrap_or("That value does not pass please try again")
             );
             let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
                 .expect("Failed to read line");
             if let Some(num) = Self::string_to_self(input) {
-                if match &test {
-                    Some(v) => v(&num),
-                    None => true,
-                } {
+                if test.as_ref().map_or(true, |v| v(&num)) {
                     break num;
                 }
             };
