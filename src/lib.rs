@@ -61,7 +61,8 @@ where
 pub trait ReadBuilder<F>
 where
     Self: Sized,
-    Self: StringToSelf,
+    Self: std::str::FromStr,
+    Self: std::fmt::Debug,
     F: Sized,
     F: Fn(&Self) -> bool,
 {
@@ -101,11 +102,8 @@ where
             } else {
                 println!("{}", err.unwrap_or(DEFAULT_ERR));
             }
-        } else {
-            println!("{}", err.unwrap_or(DEFAULT_ERR));
-        }
-
-        if let Some(num) = Self::string_to_self(input) {
+        };
+        if let Some(num) = Self::from_str(&input.trim()).ok() {
             if test.as_ref().map_or(true, |v| {
                 v.iter().all(|f| {
                     if f.0(&num) {
@@ -126,7 +124,7 @@ where
             io::stdin()
                 .read_line(&mut input)
                 .expect("Failed to read line");
-            if let Some(num) = Self::string_to_self(input) {
+            if let Some(num) = Self::from_str(&input.trim()).ok() {
                 if test.as_ref().map_or(true, |v| {
                     v.iter().all(|f| {
                         if f.0(&num) {
@@ -146,29 +144,10 @@ where
     }
 }
 
-pub trait StringToSelf
-where
-    Self: Sized,
-{
-    fn string_to_self(string: String) -> Option<Self>;
-}
-
-impl StringToSelf for String {
-    fn string_to_self(string: String) -> Option<Self> {
-        Some(string)
-    }
-}
-impl<'b> ReadBuilder<&'b (dyn Fn(&Self) -> bool)> for String {}
-
 macro_rules! impl_read_inputn {
     ($($t:ty),*) => {$(
-        impl StringToSelf for $t {
-            fn string_to_self(string: String) -> Option<Self> {
-                string.trim().parse().ok()
-            }
-        }
         impl<'b> ReadBuilder<&'b (dyn Fn(&Self) -> bool)> for $t {}
     )*}
 }
 
-impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32, f64, i64, u64, i128, u128, char }
+impl_read_inputn! { i8, u8, i16, u16,f32, i32, u32, f64, i64, u64, i128, u128, char, String }
