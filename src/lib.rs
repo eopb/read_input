@@ -77,7 +77,7 @@ where
     ) -> Self {
         if let Some(msg) = msg {
             print!("{}", msg);
-            std::io::stdout().flush().expect("could not flush output");
+            io::stdout().flush().expect("could not flush output");
         };
         let mut input = String::new();
         io::stdin()
