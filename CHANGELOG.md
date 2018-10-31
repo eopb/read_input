@@ -1,3 +1,6 @@
+# 0.3.4
+Document simple_input() and valid_input() in readme.md
+
 # 0.3.3
 Update readme.
 

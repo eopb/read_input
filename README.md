@@ -79,6 +79,14 @@ Default values and custom messages are also supported. If the user presses enter
 let input = input_new().msg("Please input pi: ").default(3.141).get();
 ```
 
+### Shortcut functions
+
+Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
+
+`simple_input()` is the same as `input_new().get()`.
+
+`valid_input(&|x| 4 < *x && *x < 9)` is the same as `input_new().test(&|x| 4 < *x && *x < 9, None).get()`.
+
 ## How to use with custom type.
 
 To use `read_input` you will need to implement `std::str::FromStr`. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
