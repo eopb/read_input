@@ -21,7 +21,7 @@ Read input attempts to make it easy to get input from the user without having to
 
 Add 
 ```toml
-read_input = "0.1.1"
+read_input = "0.3.0"
 ```
 to your `cargo.toml` under `[dependencies]`
 and add
@@ -33,41 +33,55 @@ use read_input::*;
 to your main file.
 
 
-
 You can get input with.
 
 ```rust
-let input = Type::input_new().get();
+let input = input_new::<Type>().get();
 ```
 
-Where `Type` is the type you want. Currently the types you can use include `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char` and `String`.
+Where `Type` is the type you want. Currently the you can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) this currently includes `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`.
 
 For example, if you want a valid unsigned 32bit value you could write.
 
 ```rust
-let input = u32::input_new().get();
+let input = input_new::<u32>().get();
 ```
 
-You can also add your own checks to ensure the value meets your criteria. If you want a signed 16bit value between 4 and 9 you could write.
+Often rust can work out the type so you can skip explicitly stating the type.
 
 ```rust
-let input = i16::input_new().test(&|x| 4 < *x && *x < 9).get();
+let input = input_new().get();
 ```
 
-In the same style you can specify custom error messages. If you want a signed 16bit value between 4 and 9 you could write.
+You can also add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
 
 ```rust
-let input = i16::input_new()
-    .test(&|x| 4 < *x && *x < 9)
+let input = input_new().test(&|x| 4 < *x && *x < 9, None).get()
+```
+
+In the same style you can specify custom error messages, custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
+
+```rust
+let input = input_new()
+    .msg("Please input a number between 4 and 9 that is not 6: ")
+    .test(&|x| 4 < *x && *x < 9, None)
+    .test(
+        &|x| *x != 6,
+        Some("That value is 6! I dont want 6. Please try again")
+    )
     .err("That does not look like a number between 4 and 9. Please try again")
     .get()
 ```
 
-Default values are also supported. If the user presses enter before typing anything the program could return a default value.
+Default values and custom messages are also supported. If the user presses enter before typing anything the program could return a default value. Custom messages are written on the same line as input.
 
 ```rust
-let input = f64::input_new().default(3.141).get();
+let input = input_new().msg("Please input pi: ").default(3.141).get();
 ```
+
+## How to use with custom type.
+
+To use `read_input` you will need to implement `std::str::FromStr`. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
 ## Docs
 
