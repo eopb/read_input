@@ -17,11 +17,8 @@ where
 
 impl<'a, T, F> InputSet<'a, T, F>
 where
-    T: Sized,
     T: std::str::FromStr,
-    F: Sized,
     F: Fn(&T) -> bool,
-    F: std::clone::Clone,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         Self {
@@ -70,7 +67,6 @@ pub fn input_new<'a, T>() -> InputSet<'a, T, &'a (dyn Fn(&T) -> bool)> {
 
 pub fn valid_input<'a, T>(test: &'a (dyn Fn(&T) -> bool)) -> T
 where
-    T: Sized,
     T: std::str::FromStr,
 {
     input_new().test(&test, None).get()
@@ -78,7 +74,6 @@ where
 
 pub fn simple_input<T>() -> T
 where
-    T: Sized,
     T: std::str::FromStr,
 {
     input_new().get()
@@ -91,9 +86,7 @@ fn read_input<T, F>(
     test: &Option<Vec<(F, Option<&str>)>>,
 ) -> T
 where
-    T: Sized,
     T: std::str::FromStr,
-    F: Sized,
     F: Fn(&T) -> bool,
 {
     if let Some(msg) = msg {
