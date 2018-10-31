@@ -1,3 +1,6 @@
+# 0.3.3
+Update readme.
+
 # 0.3.2
 Added simple guessing game example.
 

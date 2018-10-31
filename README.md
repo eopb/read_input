@@ -21,7 +21,7 @@ Read input attempts to make it easy to get input from the user without having to
 
 Add 
 ```toml
-read_input = "0.3.0"
+read_input = "0.3"
 ```
 to your `cargo.toml` under `[dependencies]`
 and add
