@@ -3,7 +3,7 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
-pub struct InputSet<'a, T, F>
+pub struct InputBuilder<'a, T, F>
 where
     F: Fn(&T) -> bool,
 {
@@ -13,31 +13,31 @@ where
     test: Option<Vec<(F, Option<&'a str>)>>,
 }
 
-impl<'a, T, F> InputSet<'a, T, F>
+impl<'a, T, F> InputBuilder<'a, T, F>
 where
     T: std::str::FromStr,
     F: Fn(&T) -> bool,
 {
     pub fn msg(self, msg: &'a str) -> Self {
-        Self {
+        InputBuilder {
             msg: Some(msg),
             ..self
         }
     }
     pub fn err(self, err: &'a str) -> Self {
-        Self {
+        InputBuilder {
             err: Some(err),
             ..self
         }
     }
     pub fn default(self, default: T) -> Self {
-        Self {
+        InputBuilder {
             default: Some(default),
             ..self
         }
     }
     pub fn test(self, test: F, err: Option<&'a str>) -> Self {
-        Self {
+        InputBuilder {
             test: Some(match self.test {
                 Some(v) => {
                     let mut x = v;
@@ -54,8 +54,8 @@ where
     }
 }
 
-pub fn input_new<'a, T>() -> InputSet<'a, T, &'a (dyn Fn(&T) -> bool)> {
-    InputSet {
+pub fn input_new<'a, T>() -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool)> {
+    InputBuilder {
         msg: None,
         err: None,
         default: None,
