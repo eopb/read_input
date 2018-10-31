@@ -89,7 +89,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 ## How to use with custom type.
 
-To use `read_input` you will need to implement `std::str::FromStr`. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
 ## Docs
 
