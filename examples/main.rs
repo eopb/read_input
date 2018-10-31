@@ -1,4 +1,4 @@
-//To run example `cargo run --example main --release`
+//To run this example `cargo run --example main --release`
 
 extern crate read_input;
 

@@ -1,6 +1,6 @@
 [package]
 name = "read_input"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Ethan Brierley <ethanboxx@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -13,3 +13,4 @@ repository = "https://gitlab.com/efunb/read_input"
 
 [dev-dependencies]
 dont_disappear = "2"
+rand = "0.5"
