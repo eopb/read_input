@@ -1,3 +1,6 @@
+# 0.3.6
+Make readme more clear.
+
 # 0.3.5
 Make readme more clear.
 

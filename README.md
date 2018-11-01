@@ -13,7 +13,7 @@ If you run into any issues or need help with using `read_input` in your project 
 
 ## Why you need it.
 
-When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to try asking them again. Having to make this loop distracts from the useful logic in your program.
+When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
 
 Read input attempts to make it easy to get input from the user without having to think about converting types.
 
