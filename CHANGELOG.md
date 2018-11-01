@@ -1,3 +1,6 @@
+# 0.3.7
+Note crates that implement `std::str::FromStr` in readme
+
 # 0.3.6
 Make readme more clear.
 
