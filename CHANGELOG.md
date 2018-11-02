@@ -1,5 +1,7 @@
 # next
+- Added chrono example
 - place read_input in `` in readme
+- List example programs to readme
 
 # 0.3.7
 - Note crates that implement `std::str::FromStr` in readme

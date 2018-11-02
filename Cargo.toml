@@ -14,3 +14,4 @@ repository = "https://gitlab.com/efunb/read_input"
 [dev-dependencies]
 dont_disappear = "2"
 rand = "0.5"
+chrono = "0.4"
