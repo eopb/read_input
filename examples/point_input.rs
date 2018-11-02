@@ -15,7 +15,7 @@ struct Point {
 }
 
 enum ParsePointError {
-    FaildParse(String),
+    FailedParse(String),
     Not2Dimensional(usize),
     NonNumeric,
 }
@@ -28,13 +28,15 @@ impl FromStr for Point {
             .trim_matches(|p| p == '(' || p == ')')
             .trim()
             .replace(|p| p == ' ', "");
-        let chars: Vec<char> = clean_s.chars().collect();
-        if chars.iter().any(|x| {
-            !['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '-']
-                .iter()
-                .any(|n| n == x)
-        }) {
-            return Err(ParsePointError::NonNumeric);
+        {
+            let chars: Vec<char> = clean_s.chars().collect();
+            if chars.iter().any(|x| {
+                !['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '-']
+                    .iter()
+                    .any(|n| n == x)
+            }) {
+                return Err(ParsePointError::NonNumeric);
+            }
         }
         let coords: Vec<&str> = clean_s.split(',').collect();
         if coords.len() != 2 {
@@ -43,11 +45,11 @@ impl FromStr for Point {
         Ok(Point {
             x: match coords[0].parse::<i32>() {
                 Ok(num) => num,
-                Err(_) => return Err(ParsePointError::FaildParse(coords[0].to_string())),
+                Err(_) => return Err(ParsePointError::FailedParse(coords[0].to_string())),
             },
             y: match coords[1].parse::<i32>() {
                 Ok(num) => num,
-                Err(_) => return Err(ParsePointError::FaildParse(coords[1].to_string())),
+                Err(_) => return Err(ParsePointError::FailedParse(coords[1].to_string())),
             },
         })
     }
@@ -55,16 +57,16 @@ impl FromStr for Point {
 
 fn main() {
     println!(
-        "You inputed\n{:#?}",
+        "You inputted\n{:#?}",
         input_new::<Point>()
             .msg("Please input a point in 2D space in the format (x, y): ")
             .err_match(&|e| Some(match e {
-                ParsePointError::FaildParse(s) => format!(
-                    "Faild to prase {} it is not a number that can be prased. Please try again.",
+                ParsePointError::FailedParse(s) => format!(
+                    "Failed to parse \"{}\" it is not a number that can be parsed. Please try again.",
                     s
                 ),
                 ParsePointError::Not2Dimensional(num) => format!(
-                    "What you inputed was {} dimensional. Please input a point in 2 dimensions.",
+                    "What you inputted was {} dimensional. Please input a point in 2 dimensions.",
                     num
                 ),
                 ParsePointError::NonNumeric => {
