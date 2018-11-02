@@ -53,13 +53,49 @@ Often rust can work out the type so you can skip explicitly stating the type.
 let input = input_new().get();
 ```
 
-You can also add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
+### Input message
+
+Custom messages are written on the same line as input and are specified with `.msg()`. For example.
+
+```rust
+let input = input_new::<String>()
+    .msg("Please input your name: ")
+    .get()
+```
+
+
+### Default values
+
+If the user presses enter before typing anything the program will return a default value when `.default()` is used.
+
+```rust
+let input = input_new().msg("Please input pi: ").default(3.141).get();
+```
+
+### Change error message
+
+The default error message is "That value does not pass please try again". You can change the error message with `.err()`. For example.
+
+```rust
+let input = input_new::<u32>()
+    .msg("Please input a positive number: ")
+    .err("That does not look like a positive number. Please try again")
+    .get()
+```
+
+### Match errors
+
+You can specify custom error messages that depend on the errors produced by `from_str()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
+
+### Add Checks
+
+You can add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
 
 ```rust
 let input = input_new().test(&|x| 4 < *x && *x < 9, None).get()
 ```
 
-In the same style you can specify custom error messages, custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
+In the same style you can specify custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
 
 ```rust
 let input = input_new()
@@ -72,13 +108,6 @@ let input = input_new()
     .err("That does not look like a number between 4 and 9. Please try again")
     .get()
 ```
-
-Default values and custom messages are also supported. If the user presses enter before typing anything the program could return a default value. Custom messages are written on the same line as input.
-
-```rust
-let input = input_new().msg("Please input pi: ").default(3.141).get();
-```
-
 ### Shortcut functions
 
 Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
@@ -98,6 +127,8 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 - [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs). The guessing game form the rust book made to use `read_input` + some extra features.
 
 - [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs). Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).
+
+- [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs). Program written to show the use of the `err_match()` method.
 
 ## Docs
 
