@@ -54,10 +54,7 @@ where
         }
     }
     pub fn err_match(self, err_match: FE) -> Self {
-        InputBuilder {
-            err_match: err_match,
-            ..self
-        }
+        InputBuilder { err_match, ..self }
     }
     pub fn get(self) -> T {
         read_input::<T, F>(
