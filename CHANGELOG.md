@@ -1,4 +1,6 @@
 # **0.4.0**
+### Breaking changes
+- The `.test()` method has been made private. You will now need to use `.add_test()` and `.add_err_test()`. These are documented in readme.
 ### New features
 - Added `err_match()` method for custom errors TODO doc this
 ### Examples updates

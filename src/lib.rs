@@ -40,7 +40,7 @@ where
             ..self
         }
     }
-    pub fn test(self, test: F, err: Option<&'a str>) -> Self {
+    fn test(self, test: F, err: Option<&'a str>) -> Self {
         InputBuilder {
             test: Some(match self.test {
                 Some(v) => {
@@ -52,6 +52,15 @@ where
             }),
             ..self
         }
+    }
+    pub fn add_test(self, test: F) -> Self {
+        self.test(test, None)
+    }
+    pub fn add_err_test(self, test: F, err: &'a str) -> Self {
+        self.test(test, Some(err))
+    }
+    pub fn clear_tests(self) -> Self {
+        InputBuilder { test: None, ..self }
     }
     pub fn err_match(self, err_match: FE) -> Self {
         InputBuilder { err_match, ..self }

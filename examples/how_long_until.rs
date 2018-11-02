@@ -28,9 +28,9 @@ fn main() {
         "That date is {} days away!",
         input_new::<DateDDMMYY>()
             .msg("Please input a date in the future in the format Y/M/D: ")
-            .test(
+            .add_err_test(
                 &|time| time.0 > Local::now(),
-                Some("Please input a date in the Future."),
+                "Please input a date in the Future.",
             )
             .get()
             .0
