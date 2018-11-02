@@ -1,4 +1,6 @@
 # next
+TODO document chrono example and other example in readme.
+- Added chrono example
 - place read_input in `` in readme
 
 # 0.3.7
