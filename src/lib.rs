@@ -3,20 +3,24 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
-pub struct InputBuilder<'a, T, F>
+pub struct InputBuilder<'a, T, F, FE>
 where
+    T: std::str::FromStr,
     F: Fn(&T) -> bool,
+    FE: Fn(&T::Err) -> Option<&'a str>,
 {
     msg: Option<&'a str>,
     err: Option<&'a str>,
     default: Option<T>,
     test: Option<Vec<(F, Option<&'a str>)>>,
+    err_match: FE,
 }
 
-impl<'a, T, F> InputBuilder<'a, T, F>
+impl<'a, T, F, FE> InputBuilder<'a, T, F, FE>
 where
     T: std::str::FromStr,
     F: Fn(&T) -> bool,
+    FE: Fn(&T::Err) -> Option<&'a str>,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         InputBuilder {
@@ -49,17 +53,34 @@ where
             ..self
         }
     }
+    pub fn err_match(self, err_match: FE) -> Self {
+        InputBuilder {
+            err_match: err_match,
+            ..self
+        }
+    }
     pub fn get(self) -> T {
-        read_input::<T, F>(self.msg, self.err, self.default, &self.test)
+        read_input::<T, F>(
+            self.msg,
+            self.err,
+            self.default,
+            &self.test,
+            &self.err_match,
+        )
     }
 }
 
-pub fn input_new<'a, T>() -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool)> {
+pub fn input_new<'a, T>(
+) -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool), &'a (dyn Fn(&T::Err) -> Option<&'a str>)>
+where
+    T: std::str::FromStr,
+{
     InputBuilder {
         msg: None,
         err: None,
         default: None,
         test: None::<Vec<(&'a (dyn Fn(&T) -> bool), Option<&'a str>)>>,
+        err_match: &|_| None,
     }
 }
 
@@ -77,11 +98,12 @@ where
     input_new().get()
 }
 
-fn read_input<T, F>(
+fn read_input<'a, T, F>(
     msg: Option<&str>,
     err: Option<&str>,
     default: Option<T>,
     test: &Option<Vec<(F, Option<&str>)>>,
+    err_pass: &'a (dyn Fn(&T::Err) -> Option<&'a str>),
 ) -> T
 where
     T: std::str::FromStr,
@@ -102,24 +124,27 @@ where
         }
     };
     loop {
-        if let Ok(num) = T::from_str(&input.trim()) {
-            let mut test_err = None;
-            if test.as_ref().map_or(true, |v| {
-                v.iter().all(|f| {
-                    if f.0(&num) {
-                        true
-                    } else {
-                        test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
-                        false
-                    }
-                })
-            }) {
-                return num;
-            } else {
-                println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+        match T::from_str(&input.trim()) {
+            Ok(value) => {
+                let mut test_err = None;
+                if test.as_ref().map_or(true, |v| {
+                    v.iter().all(|f| {
+                        if f.0(&value) {
+                            true
+                        } else {
+                            test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                            false
+                        }
+                    })
+                }) {
+                    return value;
+                } else {
+                    println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                }
             }
-        } else {
-            println!("{}", err.unwrap_or(DEFAULT_ERR));
+            Err(error) => {
+                println!("{}", err_pass(&error).unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+            }
         }
         input = String::new();
         io::stdin()
