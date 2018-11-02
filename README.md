@@ -11,13 +11,13 @@ A simple tool that asks for data until the data is valid.
 
 If you run into any issues or need help with using `read_input` in your project please email [incoming+efunb/read_input@incoming.gitlab.com](mailto:incoming+efunb/read_input@incoming.gitlab.com)
 
-## Why you need it.
+## Why you need it
 
 When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
 
 `read_input` attempts to make it easy to get input from the user without having to think about converting types.
 
-## How to use.
+## How to use
 
 Add 
 ```toml
@@ -87,7 +87,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 `valid_input(&|x| 4 < *x && *x < 9)` is the same as `input_new().test(&|x| 4 < *x && *x < 9, None).get()`.
 
-## How to use with custom type.
+## How to use with custom type
 
 To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
