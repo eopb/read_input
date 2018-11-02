@@ -91,6 +91,14 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
+## More complex examples
+
+- [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs). The guessing game form the rust book made to use `read_input`.
+
+- [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs). The guessing game form the rust book made to use `read_input` + some extra features.
+
+- [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs). Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).
+
 ## Docs
 
 [API Documentation](https://docs.rs/read_input/)
