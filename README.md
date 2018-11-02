@@ -85,7 +85,7 @@ let input = input_new::<u32>()
 
 ### Match errors
 
-You can specify custom error messages that depend on the errors produced by `from_str()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
+You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
 
 ### Add Checks
 
