@@ -13,7 +13,7 @@ If you run into any issues or need help with using `read_input` in your project 
 
 ## Why you need it.
 
-When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to try asking them again. Having to make this loop distracts from the useful logic in your program.
+When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
 
 Read input attempts to make it easy to get input from the user without having to think about converting types.
 
@@ -21,7 +21,7 @@ Read input attempts to make it easy to get input from the user without having to
 
 Add 
 ```toml
-read_input = "0.3.0"
+read_input = "0.3"
 ```
 to your `cargo.toml` under `[dependencies]`
 and add
@@ -39,7 +39,7 @@ You can get input with.
 let input = input_new::<Type>().get();
 ```
 
-Where `Type` is the type you want. Currently the you can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) this currently includes `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`.
+Where `Type` is the type you want. Currently the you can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html). This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`. Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
 
 For example, if you want a valid unsigned 32bit value you could write.
 
@@ -79,9 +79,17 @@ Default values and custom messages are also supported. If the user presses enter
 let input = input_new().msg("Please input pi: ").default(3.141).get();
 ```
 
+### Shortcut functions
+
+Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
+
+`simple_input()` is the same as `input_new().get()`.
+
+`valid_input(&|x| 4 < *x && *x < 9)` is the same as `input_new().test(&|x| 4 < *x && *x < 9, None).get()`.
+
 ## How to use with custom type.
 
-To use `read_input` you will need to implement `std::str::FromStr`. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
 ## Docs
 
