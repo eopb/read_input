@@ -15,7 +15,7 @@ If you run into any issues or need help with using `read_input` in your project 
 
 When writing simple programs you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
 
-Read input attempts to make it easy to get input from the user without having to think about converting types.
+`read_input` attempts to make it easy to get input from the user without having to think about converting types.
 
 ## How to use.
 
@@ -90,6 +90,14 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 ## How to use with custom type.
 
 To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+
+## More complex examples
+
+- [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs). The guessing game form the rust book made to use `read_input`.
+
+- [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs). The guessing game form the rust book made to use `read_input` + some extra features.
+
+- [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs). Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).
 
 ## Docs
 
