@@ -1,3 +1,7 @@
+# Next
+### Documentation updates
+- Remove the word simple from readme. `read_input` is not just for simple programs
+
 # 0.3.8
 ### Examples updates
 - Added chrono example
