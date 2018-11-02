@@ -1,6 +1,11 @@
 # Next
+### New features
+- Added `err_match()` method for custom errors TODO doc this
+### Examples updates
+- Add `point_input` example
 ### Documentation updates
 - Remove the word simple from readme. `read_input` is not just for simple programs
+- Add `point_input` to examples list in readme 
 
 # 0.3.8
 ### Examples updates

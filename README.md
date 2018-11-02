@@ -99,6 +99,8 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 
 - [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs). Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).
 
+- [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs). Program written to show the use of the `err_match()` method.
+
 ## Docs
 
 [API Documentation](https://docs.rs/read_input/)
