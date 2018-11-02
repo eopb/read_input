@@ -7,7 +7,7 @@ pub struct InputBuilder<'a, T, F, FE>
 where
     T: std::str::FromStr,
     F: Fn(&T) -> bool,
-    FE: Fn(&T::Err) -> Option<&'a str>,
+    FE: Fn(&T::Err) -> Option<String>,
 {
     msg: Option<&'a str>,
     err: Option<&'a str>,
@@ -20,7 +20,7 @@ impl<'a, T, F, FE> InputBuilder<'a, T, F, FE>
 where
     T: std::str::FromStr,
     F: Fn(&T) -> bool,
-    FE: Fn(&T::Err) -> Option<&'a str>,
+    FE: Fn(&T::Err) -> Option<String>,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         InputBuilder {
@@ -71,7 +71,7 @@ where
 }
 
 pub fn input_new<'a, T>(
-) -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool), &'a (dyn Fn(&T::Err) -> Option<&'a str>)>
+) -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool), &'a (dyn Fn(&T::Err) -> Option<String>)>
 where
     T: std::str::FromStr,
 {
@@ -103,7 +103,7 @@ fn read_input<'a, T, F>(
     err: Option<&str>,
     default: Option<T>,
     test: &Option<Vec<(F, Option<&str>)>>,
-    err_pass: &'a (dyn Fn(&T::Err) -> Option<&'a str>),
+    err_pass: &'a (dyn Fn(&T::Err) -> Option<String>),
 ) -> T
 where
     T: std::str::FromStr,
@@ -143,7 +143,10 @@ where
                 }
             }
             Err(error) => {
-                println!("{}", err_pass(&error).unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                println!(
+                    "{}",
+                    err_pass(&error).unwrap_or(err.unwrap_or(DEFAULT_ERR).to_string())
+                );
             }
         }
         input = String::new();
