@@ -1,23 +1,26 @@
+# next
+- place read_input in `` in readme
+
 # 0.3.7
-Note crates that implement `std::str::FromStr` in readme
+- Note crates that implement `std::str::FromStr` in readme
 
 # 0.3.6
-Make readme more clear.
+- Make readme more clear.
 
 # 0.3.5
-Make readme more clear.
+- Make readme more clear.
 
 # 0.3.4
-Document simple_input() and valid_input() in readme.md
+- Document simple_input() and valid_input() in readme.md
 
 # 0.3.3
-Update readme.
+- Update readme.
 
 # 0.3.2
-Added simple guessing game example.
+- Added simple guessing game example.
 
 # 0.3.1
-Added guessing game example.
+- Added guessing game example.
 
 # 0.3.0
-Started logging changes.
+- Started logging changes.
