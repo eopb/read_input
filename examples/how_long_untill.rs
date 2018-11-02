@@ -9,38 +9,20 @@ use chrono::prelude::*;
 use read_input::*;
 use std::str::FromStr;
 #[derive(Debug)]
-struct DateDDMMYY(Date<Local>);
+struct DateDDMMYY(DateTime<Local>);
 
 fn main() {
-    let mut date = DateDDMMYY(Local::now().date());
-    date = simple_input::<DateDDMMYY>();
+    let date = simple_input::<DateDDMMYY>();
     println!("You guessed: {:?}", date);
 }
 impl FromStr for DateDDMMYY {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let numbers: Vec<&str> = s.split('/').collect();
-        let mut early_return = false;
-        if numbers.len() != 3 {
-            return Err(());
+        let mut s2 = s.to_string();
+        s2.push_str(" 00:00:00");
+        match Local.datetime_from_str(s2.trim(), "%Y/%m/%d %H:%M:%S") {
+            Ok(time) => Ok(DateDDMMYY(time)),
+            Err(_) => Err(()),
         }
-        let numbers: Vec<u32> = numbers
-            .iter()
-            .map(|num| {
-                let x = u32::from_str(num.trim());
-                match x {
-                    Ok(num) => num,
-                    Err(_) => {
-                        early_return = true;
-                        1
-                    }
-                }
-            })
-            .collect();
-        if early_return {
-            return Err(());
-        }
-        println!("{:?}", numbers);
-        Ok(DateDDMMYY(Local::now().date()))
     }
 }
