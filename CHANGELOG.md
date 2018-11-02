@@ -1,3 +1,6 @@
+# next
+place read_input in `` in readme
+
 # 0.3.7
 Note crates that implement `std::str::FromStr` in readme
 
