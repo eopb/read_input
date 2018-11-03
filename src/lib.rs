@@ -1,12 +1,14 @@
 use std::io;
 use std::io::Write;
 
+const DEFAULT_ERR: &str = "That value does not pass please try again";
+
 pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
-    msg: String,
-    err: String,
+    msg: &'a str,
+    err: &'a str,
     default: Option<T>,
     test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
@@ -17,16 +19,10 @@ where
     T: std::str::FromStr,
 {
     pub fn msg(self, msg: &'a str) -> Self {
-        InputBuilder {
-            msg: msg.to_string(),
-            ..self
-        }
+        InputBuilder { msg, ..self }
     }
     pub fn err(self, err: &'a str) -> Self {
-        InputBuilder {
-            err: err.to_string(),
-            ..self
-        }
+        InputBuilder { err, ..self }
     }
     pub fn default(self, default: T) -> Self {
         InputBuilder {
@@ -64,8 +60,8 @@ where
     }
     pub fn get(self) -> T {
         read_input::<T>(
-            &self.msg,
-            &self.err,
+            self.msg,
+            self.err,
             self.default,
             &self.test,
             &self.err_match,
@@ -78,8 +74,8 @@ where
     T: std::str::FromStr,
 {
     InputBuilder {
-        msg: "".to_string(),
-        err: "That value does not pass please try again".to_string(),
+        msg: "",
+        err: DEFAULT_ERR,
         default: None,
         test: Vec::new(),
         err_match: Box::new(|_| None),
