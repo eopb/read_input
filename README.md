@@ -32,6 +32,7 @@ use read_input::*;
 ```
 to your main file.
 
+---
 
 You can get input with.
 
@@ -120,6 +121,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. 
 
 [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+
 [`Working example`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)
 
 ## More complex examples
