@@ -58,9 +58,7 @@ let input = input_new().get();
 Custom messages are written on the same line as input and are specified with `.msg()`. For example.
 
 ```rust
-let input = input_new::<String>()
-    .msg("Please input your name: ")
-    .get()
+let username: String = input_new().msg("Please input your name: ").get();
 ```
 
 
@@ -80,7 +78,7 @@ The default error message is "That value does not pass please try again". You ca
 let input = input_new::<u32>()
     .msg("Please input a positive number: ")
     .err("That does not look like a positive number. Please try again")
-    .get()
+    .get();
 ```
 
 ### Match errors
@@ -92,7 +90,7 @@ You can specify custom error messages that depend on the errors produced by `fro
 You can add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
 
 ```rust
-let input = input_new().add_test(&|x| 4 < *x && *x < 9).get()
+let input = input_new().add_test(&|x| 4 < *x && *x < 9).get();
 ```
 
 In the same style you can specify custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
@@ -106,7 +104,7 @@ let input = input_new()
         "That value is 6! I dont want 6. Please try again"
     )
     .err("That does not look like a number between 4 and 9. Please try again")
-    .get()
+    .get();
 ```
 
 ### Shortcut functions

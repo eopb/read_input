@@ -10,6 +10,7 @@
 - Add `point_input` to examples list in readme
 - Document `err_match()` in readme
 - Restructure readme
+- Add missing `;`s to readme examples
 
 # 0.3.8
 ### Examples updates
