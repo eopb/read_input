@@ -81,10 +81,6 @@ let input = input_new::<u32>()
     .get();
 ```
 
-### Match errors
-
-You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
-
 ### Add Checks
 
 You can add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
@@ -107,6 +103,10 @@ let input = input_new()
     .get();
 ```
 
+### Match errors
+
+You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
+
 ### Shortcut functions
 
 Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
@@ -117,7 +117,10 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 ## How to use with custom type
 
-To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. [Documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. 
+
+[FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+[`Working example`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)
 
 ## More complex examples
 
