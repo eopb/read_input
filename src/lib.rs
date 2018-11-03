@@ -76,11 +76,11 @@ where
     }
 }
 
-pub fn valid_input<T, F: 'static + Fn(&T) -> bool>(test: F) -> T
+pub fn valid_input<T>(test: impl Fn(&T) -> bool + 'static) -> T
 where
     T: std::str::FromStr,
 {
-    input_new::<T>().add_test::<F>(test).get()
+    input_new::<T>().add_test(test).get()
 }
 
 pub fn simple_input<T>() -> T

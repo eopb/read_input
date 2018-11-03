@@ -17,6 +17,6 @@ fn main() {
             .err("That does not look like a number between 4 and 9. Please try again")
             .get()
     );
-    println!("output {}", valid_input::<i32>(|x| 4 < *x && *x < 9));
+    println!("output {}", valid_input(|x| 4 < *x && *x < 9));
     println!("output {}", simple_input::<char>());
 }
