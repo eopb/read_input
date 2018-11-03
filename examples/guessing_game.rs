@@ -19,13 +19,13 @@ fn main() {
     loop {
         let guess: i32 = input_new()
             .msg("Please input your guess: ")
-            .test(
-                &|x| !(*x > 100),
-                Some("That number is more than 100. Please try again"),
+            .add_err_test(
+                |x| !(*x > 100),
+                "That number is more than 100. Please try again",
             )
-            .test(
-                &|x| !(*x < 1),
-                Some("That number is less than 1. Please try again"),
+            .add_err_test(
+                |x| !(*x < 1),
+                "That number is less than 1. Please try again",
             )
             .err("That does not look like a number. Please try again")
             .get();

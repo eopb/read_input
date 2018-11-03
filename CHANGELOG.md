@@ -1,3 +1,18 @@
+# **0.4.0**
+### Breaking changes
+- The `.test()` method has been made private. You will now need to use `.add_test()` and `.add_err_test()`. These are documented in readme.
+- Closures are now taken without having to be behind a `&`. This will affects `.add_test()` and `.add_err_test()`
+### New features
+- Added `err_match()` method for custom errors TODO doc this
+### Examples updates
+- Add `point_input` example
+### Documentation updates
+- Remove the word simple from readme. `read_input` is not just for simple programs
+- Add `point_input` to examples list in readme
+- Document `err_match()` in readme
+- Restructure readme
+- Add missing `;`s to readme examples
+
 # 0.3.8
 ### Examples updates
 - Added chrono example
