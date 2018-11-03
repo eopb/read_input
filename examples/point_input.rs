@@ -29,11 +29,8 @@ impl FromStr for Point {
             .trim()
             .replace(|p| p == ' ', "");
         {
-            let chars: Vec<char> = clean_s.chars().collect();
-            if chars.iter().any(|x| {
-                !['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '-']
-                    .iter()
-                    .any(|n| n == x)
+            if !clean_s.contains(|c| {
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '-'].contains(&c)
             }) {
                 return Err(ParsePointError::NonNumeric);
             }
