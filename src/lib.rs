@@ -73,7 +73,7 @@ where
             self.err,
             self.default,
             &self.test,
-            &self.err_match,
+            &*self.err_match,
         )
     }
 }
@@ -104,7 +104,7 @@ fn read_input<'a, T>(
     err: &str,
     default: Option<T>,
     test: &[(Box<dyn Fn(&T) -> bool>, Option<&'a str>)],
-    err_pass: &Box<dyn Fn(&T::Err) -> Option<String>>,
+    err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T
 where
     T: std::str::FromStr,
