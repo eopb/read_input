@@ -18,6 +18,15 @@ impl<'a, T> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
+    pub fn new() -> InputBuilder<'a, T> {
+        InputBuilder {
+            msg: "",
+            err: DEFAULT_ERR,
+            default: None,
+            test: Vec::new(),
+            err_match: Box::new(|_| None),
+        }
+    }
     pub fn msg(self, msg: &'a str) -> Self {
         InputBuilder { msg, ..self }
     }
@@ -73,13 +82,7 @@ pub fn input_new<'a, T>() -> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
-    InputBuilder {
-        msg: "",
-        err: DEFAULT_ERR,
-        default: None,
-        test: Vec::new(),
-        err_match: Box::new(|_| None),
-    }
+    InputBuilder::new()
 }
 
 pub fn valid_input<T>(test: impl Fn(&T) -> bool + 'static) -> T
