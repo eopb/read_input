@@ -1,9 +1,13 @@
+# 0.4.1
+### Documentation updates
+- Fix incorrect version in readme tutorial
+
 # **0.4.0**
-### Breaking changes
+### **Breaking changes**
 - The `.test()` method has been made private. You will now need to use `.add_test()` and `.add_err_test()`. These are documented in readme.
 - Closures are now taken without having to be behind a `&`. This will affects `.add_test()` and `.add_err_test()`
 ### New features
-- Added `err_match()` method for custom errors TODO doc this
+- Added `err_match()` method for custom errors
 ### Examples updates
 - Add `point_input` example
 ### Documentation updates
