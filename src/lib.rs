@@ -3,24 +3,20 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
-pub struct InputBuilder<'a, T, F, FE>
+pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
-    F: Fn(&T) -> bool,
-    FE: Fn(&T::Err) -> Option<String>,
 {
     msg: Option<&'a str>,
     err: Option<&'a str>,
     default: Option<T>,
-    test: Option<Vec<(F, Option<&'a str>)>>,
-    err_match: FE,
+    test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
+    err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
-impl<'a, T, F, FE> InputBuilder<'a, T, F, FE>
+impl<'a, T> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
-    F: Fn(&T) -> bool,
-    FE: Fn(&T::Err) -> Option<String>,
 {
     pub fn msg(self, msg: &'a str) -> Self {
         InputBuilder {
@@ -40,44 +36,40 @@ where
             ..self
         }
     }
-    fn test(self, test: F, err: Option<&'a str>) -> Self {
+    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<&'a str>) -> Self {
         InputBuilder {
-            test: Some(match self.test {
-                Some(v) => {
-                    let mut x = v;
-                    x.push((test, err));
-                    x
-                }
-                None => vec![(test, err)],
-            }),
+            test: {
+                let mut x = self.test;
+                x.push((Box::new(test), err));
+                x
+            },
             ..self
         }
     }
-    pub fn add_test(self, test: F) -> Self {
+    pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
         self.test(test, None)
     }
-    pub fn add_err_test(self, test: F, err: &'a str) -> Self {
+    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: &'a str) -> Self {
         self.test(test, Some(err))
     }
     pub fn clear_tests(self) -> Self {
-        InputBuilder { test: None, ..self }
+        InputBuilder {
+            test: Vec::new(),
+            ..self
+        }
     }
-    pub fn err_match(self, err_match: FE) -> Self {
-        InputBuilder { err_match, ..self }
+    pub fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+        InputBuilder {
+            err_match: Box::new(err_match),
+            ..self
+        }
     }
     pub fn get(self) -> T {
-        read_input::<T, F>(
-            self.msg,
-            self.err,
-            self.default,
-            &self.test,
-            &self.err_match,
-        )
+        read_input::<T>(self.msg, self.err, self.default, self.test, self.err_match)
     }
 }
 
-pub fn input_new<'a, T>(
-) -> InputBuilder<'a, T, &'a (dyn Fn(&T) -> bool), &'a (dyn Fn(&T::Err) -> Option<String>)>
+pub fn input_new<'a, T>() -> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
@@ -85,16 +77,16 @@ where
         msg: None,
         err: None,
         default: None,
-        test: None::<Vec<(&'a (dyn Fn(&T) -> bool), Option<&'a str>)>>,
-        err_match: &|_| None,
+        test: Vec::new(),
+        err_match: Box::new(|_| None),
     }
 }
 
-pub fn valid_input<'a, T>(test: &'a (dyn Fn(&T) -> bool)) -> T
+pub fn valid_input<T, F: 'static + Fn(&T) -> bool>(test: F) -> T
 where
     T: std::str::FromStr,
 {
-    input_new().test(&test, None).get()
+    input_new::<T>().add_test::<F>(test).get()
 }
 
 pub fn simple_input<T>() -> T
@@ -104,16 +96,15 @@ where
     input_new().get()
 }
 
-fn read_input<'a, T, F>(
+fn read_input<'a, T>(
     msg: Option<&str>,
     err: Option<&str>,
     default: Option<T>,
-    test: &Option<Vec<(F, Option<&str>)>>,
-    err_pass: &'a (dyn Fn(&T::Err) -> Option<String>),
+    test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
+    err_pass: Box<dyn Fn(&T::Err) -> Option<String>>,
 ) -> T
 where
     T: std::str::FromStr,
-    F: Fn(&T) -> bool,
 {
     if let Some(msg) = msg {
         print!("{}", msg);
@@ -133,15 +124,13 @@ where
         match T::from_str(&input.trim()) {
             Ok(value) => {
                 let mut test_err = None;
-                if test.as_ref().map_or(true, |v| {
-                    v.iter().all(|f| {
-                        if f.0(&value) {
-                            true
-                        } else {
-                            test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
-                            false
-                        }
-                    })
+                if test.iter().all(|f| {
+                    if f.0(&value) {
+                        true
+                    } else {
+                        test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                        false
+                    }
                 }) {
                     return value;
                 } else {

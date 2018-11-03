@@ -57,7 +57,7 @@ fn main() {
         "You inputted\n{:#?}",
         input_new::<Point>()
             .msg("Please input a point in 2D space in the format (x, y): ")
-            .err_match(&|e| Some(match e {
+            .err_match(|e| Some(match e {
                 ParsePointError::FailedParse(s) => format!(
                     "Failed to parse \"{}\" it is not a number that can be parsed. Please try again.",
                     s

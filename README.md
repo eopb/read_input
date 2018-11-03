@@ -90,7 +90,7 @@ You can specify custom error messages that depend on the errors produced by `fro
 You can add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
 
 ```rust
-let input = input_new().add_test(&|x| 4 < *x && *x < 9).get();
+let input = input_new().add_test(|x| 4 < *x && *x < 9).get();
 ```
 
 In the same style you can specify custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
@@ -98,9 +98,9 @@ In the same style you can specify custom test errors and multiple tests. If you 
 ```rust
 let input = input_new()
     .msg("Please input a number between 4 and 9 that is not 6: ")
-    .add_test(&|x| 4 < *x && *x < 9)
+    .add_test(|x| 4 < *x && *x < 9)
     .add_err_test(
-        &|x| *x != 6,
+        |x| *x != 6,
         "That value is 6! I dont want 6. Please try again"
     )
     .err("That does not look like a number between 4 and 9. Please try again")
@@ -113,7 +113,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 `simple_input()` is the same as `input_new().get()`.
 
-`valid_input(&|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(&|x| 4 < *x && *x < 9).get()`.
+`valid_input(|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(|x| 4 < *x && *x < 9).get()`.
 
 ## How to use with custom type
 

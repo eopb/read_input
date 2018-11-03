@@ -20,11 +20,11 @@ fn main() {
         let guess: i32 = input_new()
             .msg("Please input your guess: ")
             .add_err_test(
-                &|x| !(*x > 100),
+                |x| !(*x > 100),
                 "That number is more than 100. Please try again",
             )
             .add_err_test(
-                &|x| !(*x < 1),
+                |x| !(*x < 1),
                 "That number is less than 1. Please try again",
             )
             .err("That does not look like a number. Please try again")

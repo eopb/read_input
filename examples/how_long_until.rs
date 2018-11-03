@@ -29,7 +29,7 @@ fn main() {
         input_new::<DateDDMMYY>()
             .msg("Please input a date in the future in the format Y/M/D: ")
             .add_err_test(
-                &|time| time.0 > Local::now(),
+                |time| time.0 > Local::now(),
                 "Please input a date in the Future.",
             )
             .get()
