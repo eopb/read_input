@@ -7,8 +7,8 @@ pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
-    msg: Option<&'a str>,
-    err: Option<&'a str>,
+    msg: &'a str,
+    err: &'a str,
     default: Option<T>,
     test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
@@ -19,16 +19,10 @@ where
     T: std::str::FromStr,
 {
     pub fn msg(self, msg: &'a str) -> Self {
-        InputBuilder {
-            msg: Some(msg),
-            ..self
-        }
+        InputBuilder { msg, ..self }
     }
     pub fn err(self, err: &'a str) -> Self {
-        InputBuilder {
-            err: Some(err),
-            ..self
-        }
+        InputBuilder { err, ..self }
     }
     pub fn default(self, default: T) -> Self {
         InputBuilder {
@@ -74,8 +68,8 @@ where
     T: std::str::FromStr,
 {
     InputBuilder {
-        msg: None,
-        err: None,
+        msg: "",
+        err: DEFAULT_ERR,
         default: None,
         test: Vec::new(),
         err_match: Box::new(|_| None),
@@ -97,8 +91,8 @@ where
 }
 
 fn read_input<'a, T>(
-    msg: Option<&str>,
-    err: Option<&str>,
+    msg: &str,
+    err: &str,
     default: Option<T>,
     test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
     err_pass: Box<dyn Fn(&T::Err) -> Option<String>>,
@@ -106,7 +100,7 @@ fn read_input<'a, T>(
 where
     T: std::str::FromStr,
 {
-    if let Some(msg) = msg {
+    if !msg.is_empty() {
         print!("{}", msg);
         io::stdout().flush().expect("could not flush output");
     };
@@ -128,20 +122,17 @@ where
                     if f.0(&value) {
                         true
                     } else {
-                        test_err = Some(f.1.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                        test_err = Some(f.1.unwrap_or(err));
                         false
                     }
                 }) {
                     return value;
                 } else {
-                    println!("{}", test_err.unwrap_or(err.unwrap_or(DEFAULT_ERR)));
+                    println!("{}", test_err.unwrap_or(err));
                 }
             }
             Err(error) => {
-                println!(
-                    "{}",
-                    err_pass(&error).unwrap_or(err.unwrap_or(DEFAULT_ERR).to_string())
-                );
+                println!("{}", err_pass(&error).unwrap_or(err.to_string()));
             }
         }
         input = String::new();
