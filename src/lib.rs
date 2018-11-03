@@ -118,21 +118,22 @@ where
         match T::from_str(&input.trim()) {
             Ok(value) => {
                 let mut test_err = None;
-                if test.iter().all(|f| {
+                let passes_test = test.iter().all(|f| {
                     if f.0(&value) {
                         true
                     } else {
                         test_err = Some(f.1.unwrap_or(err));
                         false
                     }
-                }) {
+                });
+                if passes_test {
                     return value;
                 } else {
                     println!("{}", test_err.unwrap_or(err));
                 }
             }
             Err(error) => {
-                println!("{}", err_pass(&error).unwrap_or(err.to_string()));
+                println!("{}", err_pass(&error).unwrap_or_else(|| err.to_string()));
             }
         }
         input = String::new();
