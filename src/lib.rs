@@ -59,7 +59,13 @@ where
         }
     }
     pub fn get(self) -> T {
-        read_input::<T>(self.msg, self.err, self.default, self.test, self.err_match)
+        read_input::<T>(
+            self.msg,
+            self.err,
+            self.default,
+            &self.test,
+            &self.err_match,
+        )
     }
 }
 
@@ -94,8 +100,8 @@ fn read_input<'a, T>(
     msg: &str,
     err: &str,
     default: Option<T>,
-    test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
-    err_pass: Box<dyn Fn(&T::Err) -> Option<String>>,
+    test: &[(Box<dyn Fn(&T) -> bool>, Option<&'a str>)],
+    err_pass: &Box<dyn Fn(&T::Err) -> Option<String>>,
 ) -> T
 where
     T: std::str::FromStr,
