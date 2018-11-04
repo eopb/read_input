@@ -10,7 +10,8 @@ A simple tool that asks for data until the data is valid.
 documentation = "https://docs.rs/read_input/"
 homepage = "http://efunb.com/"
 repository = "https://gitlab.com/efunb/read_input"
-
+keywords = ["input", "console", "cli", "text", "simple"]
+categories = [ "command-line-interface", "data-structures", "encoding", "rust-patterns" ]
 [dev-dependencies]
 dont_disappear = "2"
 rand = "0.5"
