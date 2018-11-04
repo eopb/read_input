@@ -145,7 +145,7 @@ where
                 println!("{}", err_pass(&error).unwrap_or_else(|| err.to_string()));
             }
         }
-        input = String::new();
+        input.clear();
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
