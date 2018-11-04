@@ -1,3 +1,7 @@
+# 0.4.3
+### Documentation updates
+- Add keywords and categories to `cargo.toml`
+
 # 0.4.2
 ### Documentation updates
 - Fix incorrect formatting in readme
