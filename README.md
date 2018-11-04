@@ -122,7 +122,7 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 
 [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
-[`Working example`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)
+[Working example](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)
 
 ## More complex examples
 
