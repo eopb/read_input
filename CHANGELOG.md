@@ -1,6 +1,7 @@
 # Next
 ### Documentation updates
 - Fix incorrect formatting in readme
+- Add API docs to the code
 
 # 0.4.1
 ### Documentation updates

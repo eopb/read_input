@@ -3,6 +3,7 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
+/// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
@@ -18,6 +19,7 @@ impl<'a, T> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
+    /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> InputBuilder<'a, T> {
         InputBuilder {
             msg: "",
@@ -27,12 +29,15 @@ where
             err_match: Box::new(|_| None),
         }
     }
+    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn msg(self, msg: &'a str) -> Self {
         InputBuilder { msg, ..self }
     }
+    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn err(self, err: &'a str) -> Self {
         InputBuilder { err, ..self }
     }
+    /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn default(self, default: T) -> Self {
         InputBuilder {
             default: Some(default),
@@ -49,24 +54,29 @@ where
             ..self
         }
     }
+    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
         self.test(test, None)
     }
+    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: &'a str) -> Self {
         self.test(test, Some(err))
     }
+    /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
     pub fn clear_tests(self) -> Self {
         InputBuilder {
             test: Vec::new(),
             ..self
         }
     }
+    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
         InputBuilder {
             err_match: Box::new(err_match),
             ..self
         }
     }
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn get(self) -> T {
         read_input::<T>(
             self.msg,
@@ -78,6 +88,7 @@ where
     }
 }
 
+/// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn input_new<'a, T>() -> InputBuilder<'a, T>
 where
     T: std::str::FromStr,
@@ -85,6 +96,7 @@ where
     InputBuilder::new()
 }
 
+/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn valid_input<T>(test: impl Fn(&T) -> bool + 'static) -> T
 where
     T: std::str::FromStr,
@@ -92,6 +104,7 @@ where
     input_new::<T>().add_test(test).get()
 }
 
+/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn simple_input<T>() -> T
 where
     T: std::str::FromStr,
