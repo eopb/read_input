@@ -18,7 +18,7 @@ clean-code:
   allow_failure: true
 
 
-check-gyrus:
+check:
   stage: check
   script:
     - rustup default nightly
