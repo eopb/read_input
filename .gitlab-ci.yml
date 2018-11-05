@@ -21,23 +21,17 @@ clean-code:
 check:
   stage: check
   script:
-    - rustup default nightly
-    - rustup update
     - cargo check
 
 
 unittests:
   stage: test
   script:
-    - rustup default nightly
-    - rustup update
     - cargo test --release
 
 benchmarktests:
   stage: test
   script:
-    - rustup default nightly
-    - rustup update
     - cargo bench
 
 
@@ -46,8 +40,6 @@ cratesio:
   script:
     - rm -r -f docs
     - apt-get update
-    - rustup default nightly
-    - rustup update
     - cargo login $CARGO_LOGIN
     - cargo package
     - cargo publish
