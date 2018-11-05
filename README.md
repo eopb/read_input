@@ -37,35 +37,34 @@ to your main file.
 You can get input with.
 
 ```rust
-let input = input_new::<Type>().get();
+input_new::<Type>().get()
 ```
 
 Where `Type` is the type you want. Currently the you can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html). This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`. Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
 
-For example, if you want a valid unsigned 32bit value you could write.
+For example, if you want to assign a valid unsigned 32bit value to the variable input, you could write.
 
 ```rust
 let input = input_new::<u32>().get();
 ```
 
-Often rust can work out the type so you can skip explicitly stating the type.
+Rust can often work out the type. When this is the case so you can skip explicitly stating the type.
 
 ```rust
-let input = input_new().get();
+input_new().get()
 ```
 
 ### Input message
 
-Custom messages are written on the same line as input and are specified with `.msg()`. For example.
+Custom messages are written on the same line as input and are specified with `.msg()`. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
 
 ```rust
 let username: String = input_new().msg("Please input your name: ").get();
 ```
 
-
 ### Default values
 
-If the user presses enter before typing anything the program will return a default value when `.default()` is used.
+If the user presses enter before typing anything `.get()` will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
 
 ```rust
 let input = input_new().msg("Please input pi: ").default(3.141).get();

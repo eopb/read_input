@@ -1,3 +1,8 @@
+# Next
+### Documentation updates
+- Say a little more about type annotations in readme.
+- fix inaccuracy in readme
+
 # 0.4.3
 ### Documentation updates
 - Add keywords and categories to `cargo.toml`
