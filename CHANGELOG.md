@@ -20,7 +20,7 @@
 ### Documentation updates
 - Fix incorrect version in readme tutorial
 
-# **0.4.0**
+# __0.4.0__
 ### **Breaking changes**
 - The `.test()` method has been made private. You will now need to use `.add_test()` and `.add_err_test()`. These are documented in readme.
 - Closures are now taken without having to be behind a `&`. This will affects `.add_test()` and `.add_err_test()`
