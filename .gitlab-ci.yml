@@ -12,7 +12,6 @@ clean-code:
   stage: check
   script:
     - rustup default beta
-    # - rustup update
     - rustup component add rustfmt-preview
     - cargo fmt --all -- --check
   allow_failure: true
