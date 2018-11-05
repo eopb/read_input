@@ -11,8 +11,8 @@ stages:
 clean-code:
   stage: check
   script:
-    - rustup default nightly
-    - rustup update
+    # - rustup default beta
+    # - rustup update
     - rustup component add rustfmt-preview
     - cargo fmt --all -- --check
   allow_failure: true
@@ -52,8 +52,8 @@ cratesio:
 clippy:
   stage: post-run
   script:
-    - rustup default nightly
-    - rustup update
+    # - rustup default beta
+    # - rustup update
     - rustup component add clippy-preview
     - cargo clippy --all -- -D clippy::all
   allow_failure: true
