@@ -56,7 +56,7 @@ let input = input_new().get();
 
 ### Input message
 
-Custom messages are written on the same line as input and are specified with `.msg()`. For example. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
+Custom messages are written on the same line as input and are specified with `.msg()`. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
 
 ```rust
 let username: String = input_new().msg("Please input your name: ").get();
