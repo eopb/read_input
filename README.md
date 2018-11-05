@@ -65,7 +65,7 @@ let username: String = input_new().msg("Please input your name: ").get();
 
 ### Default values
 
-If the user presses enter before typing anything the program will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
+If the user presses enter before typing anything `.get()` will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
 
 ```rust
 let input = input_new().msg("Please input pi: ").default(3.141).get();
