@@ -1,3 +1,7 @@
+# Next
+### Documentation updates
+- Make things more clear in readme
+
 # 0.4.4
 ### Documentation updates
 - Say a little more about type annotations in readme.
