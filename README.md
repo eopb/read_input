@@ -62,7 +62,6 @@ Custom messages are written on the same line as input and are specified with `.m
 let username: String = input_new().msg("Please input your name: ").get();
 ```
 
-
 ### Default values
 
 If the user presses enter before typing anything `.get()` will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
