@@ -48,7 +48,7 @@ For example, if you want a valid unsigned 32bit value you could write.
 let input = input_new::<u32>().get();
 ```
 
-Often rust can work out the type so you can skip explicitly stating the type.
+Rust can often work out the type. When this is the case so you can skip explicitly stating the type.
 
 ```rust
 let input = input_new().get();
@@ -56,7 +56,7 @@ let input = input_new().get();
 
 ### Input message
 
-Custom messages are written on the same line as input and are specified with `.msg()`. For example.
+Custom messages are written on the same line as input and are specified with `.msg()`. For example. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
 
 ```rust
 let username: String = input_new().msg("Please input your name: ").get();
@@ -65,7 +65,7 @@ let username: String = input_new().msg("Please input your name: ").get();
 
 ### Default values
 
-If the user presses enter before typing anything the program will return a default value when `.default()` is used.
+If the user presses enter before typing anything the program will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
 
 ```rust
 let input = input_new().msg("Please input pi: ").default(3.141).get();
