@@ -159,7 +159,6 @@ where
     T: std::str::FromStr,
 {
     print!("{}", prompt.msg);
-
     io::stdout().flush().expect("could not flush output");
 
     let mut input = String::new();
@@ -194,11 +193,13 @@ where
                 println!("{}", err_pass(&error).unwrap_or_else(|| err.to_string()));
             }
         }
-        input.clear();
+
         if prompt.repeat {
             print!("{}", prompt.msg);
             io::stdout().flush().expect("could not flush output");
         };
+
+        input.clear();
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
