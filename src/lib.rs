@@ -3,12 +3,48 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
+struct PromptMsg<'a> {
+    msg: &'a str,
+    repeat: bool,
+    on_new_line: bool,
+}
+
+impl<'a> PromptMsg<'a> {
+    fn new() -> Self {
+        Self {
+            msg: "",
+            repeat: false,
+            on_new_line: false,
+        }
+    }
+    fn from_str(s: &'a str) -> Self {
+        Self {
+            msg: s,
+            repeat: false,
+            on_new_line: false,
+        }
+    }
+    fn repeat_from_str(s: &'a str) -> Self {
+        Self {
+            msg: s,
+            repeat: true,
+            on_new_line: false,
+        }
+    }
+    fn on_new_line(self, b: bool) -> Self {
+        Self {
+            on_new_line: b,
+            ..self
+        }
+    }
+}
+
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
-    msg: &'a str,
+    msg: PromptMsg<'a>,
     err: &'a str,
     default: Option<T>,
     test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
@@ -22,7 +58,7 @@ where
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> InputBuilder<'a, T> {
         InputBuilder {
-            msg: "",
+            msg: PromptMsg::new(),
             err: DEFAULT_ERR,
             default: None,
             test: Vec::new(),
@@ -31,7 +67,24 @@ where
     }
     /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn msg(self, msg: &'a str) -> Self {
-        InputBuilder { msg, ..self }
+        InputBuilder {
+            msg: PromptMsg::from_str(msg),
+            ..self
+        }
+    }
+    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    pub fn repeat_msg(self, msg: &'a str) -> Self {
+        InputBuilder {
+            msg: PromptMsg::repeat_from_str(msg),
+            ..self
+        }
+    }
+    /// Changes whether or not a prompt message is written on a different line to input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    pub fn input_on_new_line(self, b: bool) -> Self {
+        InputBuilder {
+            msg: self.msg.on_new_line(b),
+            ..self
+        }
     }
     /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn err(self, err: &'a str) -> Self {
@@ -79,7 +132,7 @@ where
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn get(self) -> T {
         read_input::<T>(
-            self.msg,
+            &self.msg,
             self.err,
             self.default,
             &self.test,
@@ -113,7 +166,7 @@ where
 }
 
 fn read_input<'a, T>(
-    msg: &str,
+    prompt: &PromptMsg<'a>,
     err: &str,
     default: Option<T>,
     test: &[(Box<dyn Fn(&T) -> bool>, Option<&'a str>)],
@@ -122,10 +175,13 @@ fn read_input<'a, T>(
 where
     T: std::str::FromStr,
 {
-    if !msg.is_empty() {
-        print!("{}", msg);
-        io::stdout().flush().expect("could not flush output");
-    };
+    if prompt.on_new_line {
+        println!("{}", prompt.msg);
+    } else {
+        print!("{}", prompt.msg);
+    }
+    io::stdout().flush().expect("could not flush output");
+
     let mut input = String::new();
     io::stdin()
         .read_line(&mut input)
@@ -159,6 +215,14 @@ where
             }
         }
         input.clear();
+        if prompt.repeat {
+            if prompt.on_new_line {
+                println!("{}", prompt.msg);
+            } else {
+                print!("{}", prompt.msg);
+            }
+            io::stdout().flush().expect("could not flush output");
+        };
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");

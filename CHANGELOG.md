@@ -1,3 +1,9 @@
+# Next
+### New features
+- Added `.repeat_msg()` and `.input_on_new_line()`.
+### Documentation updates
+- Document new features
+
 # 0.4.5
 ### Documentation updates
 - Make things more clear in readme

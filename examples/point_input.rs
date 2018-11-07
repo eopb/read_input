@@ -56,19 +56,16 @@ fn main() {
     println!(
         "You inputted\n{:#?}",
         input_new::<Point>()
-            .msg("Please input a point in 2D space in the format (x, y): ")
+            .repeat_msg("Please input a point in 2D space in the format (x, y): ")
             .err_match(|e| Some(match e {
                 ParsePointError::FailedParse(s) => format!(
-                    "Failed to parse \"{}\" it is not a number that can be parsed. Please try again.",
+                    "Failed to parse \"{}\" it is not a number that can be parsed.",
                     s
                 ),
-                ParsePointError::Not2Dimensional(num) => format!(
-                    "What you inputted was {} dimensional. Please input a point in 2 dimensions.",
-                    num
-                ),
-                ParsePointError::NonNumeric => {
-                    "That contains a invalid character. Please try again.".to_string()
+                ParsePointError::Not2Dimensional(num) => {
+                    format!("What you inputted was {} dimensional.", num)
                 }
+                ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
             }))
             .get()
     );
