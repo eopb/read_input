@@ -1,6 +1,6 @@
 # Next
 ### New features
-- Added `.repeat_msg()` and `.input_on_new_line()`.
+- Added `.repeat_msg()`.
 ### Documentation updates
 - Document new features
 

@@ -6,7 +6,6 @@ const DEFAULT_ERR: &str = "That value does not pass please try again";
 struct PromptMsg<'a> {
     msg: &'a str,
     repeat: bool,
-    on_new_line: bool,
 }
 
 impl<'a> PromptMsg<'a> {
@@ -14,27 +13,18 @@ impl<'a> PromptMsg<'a> {
         Self {
             msg: "",
             repeat: false,
-            on_new_line: false,
         }
     }
     fn from_str(s: &'a str) -> Self {
         Self {
             msg: s,
             repeat: false,
-            on_new_line: false,
         }
     }
     fn repeat_from_str(s: &'a str) -> Self {
         Self {
             msg: s,
             repeat: true,
-            on_new_line: false,
-        }
-    }
-    fn on_new_line(self, b: bool) -> Self {
-        Self {
-            on_new_line: b,
-            ..self
         }
     }
 }
@@ -76,13 +66,6 @@ where
     pub fn repeat_msg(self, msg: &'a str) -> Self {
         InputBuilder {
             msg: PromptMsg::repeat_from_str(msg),
-            ..self
-        }
-    }
-    /// Changes whether or not a prompt message is written on a different line to input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn input_on_new_line(self, b: bool) -> Self {
-        InputBuilder {
-            msg: self.msg.on_new_line(b),
             ..self
         }
     }
@@ -175,11 +158,8 @@ fn read_input<'a, T>(
 where
     T: std::str::FromStr,
 {
-    if prompt.on_new_line {
-        println!("{}", prompt.msg);
-    } else {
-        print!("{}", prompt.msg);
-    }
+    print!("{}", prompt.msg);
+
     io::stdout().flush().expect("could not flush output");
 
     let mut input = String::new();
@@ -216,11 +196,7 @@ where
         }
         input.clear();
         if prompt.repeat {
-            if prompt.on_new_line {
-                println!("{}", prompt.msg);
-            } else {
-                print!("{}", prompt.msg);
-            }
+            print!("{}", prompt.msg);
             io::stdout().flush().expect("could not flush output");
         };
         io::stdin()

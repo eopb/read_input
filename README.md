@@ -56,7 +56,7 @@ input_new().get()
 
 ### Input message
 
-Custom messages are written on the same line as input by default and are specified with `.msg()`. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
+Custom messages are written on the same line as input and are specified with `.msg()`. Note that the type annotations can been moved from the `input_new()` function to the variable name when assigning input to variables.
 
 ```rust
 let username: String = input_new().msg("Please input your name: ").get();
@@ -68,11 +68,11 @@ Alternatively `.repeat_msg()` can be used. Messages specified with `.repeat_msg(
 let username: String = input_new().repeat_msg("Please input your name: ").get();
 ```
 
-If you don't like having the message on the same line as input you can change it with `.input_on_new_line()`.
+If you don't like having the message on the same line as input you can change it by adding \\n to the end of the message.
 
 ```rust
 let username: String = input_new()
-    .repeat_msg("Please input your name: ")
+    .repeat_msg("Please input your name: \n")
     .input_on_new_line(true)
     .get();
 ```
