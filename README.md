@@ -68,7 +68,7 @@ Alternatively `.repeat_msg()` can be used. Messages specified with `.repeat_msg(
 let username: String = input_new().repeat_msg("Please input your name: ").get();
 ```
 
-If you don't like having the message on the same line as input you can change it by adding \\n to the end of the message.
+If you don't like having the message on the same line as input you can force it onto a new line by adding \\n to the end of the message.
 
 ```rust
 let username: String = input_new().repeat_msg("Please input your name: \n").get();
