@@ -1,3 +1,9 @@
+# Next
+### New features
+- Added `.repeat_msg()`.
+### Documentation updates
+- Document new features
+
 # 0.4.5
 ### Documentation updates
 - Make things more clear in readme

@@ -3,12 +3,38 @@ use std::io::Write;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
+struct PromptMsg<'a> {
+    msg: &'a str,
+    repeat: bool,
+}
+
+impl<'a> PromptMsg<'a> {
+    fn new() -> Self {
+        Self {
+            msg: "",
+            repeat: false,
+        }
+    }
+    fn from_str(s: &'a str) -> Self {
+        Self {
+            msg: s,
+            repeat: false,
+        }
+    }
+    fn repeat_from_str(s: &'a str) -> Self {
+        Self {
+            msg: s,
+            repeat: true,
+        }
+    }
+}
+
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<'a, T>
 where
     T: std::str::FromStr,
 {
-    msg: &'a str,
+    msg: PromptMsg<'a>,
     err: &'a str,
     default: Option<T>,
     test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
@@ -22,7 +48,7 @@ where
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> InputBuilder<'a, T> {
         InputBuilder {
-            msg: "",
+            msg: PromptMsg::new(),
             err: DEFAULT_ERR,
             default: None,
             test: Vec::new(),
@@ -31,7 +57,17 @@ where
     }
     /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn msg(self, msg: &'a str) -> Self {
-        InputBuilder { msg, ..self }
+        InputBuilder {
+            msg: PromptMsg::from_str(msg),
+            ..self
+        }
+    }
+    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    pub fn repeat_msg(self, msg: &'a str) -> Self {
+        InputBuilder {
+            msg: PromptMsg::repeat_from_str(msg),
+            ..self
+        }
     }
     /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn err(self, err: &'a str) -> Self {
@@ -79,7 +115,7 @@ where
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn get(self) -> T {
         read_input::<T>(
-            self.msg,
+            &self.msg,
             self.err,
             self.default,
             &self.test,
@@ -113,7 +149,7 @@ where
 }
 
 fn read_input<'a, T>(
-    msg: &str,
+    prompt: &PromptMsg<'a>,
     err: &str,
     default: Option<T>,
     test: &[(Box<dyn Fn(&T) -> bool>, Option<&'a str>)],
@@ -122,10 +158,9 @@ fn read_input<'a, T>(
 where
     T: std::str::FromStr,
 {
-    if !msg.is_empty() {
-        print!("{}", msg);
-        io::stdout().flush().expect("could not flush output");
-    };
+    print!("{}", prompt.msg);
+    io::stdout().flush().expect("could not flush output");
+
     let mut input = String::new();
     io::stdin()
         .read_line(&mut input)
@@ -158,6 +193,12 @@ where
                 println!("{}", err_pass(&error).unwrap_or_else(|| err.to_string()));
             }
         }
+
+        if prompt.repeat {
+            print!("{}", prompt.msg);
+            io::stdout().flush().expect("could not flush output");
+        };
+
         input.clear();
         io::stdin()
             .read_line(&mut input)
