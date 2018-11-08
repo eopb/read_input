@@ -1,8 +1,9 @@
-# Next
+# 0.5.0
 ### New features
 - Added `.repeat_msg()`.
 ### Documentation updates
 - Document new features
+- Make point_input example use new feature
 
 # 0.4.5
 ### Documentation updates
