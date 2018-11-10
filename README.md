@@ -129,7 +129,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 ### Using `match` with checked output.
 
-It is common to use match on values produced by input. For example if `.add_test()` or `valid_input()` is used on a integer, `match` would need to have branches for all possible integers even though the range of possible valid inputs may be quite small. In these cases an unreachable wildcard can be used.
+It is common to use match on values produced by input. For example if `.add_test()` or `valid_input()` is used on an integer, `match` would need to have branches for all possible integers even though the range of possible valid inputs may be quite small. In these cases, an unreachable wildcard can be used.
 
 ```rust
 match valid_input(|x| 2 <= *x && *x <= 4) {
