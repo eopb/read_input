@@ -1,6 +1,7 @@
-# Next
+# 0.5.1
 ### Documentation updates
 - add information about using `match` with input.
+- fix version number stated in readme.
 ### Examples updates
 - Added `match` example
 
