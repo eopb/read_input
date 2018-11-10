@@ -1,0 +1,16 @@
+//To run this example `cargo run --example match --release`
+//This example shows how best to use `match` on a inputted value.
+//The thing to note form this program is the use of `unreachable!()`
+
+extern crate read_input;
+
+use read_input::*;
+
+fn main() {
+    match valid_input(|x| 2 <= *x && *x <= 4) {
+        2 => println!("You inputted the number 2"),
+        3 => println!("You inputted the number 3"),
+        4 => println!("You inputted the number 4"),
+        _ => unreachable!(),
+    }
+}
