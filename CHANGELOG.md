@@ -1,6 +1,6 @@
 # Next
 ### Documentation updates
-- add info about using `match` with examples
+- add information about using `match` with input.
 ### Examples updates
 - Added `match` example
 
