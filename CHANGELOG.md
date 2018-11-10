@@ -1,3 +1,9 @@
+# Next
+### Documentation updates
+- add info about using `match` with examples
+### Examples updates
+- Added `match` example
+
 # 0.5.0
 ### New features
 - Added `.repeat_msg()`.
