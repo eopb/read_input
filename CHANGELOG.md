@@ -1,3 +1,7 @@
+# 0.5.2
+### Documentation updates
+- fix tiny error in readme
+
 # 0.5.1
 ### Documentation updates
 - add information about using `match` with input.

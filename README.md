@@ -127,7 +127,7 @@ Using `input_new().get()` can be a little verbose in simple situations. The func
 
 `valid_input(|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(|x| 4 < *x && *x < 9).get()`.
 
-### Using `match` with checked output.
+### Using `match` with checked input.
 
 It is common to use match on values produced by input. For example if `.add_test()` or `valid_input()` is used on an integer, `match` would need to have branches for all possible integers even though the range of possible valid inputs may be quite small. In these cases, an unreachable wildcard can be used.
 
