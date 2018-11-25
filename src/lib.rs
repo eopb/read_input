@@ -1,5 +1,6 @@
 use std::io;
 use std::io::Write;
+use std::str::FromStr;
 
 const DEFAULT_ERR: &str = "That value does not pass please try again";
 
@@ -29,22 +30,18 @@ impl<'a> PromptMsg<'a> {
     }
 }
 
+type TestFunc<T> = Fn(&T) -> bool;
+
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
-pub struct InputBuilder<'a, T>
-where
-    T: std::str::FromStr,
-{
+pub struct InputBuilder<'a, T: FromStr> {
     msg: PromptMsg<'a>,
     err: &'a str,
     default: Option<T>,
-    test: Vec<(Box<dyn Fn(&T) -> bool>, Option<&'a str>)>,
+    test: Vec<(Box<TestFunc<T>>, Option<&'a str>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
-impl<'a, T> InputBuilder<'a, T>
-where
-    T: std::str::FromStr,
-{
+impl<'a, T: FromStr> InputBuilder<'a, T> {
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> InputBuilder<'a, T> {
         InputBuilder {
@@ -125,39 +122,27 @@ where
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn input_new<'a, T>() -> InputBuilder<'a, T>
-where
-    T: std::str::FromStr,
-{
+pub fn input_new<'a, T: FromStr>() -> InputBuilder<'a, T> {
     InputBuilder::new()
 }
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn valid_input<T>(test: impl Fn(&T) -> bool + 'static) -> T
-where
-    T: std::str::FromStr,
-{
+pub fn valid_input<T: FromStr>(test: impl Fn(&T) -> bool + 'static) -> T {
     input_new::<T>().add_test(test).get()
 }
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn simple_input<T>() -> T
-where
-    T: std::str::FromStr,
-{
+pub fn simple_input<T: FromStr>() -> T {
     input_new().get()
 }
 
-fn read_input<'a, T>(
+fn read_input<'a, T: FromStr>(
     prompt: &PromptMsg<'a>,
     err: &str,
     default: Option<T>,
-    test: &[(Box<dyn Fn(&T) -> bool>, Option<&'a str>)],
+    test: &[(Box<TestFunc<T>>, Option<&'a str>)],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
-) -> T
-where
-    T: std::str::FromStr,
-{
+) -> T {
     print!("{}", prompt.msg);
     io::stdout().flush().expect("could not flush output");
 

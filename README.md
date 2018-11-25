@@ -68,7 +68,7 @@ Alternatively `.repeat_msg()` can be used. Messages specified with `.repeat_msg(
 let username: String = input_new().repeat_msg("Please input your name: ").get();
 ```
 
-If you don't like having the message on the same line as input you can force input on to a new line by adding \\n to the end of the message.
+If you don't like having the message on the same line as input you can force input on to a new line by adding `\n` to the end of the message.
 
 ```rust
 let username: String = input_new().repeat_msg("Please input your name: \n").get();
@@ -150,15 +150,14 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 
 ## More complex examples
 
-- [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs). The guessing game form the rust book made to use `read_input`.
 
-- [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs). The guessing game form the rust book made to use `read_input` + some extra features.
-
-- [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs). Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).
-
-- [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs). Program written to show the use of the `err_match()` method.
-
-- [`match`](https://gitlab.com/efunb/read_input/blob/master/examples/match.rs). This example shows how best to use `match` on a inputted value.
+| Example                                                                                                    | Download                                                                                                                                                                                                                                                | Description                                                                                |
+| :--------------------------------------------------------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | -----------------------------------------------------------------------------------------: |
+| [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs) | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/simple_guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/simple_guessing_game?job=linux-optimized) | The guessing game form the rust book made to use `read_input`.                             |
+| [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs)               | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/guessing_game?job=linux-optimized)               | The guessing game form the rust book made to use `read_input` + some extra features.       |
+| [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs)             | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/how_long_until.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/how_long_until?job=linux-optimized)             | Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono). |
+| [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)                   | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/point_input.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/point_input?job=linux-optimized)                   | Program written to show the use of the `err_match()` method.                               |
+| [`match`](https://gitlab.com/efunb/read_input/blob/master/examples/match.rs)                               | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/match.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/match?job=linux-optimized)                               | This example shows how best to use `match` on a inputted value.                            |
 
 ## Docs
 
