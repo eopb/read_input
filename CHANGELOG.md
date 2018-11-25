@@ -1,3 +1,7 @@
+# 0.5.4
+### Examples updates
+- Add URL example
+
 # 0.5.3
 - Fix tiny error in readme
 - Make examples downloadable

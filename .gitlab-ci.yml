@@ -49,6 +49,7 @@ linux-optimized:
     - cp target/release/examples/how_long_until files
     - cp target/release/examples/match files
     - cp target/release/examples/point_input files
+    - cp target/release/examples/url files
   when: on_success
   artifacts:
     paths:
@@ -81,6 +82,7 @@ windows-optimized:
     - cp target/x86_64-pc-windows-gnu/release/examples/how_long_until.exe files
     - cp target/x86_64-pc-windows-gnu/release/examples/match.exe files
     - cp target/x86_64-pc-windows-gnu/release/examples/point_input.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/url.exe files
   when: on_success
   artifacts:
     paths:
