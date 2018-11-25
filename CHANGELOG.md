@@ -1,6 +1,16 @@
-# Next
+# 0.5.3
+- Fix tiny error in readme
+- Make examples downloadable
+- Small internal changes
+
+# 0.5.2
+### Documentation updates
+- fix tiny error in readme
+
+# 0.5.1
 ### Documentation updates
 - add information about using `match` with input.
+- fix version number stated in readme.
 ### Examples updates
 - Added `match` example
 
