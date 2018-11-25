@@ -95,7 +95,7 @@ windows-optimized:
 cratesio:
   stage: publish
   script:
-    - rm -r -f docs
+    - rm -r -f files
     - apt-get update
     - cargo login $CARGO_LOGIN
     - cargo package
