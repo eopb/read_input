@@ -3,6 +3,7 @@
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 //This version has some minor improvements.
 
+extern crate dont_disappear;
 extern crate rand;
 extern crate read_input;
 
@@ -41,4 +42,5 @@ fn main() {
             }
         }
     }
+    dont_disappear::enter_to_continue::default();
 }

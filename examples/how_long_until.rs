@@ -3,6 +3,7 @@
 //This program is here to show that types from external crates can uses `read_input`
 
 extern crate chrono;
+extern crate dont_disappear;
 extern crate read_input;
 use chrono::offset::{Local, TimeZone};
 use chrono::prelude::*;
@@ -37,4 +38,5 @@ fn main() {
             .signed_duration_since(Local::now())
             .num_days()
     );
+    dont_disappear::enter_to_continue::default();
 }
