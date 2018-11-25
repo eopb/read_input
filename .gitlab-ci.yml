@@ -1,6 +1,7 @@
 
 image: "rust:latest"
 
+
 stages:
   - check
   - test
@@ -17,7 +18,6 @@ clean-code:
     - cargo fmt --all -- --check
   allow_failure: true
 
-
 check:
   stage: check
   script:
@@ -33,8 +33,6 @@ benchmarktests:
   stage: test
   script:
     - cargo bench
-
-
 
 
 linux-optimized:
@@ -107,6 +105,7 @@ cratesio:
     refs:
       - master
   allow_failure: true
+
 
 clippy:
   stage: post-run
