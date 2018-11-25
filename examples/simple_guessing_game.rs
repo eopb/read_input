@@ -2,6 +2,7 @@
 //This program is based on the guessing game form the rust book.
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 
+extern crate dont_disappear;
 extern crate rand;
 extern crate read_input;
 
@@ -28,4 +29,5 @@ fn main() {
             }
         }
     }
+    dont_disappear::enter_to_continue::default();
 }

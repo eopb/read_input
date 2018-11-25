@@ -2,6 +2,7 @@
 //This example shows how best to use `match` on a inputted value.
 //The thing to note form this program is the use of `unreachable!()`
 
+extern crate dont_disappear;
 extern crate read_input;
 
 use read_input::*;
@@ -13,4 +14,5 @@ fn main() {
         4 => println!("You inputted the number 4"),
         _ => unreachable!(),
     }
+    dont_disappear::enter_to_continue::default();
 }

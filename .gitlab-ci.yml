@@ -1,9 +1,11 @@
 
 image: "rust:latest"
 
+
 stages:
   - check
   - test
+  - deploy-examples
   - publish
   - post-run
 
@@ -15,7 +17,6 @@ clean-code:
     - rustup component add rustfmt-preview
     - cargo fmt --all -- --check
   allow_failure: true
-
 
 check:
   stage: check
@@ -34,10 +35,69 @@ benchmarktests:
     - cargo bench
 
 
+linux-optimized:
+  stage: deploy-examples
+  script:
+    - apt-get update
+    - rustup default nightly
+    - rustup update
+    - cargo build --examples --release
+    - rm -r -f files
+    - mkdir files
+    - cp target/release/examples/guessing_game files
+    - cp target/release/examples/simple_guessing_game files
+    - cp target/release/examples/how_long_until files
+    - cp target/release/examples/match files
+    - cp target/release/examples/point_input files
+    - cp target/release/examples/url files
+  when: on_success
+  artifacts:
+    paths:
+      - files
+    expire_in: 2 weeks
+  only:
+    refs:
+      - master
+      - dev
+
+windows-optimized:
+  stage: deploy-examples
+  script:
+    - apt-get update
+    - rustup default nightly
+    - rustup update
+    - apt-get install gcc -y
+    - apt-get install gcc-mingw-w64-x86-64 -y
+    - rustup component add rust-std --target=x86_64-pc-windows-gnu
+    - mkdir .cargo
+    - touch .cargo/config
+    - echo [target.x86_64-pc-windows-gnu] >> .cargo/config
+    - echo     linker = \"x86_64-w64-mingw32-gcc\" >> .cargo/config
+    - echo     ar = \"x86_64-w64-mingw32-gcc-ar\" >> .cargo/config
+    - cargo build --examples --release --target=x86_64-pc-windows-gnu
+    - rm -r -f files
+    - mkdir files
+    - cp target/x86_64-pc-windows-gnu/release/examples/guessing_game.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/simple_guessing_game.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/how_long_until.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/match.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/point_input.exe files
+    - cp target/x86_64-pc-windows-gnu/release/examples/url.exe files
+  when: on_success
+  artifacts:
+    paths:
+      - files
+    expire_in: 2 weeks
+  only:
+    refs:
+      - master
+      - dev
+
+
 cratesio:
   stage: publish
   script:
-    - rm -r -f docs
+    - rm -r -f files
     - apt-get update
     - cargo login $CARGO_LOGIN
     - cargo package
@@ -47,6 +107,7 @@ cratesio:
     refs:
       - master
   allow_failure: true
+
 
 clippy:
   stage: post-run
