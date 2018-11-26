@@ -55,10 +55,6 @@ linux-optimized:
     paths:
       - files
     expire_in: 2 weeks
-  only:
-    refs:
-      - master
-      - dev
 
 windows-optimized:
   stage: deploy-examples
@@ -88,10 +84,6 @@ windows-optimized:
     paths:
       - files
     expire_in: 2 weeks
-  only:
-    refs:
-      - master
-      - dev
 
 
 cratesio:
