@@ -2,7 +2,7 @@ use std::io;
 use std::io::Write;
 use std::str::FromStr;
 
-const DEFAULT_ERR: &str = "That value does not pass please try again";
+const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
 struct PromptMsg<'a> {
     msg: &'a str,
