@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
@@ -117,6 +118,71 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
             self.default,
             &self.test,
             &*self.err_match,
+        )
+    }
+}
+
+pub trait FromStrErrHasDescription<'a, T>
+where
+    T: FromStr,
+    <T as FromStr>::Err: Error,
+{
+    fn err_description(self) -> InputBuilderWithErrDescription<'a, T>;
+}
+
+impl<'a, T> FromStrErrHasDescription<'a, T> for InputBuilder<'a, T>
+where
+    T: FromStr,
+    <T as FromStr>::Err: Error,
+{
+    fn err_description(self) -> InputBuilderWithErrDescription<'a, T> {
+        InputBuilderWithErrDescription {
+            builder: self.err_match(|x| Some(format!("Error \"{}\"", x.description()))),
+        }
+    }
+}
+
+pub struct InputBuilderWithErrDescription<'a, T>
+where
+    T: FromStr,
+    <T as FromStr>::Err: Error,
+{
+    builder: InputBuilder<'a, T>,
+}
+
+impl<'a, T> InputBuilderWithErrDescription<'a, T>
+where
+    T: FromStr,
+    <T as FromStr>::Err: Error,
+{
+    pub fn msg(self, msg: &'a str) -> Self {
+        self.builder.msg(msg).err_description()
+    }
+    pub fn repeat_msg(self, msg: &'a str) -> Self {
+        self.builder.repeat_msg(msg).err_description()
+    }
+    pub fn err(self, err: &'a str) -> Self {
+        self.builder.err(err).err_description()
+    }
+    pub fn default(self, default: T) -> Self {
+        self.builder.default(default).err_description()
+    }
+    pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+        self.builder.add_test(test).err_description()
+    }
+    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: &'a str) -> Self {
+        self.builder.add_err_test(test, err).err_description()
+    }
+    pub fn clear_tests(self) -> Self {
+        self.builder.clear_tests().err_description()
+    }
+    pub fn get(self) -> T {
+        read_input::<T>(
+            &self.builder.msg,
+            self.builder.err,
+            self.builder.default,
+            &self.builder.test,
+            &*self.builder.err_match,
         )
     }
 }
