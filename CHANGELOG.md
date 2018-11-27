@@ -1,3 +1,7 @@
+# Next#
+### Documentation updates
+- fix broken links
+
 # 0.6.0
 ### New features
 - Added `with_description`.
