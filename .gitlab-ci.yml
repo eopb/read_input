@@ -97,7 +97,7 @@ cratesio:
   when: on_success
   only:
     refs:
-      - master
+      - stable
   allow_failure: true
 
 

@@ -1,7 +1,7 @@
 # Read Input
 A simple tool that asks for data until the data is valid.
 
-[![pipeline status](https://gitlab.com/efunb/read_input/badges/master/pipeline.svg)](https://gitlab.com/efunb/read_input/commits/master)
+[![pipeline status](https://gitlab.com/efunb/read_input/badges/stable/pipeline.svg)](https://gitlab.com/efunb/read_input/commits/stable)
 [![License](https://img.shields.io/crates/l/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest version](https://img.shields.io/crates/v/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest Docs](https://docs.rs/read_input/badge.svg)](https://docs.rs/read_input/)
@@ -21,7 +21,7 @@ When writing programs you will often need to take input from the user. If the us
 
 Add 
 ```toml
-read_input = "0.5"
+read_input = "0.6"
 ```
 to your `cargo.toml` under `[dependencies]`
 and add
@@ -117,7 +117,57 @@ let input = input_new()
 
 ### Match errors
 
-You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
+You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+
+Here is an extract from the [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs) example showing this in practice.
+
+```rust
+let point = input_new::<Point>()
+    .repeat_msg("Please input a point in 2D space in the format (x, y): ")
+    .err_match(|e| {
+        Some(match e {
+            ParsePointError::FailedParse(s) => format!(
+                "Failed to parse \"{}\" it is not a number that can be parsed.",
+                s
+            ),
+            ParsePointError::Not2Dimensional(num) => {
+                format!("What you inputted was {} dimensional.", num)
+            }
+            ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
+        })
+    })
+    .get();
+```
+
+In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://gitlab.com/efunb/read_input/blob/stable/examples/match_num_err.rs).
+
+```rust
+use core::num::IntErrorKind::*;
+let input = input_new::<i16>()
+    .err_match(|x| {
+        Some(
+            match x.kind() {
+                Empty => "You did not input any value. Try again.",
+                InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
+                Overflow => "Integer is too large to store. Try again with a smaller number.",
+                Underflow => "Integer is too small to store. Try again with a smaller number.",
+                _ => "That value did not pass for an unexpected reason.",
+            }
+            .to_string(),
+        )
+    })
+    .repeat_msg("Please input a number: ")
+    .get();
+```
+
+The `with_description` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Error`](https://doc.rust-lang.org/std/error/trait.Error.html). This can give quick error messages.
+
+```rust
+let number = input_new::<i16>()
+    .err_match(with_description)
+    .repeat_msg("Please input a number: ")
+    .get();
+```
 
 ### Shortcut functions
 
@@ -146,18 +196,18 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 
 [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
-[Working example](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)
+[Working example](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)
 
 ## More complex examples
 
 
 | Example                                                                                                    | Download                                                                                                                                                                                                                                                                                                                                           | Description                                                                                                                                       |
 | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs) | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/simple_guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/simple_guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/master/examples/simple_guessing_game.rs) | The guessing game form the rust book made to use `read_input`.                                                                                    |
-| [`guessing_game`](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs)               | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/master/examples/guessing_game.rs)                      | The guessing game form the rust book made to use `read_input` + some extra features.                                                              |
-| [`how_long_until`](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs)             | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/how_long_until.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/how_long_until?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/master/examples/how_long_until.rs)                   | Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).                                                        |
-| [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)                   | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/point_input.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/point_input?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs)                            | Program written to show the use of the `err_match()` method.                                                                                      |
-| [`url`](https://gitlab.com/efunb/read_input/blob/master/examples/url.rs)                                   | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/url.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/master/raw/files/url?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/master/examples/url.rs)                                                    | Program that lets users input URLs with the [`url`](https://crates.io/crates/url) crate and prints helpful errors when invalid urls are inputted. |
+| [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) | The guessing game form the rust book made to use `read_input`.                                                                                    |
+| [`guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)               | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)                      | The guessing game form the rust book made to use `read_input` + some extra features.                                                              |
+| [`how_long_until`](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)             | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)                   | Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono).                                                        |
+| [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)                   | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)                            | Program written to show the use of the `err_match()` method.                                                                                      |
+| [`url`](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                                   | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                                                    | Program that lets users input URLs with the [`url`](https://crates.io/crates/url) crate and prints helpful errors when invalid urls are inputted. |
 
 ## Docs
 

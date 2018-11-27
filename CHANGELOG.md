@@ -1,3 +1,15 @@
+# 0.6.1 and 0.6.2
+### Documentation updates
+- fix broken links
+
+# 0.6.0
+### New features
+- Added `with_description`.
+### Examples updates
+- Add `match_num_err` example.
+### Other
+- Change fall back error message slightly. 
+
 # 0.5.4
 ### Examples updates
 - Add URL example
