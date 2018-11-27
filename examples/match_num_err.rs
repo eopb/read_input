@@ -1,3 +1,5 @@
+//To run this example `cargo run --example match_num_err --release`
+
 #![feature(int_error_matching)]
 extern crate core;
 extern crate dont_disappear;

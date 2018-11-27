@@ -1,3 +1,5 @@
+//To run this example `cargo run --example url --release`
+
 extern crate dont_disappear;
 extern crate read_input;
 extern crate url;
