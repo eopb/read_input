@@ -1,4 +1,4 @@
-# Next
+# 0.6.0
 ### New features
 - Added `with_description`.
 ### Examples updates
