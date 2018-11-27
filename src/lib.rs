@@ -122,10 +122,7 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
     }
 }
 
-pub fn with_description<T>(x: &T) -> Option<String>
-where
-    T: Error,
-{
+pub fn with_description<T: Error>(x: &T) -> Option<String> {
     Some(format!("Error \"{}\"", (*x).description()))
 }
 
