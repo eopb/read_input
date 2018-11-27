@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
@@ -119,6 +120,13 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
             &*self.err_match,
         )
     }
+}
+
+pub fn with_description<T>(x: &T) -> Option<String>
+where
+    T: Error,
+{
+    Some(format!("Error \"{}\"", (*x).description()))
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
