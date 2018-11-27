@@ -177,13 +177,7 @@ where
         self.builder.clear_tests().err_description()
     }
     pub fn get(self) -> T {
-        read_input::<T>(
-            &self.builder.msg,
-            self.builder.err,
-            self.builder.default,
-            &self.builder.test,
-            &*self.builder.err_match,
-        )
+        self.builder.get()
     }
 }
 
