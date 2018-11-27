@@ -1,4 +1,4 @@
-# Next#
+# 0.6.1
 ### Documentation updates
 - fix broken links
 
