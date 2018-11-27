@@ -21,7 +21,7 @@ When writing programs you will often need to take input from the user. If the us
 
 Add 
 ```toml
-read_input = "0.5"
+read_input = "0.6"
 ```
 to your `cargo.toml` under `[dependencies]`
 and add
