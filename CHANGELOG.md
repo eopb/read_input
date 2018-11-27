@@ -1,3 +1,9 @@
+# Next
+### New features
+- Added `with_description`.
+### Examples updates
+- Add `match_num_err` example.
+
 # 0.5.4
 ### Examples updates
 - Add URL example
