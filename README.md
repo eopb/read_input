@@ -117,7 +117,57 @@ let input = input_new()
 
 ### Match errors
 
-You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`. An example of how this can be done can be seen [here](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs).
+You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+
+Here is an extract from the [`point_input`](https://gitlab.com/efunb/read_input/blob/master/examples/point_input.rs) example showing this in practice.
+
+```rust
+let point = input_new::<Point>()
+    .repeat_msg("Please input a point in 2D space in the format (x, y): ")
+    .err_match(|e| {
+        Some(match e {
+            ParsePointError::FailedParse(s) => format!(
+                "Failed to parse \"{}\" it is not a number that can be parsed.",
+                s
+            ),
+            ParsePointError::Not2Dimensional(num) => {
+                format!("What you inputted was {} dimensional.", num)
+            }
+            ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
+        })
+    })
+    .get();
+```
+
+In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://gitlab.com/efunb/read_input/blob/master/examples/match_num_err.rs).
+
+```rust
+use core::num::IntErrorKind::*;
+let input = input_new::<i16>()
+    .err_match(|x| {
+        Some(
+            match x.kind() {
+                Empty => "You did not input any value. Try again.",
+                InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
+                Overflow => "Integer is too large to store. Try again with a smaller number.",
+                Underflow => "Integer is too small to store. Try again with a smaller number.",
+                _ => "That value did not pass for an unexpected reason.",
+            }
+            .to_string(),
+        )
+    })
+    .repeat_msg("Please input a number: ")
+    .get();
+```
+
+The `with_description` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Error`](https://doc.rust-lang.org/std/error/trait.Error.html). This can give quick error messages.
+
+```rust
+let number = input_new::<i16>()
+    .err_match(with_description)
+    .repeat_msg("Please input a number: ")
+    .get();
+```
 
 ### Shortcut functions
 
