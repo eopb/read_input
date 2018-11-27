@@ -1,8 +1,9 @@
+use std::error::Error;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
 
-const DEFAULT_ERR: &str = "That value does not pass please try again";
+const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
 struct PromptMsg<'a> {
     msg: &'a str,
@@ -119,6 +120,10 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
             &*self.err_match,
         )
     }
+}
+
+pub fn with_description<T: Error>(x: &T) -> Option<String> {
+    Some(format!("Error \"{}\"", (*x).description()))
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
