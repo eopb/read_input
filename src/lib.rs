@@ -2,30 +2,31 @@ use std::error::Error;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
+use std::string::ToString;
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
-struct PromptMsg<'a> {
-    msg: &'a str,
+struct PromptMsg {
+    msg: String,
     repeat: bool,
 }
 
-impl<'a> PromptMsg<'a> {
+impl PromptMsg {
     fn new() -> Self {
         Self {
-            msg: "",
+            msg: String::new(),
             repeat: false,
         }
     }
-    fn from_str(s: &'a str) -> Self {
+    fn from_str(s: impl ToString) -> Self {
         Self {
-            msg: s,
+            msg: s.to_string(),
             repeat: false,
         }
     }
-    fn repeat_from_str(s: &'a str) -> Self {
+    fn repeat_from_str(s: impl ToString) -> Self {
         Self {
-            msg: s,
+            msg: s.to_string(),
             repeat: true,
         }
     }
@@ -34,42 +35,45 @@ impl<'a> PromptMsg<'a> {
 type TestFunc<T> = Fn(&T) -> bool;
 
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
-pub struct InputBuilder<'a, T: FromStr> {
-    msg: PromptMsg<'a>,
-    err: &'a str,
+pub struct InputBuilder<T: FromStr> {
+    msg: PromptMsg,
+    err: String,
     default: Option<T>,
-    test: Vec<(Box<TestFunc<T>>, Option<&'a str>)>,
+    test: Vec<(Box<TestFunc<T>>, Option<String>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
-impl<'a, T: FromStr> InputBuilder<'a, T> {
+impl<'a, T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
-    pub fn new() -> InputBuilder<'a, T> {
+    pub fn new() -> Self {
         InputBuilder {
             msg: PromptMsg::new(),
-            err: DEFAULT_ERR,
+            err: DEFAULT_ERR.to_string(),
             default: None,
             test: Vec::new(),
             err_match: Box::new(|_| None),
         }
     }
     /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn msg(self, msg: &'a str) -> Self {
+    pub fn msg(self, msg: impl ToString) -> Self {
         InputBuilder {
             msg: PromptMsg::from_str(msg),
             ..self
         }
     }
     /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn repeat_msg(self, msg: &'a str) -> Self {
+    pub fn repeat_msg(self, msg: impl ToString) -> Self {
         InputBuilder {
             msg: PromptMsg::repeat_from_str(msg),
             ..self
         }
     }
     /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn err(self, err: &'a str) -> Self {
-        InputBuilder { err, ..self }
+    pub fn err(self, err: impl ToString) -> Self {
+        InputBuilder {
+            err: err.to_string(),
+            ..self
+        }
     }
     /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn default(self, default: T) -> Self {
@@ -78,7 +82,7 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
             ..self
         }
     }
-    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<&'a str>) -> Self {
+    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<String>) -> Self {
         InputBuilder {
             test: {
                 let mut x = self.test;
@@ -93,8 +97,8 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
         self.test(test, None)
     }
     /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: &'a str) -> Self {
-        self.test(test, Some(err))
+    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+        self.test(test, Some(err.to_string()))
     }
     /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
     pub fn clear_tests(self) -> Self {
@@ -111,10 +115,10 @@ impl<'a, T: FromStr> InputBuilder<'a, T> {
         }
     }
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn get(self) -> T {
+    pub fn get(&self) -> T {
         read_input::<T>(
             &self.msg,
-            self.err,
+            &self.err,
             self.default,
             &self.test,
             &*self.err_match,
@@ -127,7 +131,7 @@ pub fn with_description<T: Error>(x: &T) -> Option<String> {
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn input_new<'a, T: FromStr>() -> InputBuilder<'a, T> {
+pub fn input_new<T: FromStr>() -> InputBuilder<T> {
     InputBuilder::new()
 }
 
@@ -141,11 +145,11 @@ pub fn simple_input<T: FromStr>() -> T {
     input_new().get()
 }
 
-fn read_input<'a, T: FromStr>(
-    prompt: &PromptMsg<'a>,
+fn read_input<T: FromStr>(
+    prompt: &PromptMsg,
     err: &str,
     default: Option<T>,
-    test: &[(Box<TestFunc<T>>, Option<&'a str>)],
+    test: &[(Box<TestFunc<T>>, Option<String>)],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     print!("{}", prompt.msg);
@@ -169,18 +173,18 @@ fn read_input<'a, T: FromStr>(
                     if f.0(&value) {
                         true
                     } else {
-                        test_err = Some(f.1.unwrap_or(err));
+                        test_err = Some(f.1.clone().unwrap_or(err.to_string()));
                         false
                     }
                 });
                 if passes_test {
                     return value;
                 } else {
-                    println!("{}", test_err.unwrap_or(err));
+                    println!("{}", test_err.unwrap_or(err.to_string()));
                 }
             }
             Err(error) => {
-                println!("{}", err_pass(&error).unwrap_or_else(|| err.to_string()));
+                println!("{}", (err_pass(&error)).unwrap_or_else(|| err.to_string()));
             }
         }
 
