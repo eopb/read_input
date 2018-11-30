@@ -38,18 +38,21 @@ type TestFunc<T> = Fn(&T) -> bool;
 pub struct InputBuilder<T: FromStr> {
     msg: PromptMsg,
     err: String,
-    default: Option<T>,
     test: Vec<(Box<TestFunc<T>>, Option<String>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
-impl<'a, T: FromStr> InputBuilder<T> {
+pub struct InputBuilderOnce<T: FromStr> {
+    builder: InputBuilder<T>,
+    default: Option<T>,
+}
+
+impl<T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
         InputBuilder {
             msg: PromptMsg::new(),
             err: DEFAULT_ERR.to_string(),
-            default: None,
             test: Vec::new(),
             err_match: Box::new(|_| None),
         }
@@ -76,10 +79,10 @@ impl<'a, T: FromStr> InputBuilder<T> {
         }
     }
     /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn default(self, default: T) -> Self {
-        InputBuilder {
+    pub fn default(self, default: T) -> InputBuilderOnce<T> {
+        InputBuilderOnce {
+            builder: self,
             default: Some(default),
-            ..self
         }
     }
     fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<String>) -> Self {
@@ -116,12 +119,59 @@ impl<'a, T: FromStr> InputBuilder<T> {
     }
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn get(&self) -> T {
+        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
+    }
+}
+impl<T: FromStr> InputBuilderOnce<T> {
+    pub fn msg(self, msg: impl ToString) -> Self {
+        Self {
+            builder: self.builder.msg(msg),
+            ..self
+        }
+    }
+    pub fn repeat_msg(self, msg: impl ToString) -> Self {
+        Self {
+            builder: self.builder.repeat_msg(msg),
+            ..self
+        }
+    }
+    pub fn err(self, err: impl ToString) -> Self {
+        Self {
+            builder: self.builder.err(err),
+            ..self
+        }
+    }
+    pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+        Self {
+            builder: self.builder.add_test(test),
+            ..self
+        }
+    }
+    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+        Self {
+            builder: self.builder.add_err_test(test, err),
+            ..self
+        }
+    }
+    pub fn clear_tests(self) -> Self {
+        Self {
+            builder: self.builder.clear_tests(),
+            ..self
+        }
+    }
+    pub fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+        Self {
+            builder: self.builder.err_match(err_match),
+            ..self
+        }
+    }
+    pub fn get(self) -> T {
         read_input::<T>(
-            &self.msg,
-            &self.err,
+            &self.builder.msg,
+            &self.builder.err,
             self.default,
-            &self.test,
-            &*self.err_match,
+            &self.builder.test,
+            &*self.builder.err_match,
         )
     }
 }
