@@ -203,7 +203,7 @@ fn read_input<T: FromStr>(
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     print!("{}", prompt.msg);
-    io::stdout().flush().expect("could not flush output");
+    io::stdout().flush().unwrap_or(());
 
     let mut input = String::new();
     io::stdin()
