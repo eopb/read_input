@@ -188,6 +188,18 @@ pub fn input_new<T: FromStr>() -> InputBuilder<T> {
     InputBuilder::new()
 }
 
+fn try_flush() {
+    io::stdout().flush().unwrap_or(())
+}
+
+fn input_str() -> String {
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+    input
+}
+
 fn read_input<T: FromStr>(
     prompt: &PromptMsg,
     err: &str,
@@ -196,18 +208,16 @@ fn read_input<T: FromStr>(
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     print!("{}", prompt.msg);
-    io::stdout().flush().unwrap_or(());
+    try_flush();
 
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
+    let mut input = input_str();
 
     if input.trim().is_empty() {
         if let Some(x) = default {
             return x;
         }
     };
+
     loop {
         match T::from_str(&input.trim()) {
             Ok(value) => {
@@ -233,12 +243,9 @@ fn read_input<T: FromStr>(
 
         if prompt.repeat {
             print!("{}", prompt.msg);
-            io::stdout().flush().expect("could not flush output");
+            try_flush();
         };
 
-        input.clear();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read line");
+        input = input_str();
     }
 }
