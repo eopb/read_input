@@ -6,7 +6,6 @@ A simple tool that asks for data until the data is valid.
 [![Latest version](https://img.shields.io/crates/v/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest Docs](https://docs.rs/read_input/badge.svg)](https://docs.rs/read_input/)
 [![downloads-badge](https://img.shields.io/crates/d/read_input.svg)](https://crates.io/crates/read_input)
-[![GitHub stars](https://img.shields.io/github/stars/ethanboxx/read_input.svg)](https://github.com/ethanboxx/read_input/stargazers)
 
 ## Help
 
