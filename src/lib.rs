@@ -225,14 +225,14 @@ fn read_input<T: FromStr>(
                     if f.0(&value) {
                         true
                     } else {
-                        test_err = Some(f.1.clone().unwrap_or(err.to_string()));
+                        test_err = Some(f.1.clone().unwrap_or_else(|| err.to_string()));
                         false
                     }
                 });
                 if passes_test {
                     return value;
                 } else {
-                    println!("{}", test_err.unwrap_or(err.to_string()));
+                    println!("{}", test_err.unwrap_or_else(|| err.to_string()));
                 }
             }
             Err(error) => {
