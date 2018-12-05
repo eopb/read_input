@@ -125,6 +125,7 @@ impl<T: FromStr> InputBuilder<T> {
         read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
 }
+
 impl<T: FromStr> InputBuilderOnce<T> {
     pub fn msg(self, msg: impl ToString) -> Self {
         Self {
