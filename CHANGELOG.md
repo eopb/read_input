@@ -1,3 +1,10 @@
+# __Next__
+### New features
+- New `InputBuilderOnce` `struct` to make the builder more flexible.
+- Make methods take `impl ToString` rather than `&str` to improve flexibility.
+### **Breaking changes**
+- Module restructure.
+
 # 0.6.1 and 0.6.2
 ### Documentation updates
 - fix broken links

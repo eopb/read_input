@@ -28,7 +28,7 @@ and add
 ```rust 
 extern crate read_input;
 
-use read_input::*;
+use read_input::prelude::*;
 ```
 to your main file.
 
