@@ -7,7 +7,7 @@
 // extern crate dont_disappear;
 // extern crate read_input;
 
-// use read_input::*;
+// use read_input::prelude::*;
 
 fn main() {
     // use core::num::IntErrorKind::*;

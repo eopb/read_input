@@ -8,7 +8,7 @@ extern crate rand;
 extern crate read_input;
 
 use rand::Rng;
-use read_input::*;
+use read_input::prelude::*;
 use std::cmp::Ordering;
 
 fn main() {

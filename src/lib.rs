@@ -1,3 +1,5 @@
+pub mod prelude;
+
 use std::error::Error;
 use std::io;
 use std::io::Write;

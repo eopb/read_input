@@ -2,7 +2,7 @@
 
 extern crate read_input;
 
-use read_input::*;
+use read_input::prelude::*;
 
 fn main() {
     let settings = input_new()

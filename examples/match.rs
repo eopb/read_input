@@ -5,7 +5,7 @@
 extern crate dont_disappear;
 extern crate read_input;
 
-use read_input::*;
+use read_input::prelude::*;
 
 fn main() {
     match valid_input(|x| 2 <= *x && *x <= 4) {

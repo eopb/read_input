@@ -4,7 +4,7 @@ extern crate dont_disappear;
 extern crate read_input;
 extern crate url;
 
-use read_input::*;
+use read_input::prelude::*;
 use url::Url;
 
 fn main() {
