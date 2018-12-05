@@ -1,4 +1,5 @@
 pub mod prelude;
+pub mod shortcut;
 
 use std::error::Error;
 use std::io;
@@ -185,16 +186,6 @@ pub fn with_description<T: Error>(x: &T) -> Option<String> {
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn input_new<T: FromStr>() -> InputBuilder<T> {
     InputBuilder::new()
-}
-
-/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn valid_input<T: FromStr>(test: impl Fn(&T) -> bool + 'static) -> T {
-    input_new::<T>().add_test(test).get()
-}
-
-/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn simple_input<T: FromStr>() -> T {
-    input_new().get()
 }
 
 fn read_input<T: FromStr>(
