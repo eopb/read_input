@@ -29,12 +29,20 @@ impl DefaultBuilderSettings for bool {
     }
 }
 
+impl DefaultBuilderSettings for char {
+    fn settings() -> InputBuilder<Self> {
+        input_new()
+            .repeat_msg("Please input a character: ")
+            .err("Only type a single character.")
+    }
+}
+
 macro_rules! impl_default_builder_for_int {
     ($($t:ty),*) => {$(
     impl DefaultBuilderSettings for $t {
         fn settings() -> InputBuilder<Self> {
             input_new()
-                .repeat_msg("Please input a integer: ")
+                .repeat_msg("Please input an integer: ")
                 .err("Only type integers.")
         }
     }
