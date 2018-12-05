@@ -1,7 +1,6 @@
 pub mod prelude;
 pub mod shortcut;
 
-use std::error::Error;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
@@ -178,10 +177,6 @@ impl<T: FromStr> InputBuilderOnce<T> {
             &*self.builder.err_match,
         )
     }
-}
-
-pub fn with_description<T: Error>(x: &T) -> Option<String> {
-    Some(format!("Error \"{}\"", (*x).description()))
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
