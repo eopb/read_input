@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn valid_input<T: FromStr>(test: impl Fn(&T) -> bool + 'static) -> T {
-    input_new::<T>().add_test(test).get()
+    input_new().add_test(test).get()
 }
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
