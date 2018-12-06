@@ -4,6 +4,7 @@ extern crate dont_disappear;
 extern crate read_input;
 extern crate url;
 
+use read_input::prelude::shortcut::*;
 use read_input::prelude::*;
 use url::Url;
 
