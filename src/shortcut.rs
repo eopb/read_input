@@ -56,7 +56,7 @@ pub mod default_builder {
         )*}
     }
 
-    impl_default_builder_for_int! { i8, i16, i32, i64, i128 }
+    impl_default_builder_for_int! { i8, i16, i32, i64, i128, isize }
 
     macro_rules! impl_default_builder_for_whole {
         ($($t:ty),*) => {$(
@@ -70,7 +70,7 @@ pub mod default_builder {
         )*}
     }
 
-    impl_default_builder_for_whole! { u8, u16, u32, u64, u128 }
+    impl_default_builder_for_whole! { u8, u16, u32, u64, u128, usize }
 
     macro_rules! impl_default_builder_for_float {
         ($($t:ty),*) => {$(
