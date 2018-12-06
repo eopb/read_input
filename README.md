@@ -162,6 +162,14 @@ let input = input_new::<i16>()
 
 The `with_description` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Error`](https://doc.rust-lang.org/std/error/trait.Error.html). This can give quick error messages.
 
+You will have to bring into scope with 
+
+```rust
+use read_input::shortcut::with_description;
+```
+
+and you can use it like this
+
 ```rust
 let number = input_new::<i16>()
     .err_match(with_description)
@@ -172,6 +180,12 @@ let number = input_new::<i16>()
 ### Shortcut functions
 
 Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
+
+You can bring them into scope so that you can use them with
+
+```rust
+use read_input::shortcut::{simple_input, valid_input};
+```
 
 `simple_input()` is the same as `input_new().get()`.
 
