@@ -3,18 +3,18 @@
 extern crate dont_disappear;
 extern crate read_input;
 
-use read_input::shortcut::default_input_set;
+use read_input::shortcut::input_new_d;
 
 fn main() {
     println!("Type i32");
-    default_input_set::<i32>().get();
+    input_new_d::<i32>().get();
     println!("Type u32");
-    default_input_set::<u32>().get();
+    input_new_d::<u32>().get();
     println!("Type f32");
-    default_input_set::<f32>().get();
+    input_new_d::<f32>().get();
     println!("Type bool");
-    default_input_set::<bool>().get();
+    input_new_d::<bool>().get();
     println!("Type char");
-    default_input_set::<char>().get();
+    input_new_d::<char>().get();
     dont_disappear::enter_to_continue::default();
 }
