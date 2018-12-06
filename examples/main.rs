@@ -3,6 +3,7 @@
 extern crate read_input;
 
 use read_input::prelude::*;
+use read_input::shortcut::{simple_input, valid_input};
 
 fn main() {
     let settings = input_new()
