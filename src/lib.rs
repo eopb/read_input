@@ -1,3 +1,5 @@
+//! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
+
 pub mod prelude;
 pub mod shortcut;
 

@@ -3,7 +3,7 @@
 extern crate dont_disappear;
 extern crate read_input;
 
-use read_input::prelude::shortcut::default_input_set;
+use read_input::shortcut::default_input_set;
 
 fn main() {
     println!("Type i32");
