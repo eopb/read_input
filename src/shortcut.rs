@@ -1,7 +1,6 @@
 use input_new;
 use std::error::Error;
 use std::str::FromStr;
-use InputBuilder;
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn valid_input<T: FromStr>(test: impl Fn(&T) -> bool + 'static) -> T {
@@ -17,27 +16,35 @@ pub fn with_description<T: Error>(x: &T) -> Option<String> {
     Some(format!("Error \"{}\"", (*x).description()))
 }
 
-pub trait DefaultBuilderSettings: FromStr {
-    fn settings() -> InputBuilder<Self>;
-}
+pub use self::default_builder::default_input_set;
+pub use self::default_builder::DefaultBuilderSettings;
 
-impl DefaultBuilderSettings for bool {
-    fn settings() -> InputBuilder<Self> {
-        input_new()
-            .repeat_msg("Please input true or false: ")
-            .err("Only type true or false.")
+pub mod default_builder {
+    use input_new;
+    use std::str::FromStr;
+    use InputBuilder;
+
+    pub trait DefaultBuilderSettings: FromStr {
+        fn settings() -> InputBuilder<Self>;
     }
-}
 
-impl DefaultBuilderSettings for char {
-    fn settings() -> InputBuilder<Self> {
-        input_new()
-            .repeat_msg("Please input a character: ")
-            .err("Only type a single character.")
+    impl DefaultBuilderSettings for bool {
+        fn settings() -> InputBuilder<Self> {
+            input_new()
+                .repeat_msg("Please input true or false: ")
+                .err("Only type true or false.")
+        }
     }
-}
 
-macro_rules! impl_default_builder_for_int {
+    impl DefaultBuilderSettings for char {
+        fn settings() -> InputBuilder<Self> {
+            input_new()
+                .repeat_msg("Please input a character: ")
+                .err("Only type a single character.")
+        }
+    }
+
+    macro_rules! impl_default_builder_for_int {
     ($($t:ty),*) => {$(
     impl DefaultBuilderSettings for $t {
         fn settings() -> InputBuilder<Self> {
@@ -49,9 +56,9 @@ macro_rules! impl_default_builder_for_int {
     )*}
 }
 
-impl_default_builder_for_int! { i8, i16, i32, i64, i128 }
+    impl_default_builder_for_int! { i8, i16, i32, i64, i128 }
 
-macro_rules! impl_default_builder_for_whole {
+    macro_rules! impl_default_builder_for_whole {
     ($($t:ty),*) => {$(
     impl DefaultBuilderSettings for $t {
         fn settings() -> InputBuilder<Self> {
@@ -63,9 +70,9 @@ macro_rules! impl_default_builder_for_whole {
     )*}
 }
 
-impl_default_builder_for_whole! { u8, u16, u32, u64, u128 }
+    impl_default_builder_for_whole! { u8, u16, u32, u64, u128 }
 
-macro_rules! impl_default_builder_for_float {
+    macro_rules! impl_default_builder_for_float {
     ($($t:ty),*) => {$(
     impl DefaultBuilderSettings for $t {
         fn settings() -> InputBuilder<Self> {
@@ -77,8 +84,9 @@ macro_rules! impl_default_builder_for_float {
     )*}
 }
 
-impl_default_builder_for_float! { f32, f64 }
+    impl_default_builder_for_float! { f32, f64 }
 
-pub fn default_input_set<T: DefaultBuilderSettings>() -> InputBuilder<T> {
-    T::settings()
+    pub fn default_input_set<T: DefaultBuilderSettings>() -> InputBuilder<T> {
+        T::settings()
+    }
 }
