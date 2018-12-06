@@ -45,44 +45,44 @@ pub mod default_builder {
     }
 
     macro_rules! impl_default_builder_for_int {
-    ($($t:ty),*) => {$(
-    impl DefaultBuilderSettings for $t {
-        fn settings() -> InputBuilder<Self> {
-            input_new()
-                .repeat_msg("Please input an integer: ")
-                .err("Only type integers.")
+        ($($t:ty),*) => {$(
+        impl DefaultBuilderSettings for $t {
+            fn settings() -> InputBuilder<Self> {
+                input_new()
+                    .repeat_msg("Please input an integer: ")
+                    .err("Only type integers.")
+            }
         }
+        )*}
     }
-    )*}
-}
 
     impl_default_builder_for_int! { i8, i16, i32, i64, i128 }
 
     macro_rules! impl_default_builder_for_whole {
-    ($($t:ty),*) => {$(
-    impl DefaultBuilderSettings for $t {
-        fn settings() -> InputBuilder<Self> {
-            input_new()
-                .repeat_msg("Please input a positive integer: ")
-                .err("Only type positive integers.")
+        ($($t:ty),*) => {$(
+        impl DefaultBuilderSettings for $t {
+            fn settings() -> InputBuilder<Self> {
+                input_new()
+                    .repeat_msg("Please input a positive integer: ")
+                    .err("Only type positive integers.")
+            }
         }
+        )*}
     }
-    )*}
-}
 
     impl_default_builder_for_whole! { u8, u16, u32, u64, u128 }
 
     macro_rules! impl_default_builder_for_float {
-    ($($t:ty),*) => {$(
-    impl DefaultBuilderSettings for $t {
-        fn settings() -> InputBuilder<Self> {
-            input_new()
-                .repeat_msg("Please input a number: ")
-                .err("Only type numbers or decimal point.")
+        ($($t:ty),*) => {$(
+        impl DefaultBuilderSettings for $t {
+            fn settings() -> InputBuilder<Self> {
+                input_new()
+                    .repeat_msg("Please input a number: ")
+                    .err("Only type numbers or decimal point.")
+            }
         }
+        )*}
     }
-    )*}
-}
 
     impl_default_builder_for_float! { f32, f64 }
 
