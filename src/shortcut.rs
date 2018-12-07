@@ -1,4 +1,4 @@
-use input_new;
+use crate::input_new;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -20,9 +20,8 @@ pub use self::default_builder::input_new_d;
 pub use self::default_builder::DefaultBuilderSettings;
 
 pub mod default_builder {
-    use input_new;
+    use crate::{input_new, InputBuilder};
     use std::str::FromStr;
-    use InputBuilder;
 
     pub trait DefaultBuilderSettings: FromStr {
         fn settings() -> InputBuilder<Self>;
