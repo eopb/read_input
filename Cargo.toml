@@ -12,6 +12,8 @@ homepage = "http://efunb.com/"
 repository = "https://gitlab.com/efunb/read_input"
 keywords = ["input", "console", "cli", "text", "simple"]
 categories = [ "command-line-interface", "data-structures", "encoding", "rust-patterns" ]
+edition = "2018"
+
 [dev-dependencies]
 dont_disappear = "2"
 rand = "0.5"

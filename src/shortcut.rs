@@ -1,4 +1,4 @@
-use input_new;
+use crate::input_new;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -16,13 +16,12 @@ pub fn with_description<T: Error>(x: &T) -> Option<String> {
     Some(format!("Error \"{}\"", (*x).description()))
 }
 
-pub use self::default_builder::default_input_set;
+pub use self::default_builder::input_new_d;
 pub use self::default_builder::DefaultBuilderSettings;
 
 pub mod default_builder {
-    use input_new;
+    use crate::{input_new, InputBuilder};
     use std::str::FromStr;
-    use InputBuilder;
 
     pub trait DefaultBuilderSettings: FromStr {
         fn settings() -> InputBuilder<Self>;
@@ -86,7 +85,7 @@ pub mod default_builder {
 
     impl_default_builder_for_float! { f32, f64 }
 
-    pub fn default_input_set<T: DefaultBuilderSettings>() -> InputBuilder<T> {
+    pub fn input_new_d<T: DefaultBuilderSettings>() -> InputBuilder<T> {
         T::settings()
     }
 }

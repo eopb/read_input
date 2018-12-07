@@ -191,6 +191,22 @@ use read_input::shortcut::{simple_input, valid_input};
 
 `valid_input(|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(|x| 4 < *x && *x < 9).get()`.
 
+### `input_new_d`
+
+`input_new_d()` works like `input_new()` but uses the default input settings that are specified by the `DefaultBuilderSettings` trait.
+
+You can bring it into scope so that you can use them with
+
+```rust
+use read_input::shortcut::input_new_d;
+```
+
+and it can be used like `input_new()`
+
+```rust
+let input: u32 = input_new_d().get()
+```
+
 ### Using `match` with checked input.
 
 It is common to use match on values produced by input. For example if `.add_test()` or `valid_input()` is used on an integer, `match` would need to have branches for all possible integers even though the range of possible valid inputs may be quite small. In these cases, an unreachable wildcard can be used.
@@ -206,7 +222,7 @@ match valid_input(|x| 2 <= *x && *x <= 4) {
 
 ## How to use with custom type
 
-To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. 
+To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
 
 [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
