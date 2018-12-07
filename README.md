@@ -23,8 +23,7 @@ Add
 ```toml
 read_input = "0.7"
 ```
-to your `cargo.toml` under `[dependencies]`
-and add
+to your `cargo.toml` under `[dependencies]` and add
 ```rust 
 extern crate read_input;
 
