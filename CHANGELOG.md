@@ -1,4 +1,4 @@
-# __0.7.0__
+# __0.7.0 and 0.7.1__
 ### New features
 - New `InputBuilderOnce` `struct` to make the builder more flexible.
 - Make methods take `impl ToString` rather than `&str` to improve flexibility.
