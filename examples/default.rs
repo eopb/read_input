@@ -1,4 +1,5 @@
 //To run this example `cargo run --example default --release`
+//This example shows `input_new_d` in use.
 
 extern crate dont_disappear;
 extern crate read_input;
