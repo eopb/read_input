@@ -13,7 +13,6 @@ stages:
 clean-code:
   stage: check
   script:
-    - rustup default beta
     - rustup component add rustfmt-preview
     - cargo fmt --all -- --check
   allow_failure: true
@@ -38,9 +37,6 @@ benchmarktests:
 linux-optimized:
   stage: deploy-examples
   script:
-    - apt-get update
-    - rustup default nightly
-    - rustup update
     - cargo build --examples --release
     - rm -r -f files
     - mkdir files
@@ -60,8 +56,6 @@ windows-optimized:
   stage: deploy-examples
   script:
     - apt-get update
-    - rustup default nightly
-    - rustup update
     - apt-get install gcc -y
     - apt-get install gcc-mingw-w64-x86-64 -y
     - rustup component add rust-std --target=x86_64-pc-windows-gnu
@@ -90,7 +84,6 @@ cratesio:
   stage: publish
   script:
     - rm -r -f files
-    - apt-get update
     - cargo login $CARGO_LOGIN
     - cargo package
     - cargo publish

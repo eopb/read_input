@@ -28,7 +28,7 @@ and add
 ```rust 
 extern crate read_input;
 
-use read_input::*;
+use read_input::prelude::*;
 ```
 to your main file.
 
@@ -162,6 +162,14 @@ let input = input_new::<i16>()
 
 The `with_description` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Error`](https://doc.rust-lang.org/std/error/trait.Error.html). This can give quick error messages.
 
+You will have to bring into scope with 
+
+```rust
+use read_input::shortcut::with_description;
+```
+
+and you can use it like this
+
 ```rust
 let number = input_new::<i16>()
     .err_match(with_description)
@@ -173,9 +181,31 @@ let number = input_new::<i16>()
 
 Using `input_new().get()` can be a little verbose in simple situations. The functions `simple_input()` and `valid_input()` can make things simpler.
 
+You can bring them into scope so that you can use them with
+
+```rust
+use read_input::shortcut::{simple_input, valid_input};
+```
+
 `simple_input()` is the same as `input_new().get()`.
 
 `valid_input(|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(|x| 4 < *x && *x < 9).get()`.
+
+### `input_new_d`
+
+`input_new_d()` works like `input_new()` but uses the default input settings that are specified by the `DefaultBuilderSettings` trait.
+
+You can bring it into scope so that you can use them with
+
+```rust
+use read_input::shortcut::input_new_d;
+```
+
+and it can be used like `input_new()`
+
+```rust
+let input: u32 = input_new_d().get()
+```
 
 ### Using `match` with checked input.
 
@@ -192,7 +222,7 @@ match valid_input(|x| 2 <= *x && *x <= 4) {
 
 ## How to use with custom type
 
-To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type. 
+To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
 
 [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
 
