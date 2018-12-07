@@ -53,6 +53,8 @@ pub struct InputBuilderOnce<T: FromStr> {
 
 impl<T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
+    // No clear default type to make default with.
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         InputBuilder {
             msg: PromptMsg::new(),
