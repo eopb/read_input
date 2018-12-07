@@ -13,7 +13,6 @@ stages:
 clean-code:
   stage: check
   script:
-    - rustup default beta
     - rustup component add rustfmt-preview
     - cargo fmt --all -- --check
   allow_failure: true
@@ -38,7 +37,6 @@ benchmarktests:
 linux-optimized:
   stage: deploy-examples
   script:
-    - apt-get update
     - cargo build --examples --release
     - rm -r -f files
     - mkdir files
