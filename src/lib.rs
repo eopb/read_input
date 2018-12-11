@@ -1,7 +1,5 @@
 //! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
 
-// This lint asks for default when new takes type parameter.
-#![allow(clippy::new_without_default)]
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
 
@@ -183,6 +181,12 @@ impl<T: FromStr> InputBuilderOnce<T> {
             &self.builder.test,
             &*self.builder.err_match,
         )
+    }
+}
+
+impl<T: FromStr> Default for InputBuilder<T> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
