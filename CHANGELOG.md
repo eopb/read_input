@@ -1,3 +1,6 @@
+# 0.7.2
+- Update description
+
 # __0.7.0 and 0.7.1__
 ### New features
 - New `InputBuilderOnce` `struct` to make the builder more flexible.
