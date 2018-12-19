@@ -47,7 +47,7 @@ For example, if you want to assign a valid unsigned 32bit value to a variable ca
 let input = input_new::<u32>().get();
 ```
 
-Rust can often work out the type. When this is the case so you can skip explicitly stating the type.
+Rust can often work out the type. When this is the case you can skip explicitly stating the type.
 
 ```rust
 input_new().get()
