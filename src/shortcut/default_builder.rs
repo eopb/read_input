@@ -1,4 +1,4 @@
-use crate::{input_new, InputBuilder};
+use crate::{input_new, InputBuild, InputBuilder};
 use std::str::FromStr;
 
 pub trait DefaultBuilderSettings: FromStr {

@@ -6,6 +6,7 @@
 pub mod prelude;
 pub mod shortcut;
 
+use std::cmp::PartialOrd;
 use std::io;
 use std::io::Write;
 use std::str::FromStr;
@@ -54,6 +55,33 @@ pub struct InputBuilderOnce<T: FromStr> {
     default: Option<T>,
 }
 
+pub trait InputBuild<T: FromStr> {
+    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn msg(self, msg: impl ToString) -> Self;
+    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn repeat_msg(self, msg: impl ToString) -> Self;
+    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn err(self, err: impl ToString) -> Self;
+    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self;
+    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self;
+    /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
+    fn clear_tests(self) -> Self;
+    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
+}
+
+pub trait InputGet<T: FromStr> {
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn get(&self) -> T;
+}
+
+pub trait InputGetOnce<T: FromStr> {
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    fn get(self) -> T;
+}
+
 impl<T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
@@ -62,27 +90,6 @@ impl<T: FromStr> InputBuilder<T> {
             err: DEFAULT_ERR.to_string(),
             test: Vec::new(),
             err_match: Box::new(|_| None),
-        }
-    }
-    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn msg(self, msg: impl ToString) -> Self {
-        InputBuilder {
-            msg: PromptMsg::from_str(msg),
-            ..self
-        }
-    }
-    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn repeat_msg(self, msg: impl ToString) -> Self {
-        InputBuilder {
-            msg: PromptMsg::repeat_from_str(msg),
-            ..self
-        }
-    }
-    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn err(self, err: impl ToString) -> Self {
-        InputBuilder {
-            err: err.to_string(),
-            ..self
         }
     }
     /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
@@ -102,78 +109,56 @@ impl<T: FromStr> InputBuilder<T> {
             ..self
         }
     }
-    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+}
+
+impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
+    fn msg(self, msg: impl ToString) -> Self {
+        InputBuilder {
+            msg: PromptMsg::from_str(msg),
+            ..self
+        }
+    }
+    fn repeat_msg(self, msg: impl ToString) -> Self {
+        InputBuilder {
+            msg: PromptMsg::repeat_from_str(msg),
+            ..self
+        }
+    }
+    fn err(self, err: impl ToString) -> Self {
+        InputBuilder {
+            err: err.to_string(),
+            ..self
+        }
+    }
+
+    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
         self.test(test, None)
     }
-    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
         self.test(test, Some(err.to_string()))
     }
-    /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
-    pub fn clear_tests(self) -> Self {
+    fn clear_tests(self) -> Self {
         InputBuilder {
             test: Vec::new(),
             ..self
         }
     }
-    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
         InputBuilder {
             err_match: Box::new(err_match),
             ..self
         }
     }
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    pub fn get(&self) -> T {
+}
+
+impl<T: FromStr> InputGet<T> for InputBuilder<T> {
+    fn get(&self) -> T {
         read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
 }
 
-impl<T: FromStr> InputBuilderOnce<T> {
-    pub fn msg(self, msg: impl ToString) -> Self {
-        Self {
-            builder: self.builder.msg(msg),
-            ..self
-        }
-    }
-    pub fn repeat_msg(self, msg: impl ToString) -> Self {
-        Self {
-            builder: self.builder.repeat_msg(msg),
-            ..self
-        }
-    }
-    pub fn err(self, err: impl ToString) -> Self {
-        Self {
-            builder: self.builder.err(err),
-            ..self
-        }
-    }
-    pub fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
-        Self {
-            builder: self.builder.add_test(test),
-            ..self
-        }
-    }
-    pub fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
-        Self {
-            builder: self.builder.add_err_test(test, err),
-            ..self
-        }
-    }
-    pub fn clear_tests(self) -> Self {
-        Self {
-            builder: self.builder.clear_tests(),
-            ..self
-        }
-    }
-    pub fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
-        Self {
-            builder: self.builder.err_match(err_match),
-            ..self
-        }
-    }
-    pub fn get(self) -> T {
+impl<T: FromStr> InputGetOnce<T> for InputBuilderOnce<T> {
+    fn get(self) -> T {
         read_input::<T>(
             &self.builder.msg,
             &self.builder.err,
@@ -184,10 +169,98 @@ impl<T: FromStr> InputBuilderOnce<T> {
     }
 }
 
+impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
+    fn msg(self, msg: impl ToString) -> Self {
+        Self {
+            builder: self.builder.msg(msg),
+            ..self
+        }
+    }
+    fn repeat_msg(self, msg: impl ToString) -> Self {
+        Self {
+            builder: self.builder.repeat_msg(msg),
+            ..self
+        }
+    }
+    fn err(self, err: impl ToString) -> Self {
+        Self {
+            builder: self.builder.err(err),
+            ..self
+        }
+    }
+    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+        Self {
+            builder: self.builder.add_test(test),
+            ..self
+        }
+    }
+    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+        Self {
+            builder: self.builder.add_err_test(test, err),
+            ..self
+        }
+    }
+    fn clear_tests(self) -> Self {
+        Self {
+            builder: self.builder.clear_tests(),
+            ..self
+        }
+    }
+    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+        Self {
+            builder: self.builder.err_match(err_match),
+            ..self
+        }
+    }
+}
+
 impl<T: FromStr> Default for InputBuilder<T> {
     fn default() -> Self {
         Self::new()
     }
+}
+
+pub trait InputConstraints<T>: InputBuild<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+    Self: std::marker::Sized,
+{
+    fn min(self, min: T) -> Self {
+        self.add_test(move |x| x >= &min)
+    }
+    fn max(self, max: T) -> Self {
+        self.add_test(move |x| x <= &max)
+    }
+    fn min_max(self, min: T, max: T) -> Self {
+        self.add_test(move |x| &min <= x && x <= &max)
+    }
+    fn min_err(self, min: T, err: impl ToString) -> Self {
+        self.add_err_test(move |x| x >= &min, err)
+    }
+    fn max_err(self, max: T, err: impl ToString) -> Self {
+        self.add_err_test(move |x| x <= &max, err)
+    }
+    fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
+        self.add_err_test(move |x| &min <= x && x <= &max, err)
+    }
+}
+
+impl<T> InputConstraints<T> for InputBuilder<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+{
+}
+
+impl<T> InputConstraints<T> for InputBuilderOnce<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+{
 }
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
