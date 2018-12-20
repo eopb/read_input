@@ -72,17 +72,17 @@ pub trait InputBuild<T: FromStr> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
 }
 
-pub trait InputGet<T: FromStr> {
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    fn get(&self) -> T;
-}
-
-pub trait InputGetOnce<T: FromStr> {
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-    fn get(self) -> T;
-}
-
 impl<T: FromStr> InputBuilder<T> {
+    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<String>) -> Self {
+        InputBuilder {
+            test: {
+                let mut x = self.test;
+                x.push((Box::new(test), err));
+                x
+            },
+            ..self
+        }
+    }
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
         InputBuilder {
@@ -99,15 +99,9 @@ impl<T: FromStr> InputBuilder<T> {
             default: Some(default),
         }
     }
-    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<String>) -> Self {
-        InputBuilder {
-            test: {
-                let mut x = self.test;
-                x.push((Box::new(test), err));
-                x
-            },
-            ..self
-        }
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    pub fn get(&self) -> T {
+        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
 }
 
@@ -151,14 +145,9 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     }
 }
 
-impl<T: FromStr> InputGet<T> for InputBuilder<T> {
-    fn get(&self) -> T {
-        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
-    }
-}
-
-impl<T: FromStr> InputGetOnce<T> for InputBuilderOnce<T> {
-    fn get(self) -> T {
+impl<T: FromStr> InputBuilderOnce<T> {
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    pub fn get(self) -> T {
         read_input::<T>(
             &self.builder.msg,
             &self.builder.err,

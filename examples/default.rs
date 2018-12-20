@@ -4,7 +4,6 @@
 extern crate dont_disappear;
 extern crate read_input;
 
-use read_input::prelude::*;
 use read_input::shortcut::input_new_d;
 
 fn main() {

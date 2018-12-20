@@ -3,7 +3,7 @@ pub mod default_builder;
 pub use self::default_builder::input_new_d;
 pub use self::default_builder::DefaultBuilderSettings;
 
-use crate::{input_new, InputBuild, InputConstraints, InputGet};
+use crate::{input_new, InputBuild, InputConstraints};
 use std::cmp::PartialOrd;
 use std::error::Error;
 use std::str::FromStr;
