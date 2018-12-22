@@ -6,11 +6,14 @@
 pub mod prelude;
 pub mod shortcut;
 
-use std::cmp::PartialOrd;
-use std::io;
-use std::io::Write;
-use std::str::FromStr;
-use std::string::ToString;
+use std::{
+    cmp::PartialOrd,
+    io,
+    io::Write,
+    ops::{Range, RangeFrom, RangeInclusive, RangeTo, RangeToInclusive},
+    str::FromStr,
+    string::ToString,
+};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
@@ -316,5 +319,81 @@ fn read_input<T: FromStr>(
         };
 
         input = input_str();
+    }
+}
+
+trait IsIn<T: FromStr>: InputBuild<T> {
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self;
+}
+
+impl<T> IsIn<T> for InputBuilder<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+{
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
+        InputBuilder {
+            test: {
+                let mut x = self.test;
+                x.push((is.contains(), None));
+                x
+            },
+            ..self
+        }
+    }
+}
+
+impl<T> IsIn<T> for InputBuilderOnce<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+{
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
+        Self {
+            builder: self.builder.is_in(is),
+            ..self
+        }
+    }
+}
+
+trait IsInFunc<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool>;
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for Range<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(move |x| &self.start <= x && x < &self.end)
+    }
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for RangeInclusive<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(move |x| self.start() <= x && x <= self.end())
+    }
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for RangeFrom<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(move |x| &self.start <= x)
+    }
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for RangeTo<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(move |x| &self.end > x)
+    }
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for RangeToInclusive<T> {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(move |x| &self.end >= x)
+    }
+}
+
+impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
+    fn contains(self) -> Box<Fn(&T) -> bool> {
+        Box::new(self)
     }
 }
