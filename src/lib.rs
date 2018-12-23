@@ -326,12 +326,7 @@ trait IsIn<T: FromStr>: InputBuild<T> {
     fn is_in<U: IsInFunc<T>>(self, is: U) -> Self;
 }
 
-impl<T> IsIn<T> for InputBuilder<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
+impl<T: FromStr + 'static> IsIn<T> for InputBuilder<T> {
     fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
         InputBuilder {
             test: {
@@ -344,12 +339,7 @@ where
     }
 }
 
-impl<T> IsIn<T> for InputBuilderOnce<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
+impl<T: FromStr + 'static> IsIn<T> for InputBuilderOnce<T> {
     fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
         Self {
             builder: self.builder.is_in(is),
