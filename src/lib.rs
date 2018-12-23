@@ -5,6 +5,7 @@
 
 pub mod prelude;
 pub mod shortcut;
+#[cfg(test)]
 mod tests;
 
 use std::{
