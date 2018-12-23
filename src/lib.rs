@@ -73,19 +73,11 @@ pub trait InputBuild<T: FromStr> {
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self;
+    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
 }
 
 impl<T: FromStr> InputBuilder<T> {
-    fn test<F: 'static + Fn(&T) -> bool>(self, test: F, err: Option<String>) -> Self {
-        InputBuilder {
-            test: {
-                let mut x = self.test;
-                x.push((Box::new(test), err));
-                x
-            },
-            ..self
-        }
-    }
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
         InputBuilder {
@@ -106,9 +98,19 @@ impl<T: FromStr> InputBuilder<T> {
     pub fn get(&self) -> T {
         read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
+    fn is_in_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
+        InputBuilder {
+            test: {
+                let mut x = self.test;
+                x.push((is.contains_func(), err));
+                x
+            },
+            ..self
+        }
+    }
 }
 
-impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
+impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     fn msg(self, msg: impl ToString) -> Self {
         InputBuilder {
             msg: PromptMsg::from_str(msg),
@@ -129,10 +131,10 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     }
 
     fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
-        self.test(test, None)
+        self.is_in_err_opt(test, None)
     }
     fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
-        self.test(test, Some(err.to_string()))
+        self.is_in_err_opt(test, Some(err.to_string()))
     }
     fn clear_tests(self) -> Self {
         InputBuilder {
@@ -145,6 +147,12 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
             err_match: Box::new(err_match),
             ..self
         }
+    }
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
+        self.is_in_err_opt(is, None)
+    }
+    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+        self.is_in_err_opt(is, Some(err.to_string()))
     }
 }
 
@@ -161,7 +169,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
     }
 }
 
-impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
+impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     fn msg(self, msg: impl ToString) -> Self {
         Self {
             builder: self.builder.msg(msg),
@@ -201,6 +209,18 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
         Self {
             builder: self.builder.err_match(err_match),
+            ..self
+        }
+    }
+    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
+        Self {
+            builder: self.builder.is_in(is),
+            ..self
+        }
+    }
+    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+        Self {
+            builder: self.builder.is_in_err(is, err),
             ..self
         }
     }
@@ -322,33 +342,7 @@ fn read_input<T: FromStr>(
     }
 }
 
-trait IsIn<T: FromStr>: InputBuild<T> {
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self;
-}
-
-impl<T: FromStr + 'static> IsIn<T> for InputBuilder<T> {
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
-        InputBuilder {
-            test: {
-                let mut x = self.test;
-                x.push((is.contains_func(), None));
-                x
-            },
-            ..self
-        }
-    }
-}
-
-impl<T: FromStr + 'static> IsIn<T> for InputBuilderOnce<T> {
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
-        Self {
-            builder: self.builder.is_in(is),
-            ..self
-        }
-    }
-}
-
-trait IsInFunc<T> {
+pub trait IsInFunc<T> {
     fn contains_func(self) -> Box<Fn(&T) -> bool>;
 }
 
