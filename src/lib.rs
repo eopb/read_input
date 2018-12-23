@@ -5,6 +5,7 @@
 
 pub mod prelude;
 pub mod shortcut;
+mod tests;
 
 use std::{
     cmp::PartialOrd,
@@ -292,6 +293,33 @@ fn input_str() -> String {
     input
 }
 
+fn parse_input<T: FromStr>(
+    input: String,
+    err: &str,
+    test: &[(Box<TestFunc<T>>, Option<String>)],
+    err_pass: &dyn Fn(&T::Err) -> Option<String>,
+) -> Result<T, String> {
+    match T::from_str(&input.trim()) {
+        Ok(value) => {
+            let mut test_err = None;
+            let passes_test = test.iter().all(|f| {
+                if f.0(&value) {
+                    true
+                } else {
+                    test_err = Some(f.1.clone().unwrap_or_else(|| err.to_string()));
+                    false
+                }
+            });
+            if passes_test {
+                Ok(value)
+            } else {
+                Err(test_err.unwrap_or_else(|| err.to_string()))
+            }
+        }
+        Err(error) => Err(err_pass(&error).unwrap_or_else(|| err.to_string())),
+    }
+}
+
 fn read_input<T: FromStr>(
     prompt: &PromptMsg,
     err: &str,
@@ -311,27 +339,10 @@ fn read_input<T: FromStr>(
     };
 
     loop {
-        match T::from_str(&input.trim()) {
-            Ok(value) => {
-                let mut test_err = None;
-                let passes_test = test.iter().all(|f| {
-                    if f.0(&value) {
-                        true
-                    } else {
-                        test_err = Some(f.1.clone().unwrap_or_else(|| err.to_string()));
-                        false
-                    }
-                });
-                if passes_test {
-                    return value;
-                } else {
-                    println!("{}", test_err.unwrap_or_else(|| err.to_string()));
-                }
-            }
-            Err(error) => {
-                println!("{}", (err_pass(&error)).unwrap_or_else(|| err.to_string()));
-            }
-        }
+        match parse_input(input, err, test, err_pass) {
+            Ok(v) => return v,
+            Err(e) => println!("{}", e),
+        };
 
         if prompt.repeat {
             print!("{}", prompt.msg);
