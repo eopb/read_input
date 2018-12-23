@@ -240,22 +240,22 @@ where
     Self: std::marker::Sized,
 {
     fn min(self, min: T) -> Self {
-        self.add_test(move |x| x >= &min)
+        self.is_in(min..)
     }
     fn max(self, max: T) -> Self {
-        self.add_test(move |x| x <= &max)
+        self.is_in(..=max)
     }
     fn min_max(self, min: T, max: T) -> Self {
-        self.add_test(move |x| &min <= x && x <= &max)
+        self.is_in(min..=max)
     }
     fn min_err(self, min: T, err: impl ToString) -> Self {
-        self.add_err_test(move |x| x >= &min, err)
+        self.is_in_err(min.., err)
     }
     fn max_err(self, max: T, err: impl ToString) -> Self {
-        self.add_err_test(move |x| x <= &max, err)
+        self.is_in_err(..=max, err)
     }
     fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
-        self.add_err_test(move |x| &min <= x && x <= &max, err)
+        self.is_in_err(min..=max, err)
     }
 }
 
