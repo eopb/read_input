@@ -73,8 +73,8 @@ pub trait InputBuild<T: FromStr> {
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self;
-    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
+    fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
+    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -98,7 +98,7 @@ impl<T: FromStr> InputBuilder<T> {
     pub fn get(&self) -> T {
         read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
-    fn is_in_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
+    fn inside_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
         InputBuilder {
             test: {
                 let mut x = self.test;
@@ -131,10 +131,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
 
     fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
-        self.is_in_err_opt(test, None)
+        self.inside_err_opt(test, None)
     }
     fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
-        self.is_in_err_opt(test, Some(err.to_string()))
+        self.inside_err_opt(test, Some(err.to_string()))
     }
     fn clear_tests(self) -> Self {
         InputBuilder {
@@ -148,11 +148,11 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
             ..self
         }
     }
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
-        self.is_in_err_opt(is, None)
+    fn inside<U: IsInFunc<T>>(self, is: U) -> Self {
+        self.inside_err_opt(is, None)
     }
-    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
-        self.is_in_err_opt(is, Some(err.to_string()))
+    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+        self.inside_err_opt(is, Some(err.to_string()))
     }
 }
 
@@ -212,15 +212,15 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
             ..self
         }
     }
-    fn is_in<U: IsInFunc<T>>(self, is: U) -> Self {
+    fn inside<U: IsInFunc<T>>(self, is: U) -> Self {
         Self {
-            builder: self.builder.is_in(is),
+            builder: self.builder.inside(is),
             ..self
         }
     }
-    fn is_in_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
         Self {
-            builder: self.builder.is_in_err(is, err),
+            builder: self.builder.inside_err(is, err),
             ..self
         }
     }
@@ -240,22 +240,22 @@ where
     Self: std::marker::Sized,
 {
     fn min(self, min: T) -> Self {
-        self.is_in(min..)
+        self.inside(min..)
     }
     fn max(self, max: T) -> Self {
-        self.is_in(..=max)
+        self.inside(..=max)
     }
     fn min_max(self, min: T, max: T) -> Self {
-        self.is_in(min..=max)
+        self.inside(min..=max)
     }
     fn min_err(self, min: T, err: impl ToString) -> Self {
-        self.is_in_err(min.., err)
+        self.inside_err(min.., err)
     }
     fn max_err(self, max: T, err: impl ToString) -> Self {
-        self.is_in_err(..=max, err)
+        self.inside_err(..=max, err)
     }
     fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
-        self.is_in_err(min..=max, err)
+        self.inside_err(min..=max, err)
     }
 }
 
