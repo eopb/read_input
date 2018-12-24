@@ -326,15 +326,13 @@ fn read_input<T: FromStr>(
     print!("{}", prompt.msg);
     try_flush();
 
-    let mut input = input_str();
-
-    if input.trim().is_empty() {
-        if let Some(x) = default {
-            return x;
-        }
-    };
-
     loop {
+        let input = input_str();
+        if input.trim().is_empty() {
+            if let Some(x) = default {
+                return x;
+            }
+        };
         match parse_input(input, err, test, err_pass) {
             Ok(v) => return v,
             Err(e) => println!("{}", e),
@@ -344,8 +342,6 @@ fn read_input<T: FromStr>(
             print!("{}", prompt.msg);
             try_flush();
         };
-
-        input = input_str();
     }
 }
 
