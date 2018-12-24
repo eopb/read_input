@@ -86,16 +86,16 @@ impl<T: FromStr> InputBuilder<T> {
             err_match: Box::new(|_| None),
         }
     }
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    pub fn get(&self) -> T {
+        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
+    }
     /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
         InputBuilderOnce {
             builder: self,
             default: Some(default),
         }
-    }
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-    pub fn get(&self) -> T {
-        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
     fn inside_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
         InputBuilder {
