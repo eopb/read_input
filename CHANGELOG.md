@@ -5,7 +5,7 @@
 ### Examples updates
 - Small updates and clean ups in examples.
 ### New features
-- Added `shortcut::input_range`.
+- Added `shortcut::input_inside`.
 - Added `.inside()`.
 - Added `.min()`.
 - Added `.max()`.

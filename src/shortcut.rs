@@ -16,7 +16,7 @@ pub fn valid_input<T: FromStr + 'static>(test: impl Fn(&T) -> bool + 'static) ->
     input_new().add_test(test).get()
 }
 
-pub fn input_range<T>(min: T, max: T) -> T
+pub fn input_inside<T>(min: T, max: T) -> T
 where
     T: FromStr,
     T: PartialOrd,
