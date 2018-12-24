@@ -3,62 +3,22 @@
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
 
+mod core;
+mod is_in_func;
 pub mod prelude;
+mod prompt_msg;
 pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
-use std::{
-    cmp::PartialOrd,
-    io,
-    io::Write,
-    ops::{Range, RangeFrom, RangeInclusive, RangeTo, RangeToInclusive},
-    str::FromStr,
-    string::ToString,
+use crate::{
+    core::{read_input, TestFunc},
+    is_in_func::IsInFunc,
+    prompt_msg::PromptMsg,
 };
+use std::{cmp::PartialOrd, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
-
-struct PromptMsg {
-    msg: String,
-    repeat: bool,
-}
-
-impl PromptMsg {
-    fn new() -> Self {
-        Self {
-            msg: String::new(),
-            repeat: false,
-        }
-    }
-    fn from_str(s: impl ToString) -> Self {
-        Self {
-            msg: s.to_string(),
-            repeat: false,
-        }
-    }
-    fn repeat_from_str(s: impl ToString) -> Self {
-        Self {
-            msg: s.to_string(),
-            repeat: true,
-        }
-    }
-}
-
-type TestFunc<T> = Fn(&T) -> bool;
-
-/// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
-pub struct InputBuilder<T: FromStr> {
-    msg: PromptMsg,
-    err: String,
-    test: Vec<(Box<TestFunc<T>>, Option<String>)>,
-    err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
-}
-
-pub struct InputBuilderOnce<T: FromStr> {
-    builder: InputBuilder<T>,
-    default: Option<T>,
-}
 
 pub trait InputBuild<T: FromStr> {
     /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
@@ -77,6 +37,41 @@ pub trait InputBuild<T: FromStr> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
     fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
+}
+
+pub trait InputConstraints<T>: InputBuild<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+    Self: std::marker::Sized,
+{
+    fn min(self, min: T) -> Self {
+        self.inside(min..)
+    }
+    fn max(self, max: T) -> Self {
+        self.inside(..=max)
+    }
+    fn min_max(self, min: T, max: T) -> Self {
+        self.inside(min..=max)
+    }
+    fn min_err(self, min: T, err: impl ToString) -> Self {
+        self.inside_err(min.., err)
+    }
+    fn max_err(self, max: T, err: impl ToString) -> Self {
+        self.inside_err(..=max, err)
+    }
+    fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
+        self.inside_err(min..=max, err)
+    }
+}
+
+/// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
+pub struct InputBuilder<T: FromStr> {
+    msg: PromptMsg,
+    err: String,
+    test: Vec<(Box<TestFunc<T>>, Option<String>)>,
+    err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -158,6 +153,25 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
 }
 
+impl<T: FromStr> Default for InputBuilder<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T> InputConstraints<T> for InputBuilder<T>
+where
+    T: FromStr,
+    T: PartialOrd,
+    T: 'static,
+{
+}
+
+pub struct InputBuilderOnce<T: FromStr> {
+    builder: InputBuilder<T>,
+    default: Option<T>,
+}
+
 impl<T: FromStr> InputBuilderOnce<T> {
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
     pub fn get(self) -> T {
@@ -228,177 +242,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     }
 }
 
-impl<T: FromStr> Default for InputBuilder<T> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-pub trait InputConstraints<T>: InputBuild<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-    Self: std::marker::Sized,
-{
-    fn min(self, min: T) -> Self {
-        self.inside(min..)
-    }
-    fn max(self, max: T) -> Self {
-        self.inside(..=max)
-    }
-    fn min_max(self, min: T, max: T) -> Self {
-        self.inside(min..=max)
-    }
-    fn min_err(self, min: T, err: impl ToString) -> Self {
-        self.inside_err(min.., err)
-    }
-    fn max_err(self, max: T, err: impl ToString) -> Self {
-        self.inside_err(..=max, err)
-    }
-    fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
-        self.inside_err(min..=max, err)
-    }
-}
-
-impl<T> InputConstraints<T> for InputBuilder<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
-}
-
 impl<T> InputConstraints<T> for InputBuilderOnce<T>
 where
     T: FromStr,
     T: PartialOrd,
     T: 'static,
 {
-}
-
-fn try_flush() {
-    io::stdout().flush().unwrap_or(())
-}
-
-fn input_str() -> String {
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    input
-}
-
-fn parse_input<T: FromStr>(
-    input: String,
-    err: &str,
-    test: &[(Box<TestFunc<T>>, Option<String>)],
-    err_pass: &dyn Fn(&T::Err) -> Option<String>,
-) -> Result<T, String> {
-    match T::from_str(&input.trim()) {
-        Ok(value) => {
-            let mut test_err = None;
-            let passes_test = test.iter().all(|f| {
-                if f.0(&value) {
-                    true
-                } else {
-                    test_err = Some(f.1.clone().unwrap_or_else(|| err.to_string()));
-                    false
-                }
-            });
-            if passes_test {
-                Ok(value)
-            } else {
-                Err(test_err.unwrap_or_else(|| err.to_string()))
-            }
-        }
-        Err(error) => Err(err_pass(&error).unwrap_or_else(|| err.to_string())),
-    }
-}
-
-fn read_input<T: FromStr>(
-    prompt: &PromptMsg,
-    err: &str,
-    default: Option<T>,
-    test: &[(Box<TestFunc<T>>, Option<String>)],
-    err_pass: &dyn Fn(&T::Err) -> Option<String>,
-) -> T {
-    print!("{}", prompt.msg);
-    try_flush();
-
-    loop {
-        let input = input_str();
-        if input.trim().is_empty() {
-            if let Some(x) = default {
-                return x;
-            }
-        };
-        match parse_input(input, err, test, err_pass) {
-            Ok(v) => return v,
-            Err(e) => println!("{}", e),
-        };
-
-        if prompt.repeat {
-            print!("{}", prompt.msg);
-            try_flush();
-        };
-    }
-}
-
-pub trait IsInFunc<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool>;
-}
-
-impl<T: PartialOrd + 'static> IsInFunc<T> for Range<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| &self.start <= x && x < &self.end)
-    }
-}
-
-impl<T: PartialOrd + 'static> IsInFunc<T> for RangeInclusive<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| self.start() <= x && x <= self.end())
-    }
-}
-
-impl<T: PartialOrd + 'static> IsInFunc<T> for RangeFrom<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| &self.start <= x)
-    }
-}
-
-impl<T: PartialOrd + 'static> IsInFunc<T> for RangeTo<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| &self.end > x)
-    }
-}
-
-impl<T: PartialOrd + 'static> IsInFunc<T> for RangeToInclusive<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| &self.end >= x)
-    }
-}
-
-impl<T: PartialEq + 'static> IsInFunc<T> for Vec<T> {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| self.contains(x))
-    }
-}
-
-impl<T> IsInFunc<T> for [T]
-where
-    Self: Sized,
-    T: PartialEq,
-    T: 'static,
-    T: Sized,
-{
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(move |x| self.contains(x))
-    }
-}
-
-impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
-    fn contains_func(self) -> Box<Fn(&T) -> bool> {
-        Box::new(self)
-    }
 }
