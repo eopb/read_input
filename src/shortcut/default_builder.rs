@@ -1,5 +1,7 @@
-use crate::{shortcut::input_new, InputBuild, InputBuilder};
-use std::str::FromStr;
+use {
+    crate::{shortcut::input_new, InputBuild, InputBuilder},
+    std::str::FromStr,
+};
 
 pub trait DefaultBuilderSettings: FromStr {
     fn settings() -> InputBuilder<Self>;

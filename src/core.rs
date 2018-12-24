@@ -1,5 +1,7 @@
-use crate::prompt_msg::PromptMsg;
-use std::{io, io::Write, str::FromStr, string::ToString};
+use {
+    crate::prompt_msg::PromptMsg,
+    std::{io, io::Write, str::FromStr, string::ToString},
+};
 
 pub(crate) type TestFunc<T> = Fn(&T) -> bool;
 
@@ -54,11 +56,13 @@ pub(crate) fn read_input<T: FromStr>(
 
     loop {
         let input = input_str();
+
         if input.trim().is_empty() {
             if let Some(x) = default {
                 return x;
             }
         };
+
         match parse_input(input, err, test, err_pass) {
             Ok(v) => return v,
             Err(e) => println!("{}", e),

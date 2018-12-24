@@ -11,12 +11,14 @@ pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
-use crate::{
-    core::{read_input, TestFunc},
-    is_in_func::IsInFunc,
-    prompt_msg::PromptMsg,
+use {
+    crate::{
+        core::{read_input, TestFunc},
+        is_in_func::IsInFunc,
+        prompt_msg::PromptMsg,
+    },
+    std::{cmp::PartialOrd, str::FromStr, string::ToString},
 };
-use std::{cmp::PartialOrd, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
