@@ -1,9 +1,18 @@
 # __Next__
 ### **Breaking changes**
 - Allow default on empty input all times rather then only on first input. (Thanks NLL)
+- Modules and traits needed have been changed (should not affect prelude)
 ### Examples updates
 - Small updates and clean ups in examples.
-
+### New features
+- Added `shortcut::input_range`.
+- Added `.inside()`.
+- Added `.min()`.
+- Added `.max()`.
+- Added `.min_max()`.
+- Added `.min_err()`.
+- Added `.max_err()`.
+- Added `.min_max_err()`.
 
 # 0.7.2
 - Update description
