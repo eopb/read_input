@@ -1,6 +1,9 @@
 # __Next__
 ### **Breaking changes**
 - Allow default on empty input all times rather then only on first input. (Thanks NLL)
+### Examples updates
+- Small updates and clean ups in examples.
+
 
 # 0.7.2
 - Update description
