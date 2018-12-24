@@ -1,6 +1,6 @@
 use std::{
     cmp::PartialOrd,
-    ops::{Range, RangeFrom, RangeInclusive, RangeTo, RangeToInclusive},
+    ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
 };
 
 pub trait IsInFunc<T> {
@@ -34,6 +34,12 @@ impl<T: PartialOrd + 'static> IsInFunc<T> for RangeTo<T> {
 impl<T: PartialOrd + 'static> IsInFunc<T> for RangeToInclusive<T> {
     fn contains_func(self) -> Box<Fn(&T) -> bool> {
         Box::new(move |x| &self.end >= x)
+    }
+}
+
+impl<T: PartialOrd + 'static> IsInFunc<T> for RangeFull {
+    fn contains_func(self) -> Box<Fn(&T) -> bool> {
+        Box::new(|_| true)
     }
 }
 
