@@ -2,9 +2,6 @@
 //This example shows how best to use `match` on a inputted value.
 //The thing to note form this program is the use of `unreachable!()`
 
-extern crate dont_disappear;
-extern crate read_input;
-
 use read_input::shortcut::*;
 
 fn main() {

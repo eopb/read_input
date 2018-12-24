@@ -1,7 +1,5 @@
 //To run this example `cargo run --example main --release`
 
-extern crate read_input;
-
 use read_input::prelude::*;
 use read_input::shortcut::{simple_input, valid_input};
 

@@ -3,10 +3,6 @@
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 //This version has some minor improvements.
 
-extern crate dont_disappear;
-extern crate rand;
-extern crate read_input;
-
 use rand::Rng;
 use read_input::prelude::*;
 use std::cmp::Ordering;

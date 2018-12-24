@@ -2,9 +2,6 @@
 //Example program that tells you how long it is until the date you typed in.
 //This program is here to show that types from external crates can uses `read_input`
 
-extern crate chrono;
-extern crate dont_disappear;
-extern crate read_input;
 use chrono::offset::{Local, TimeZone};
 use chrono::prelude::*;
 use read_input::prelude::*;

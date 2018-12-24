@@ -1,9 +1,5 @@
 //To run this example `cargo run --example url --release`
 
-extern crate dont_disappear;
-extern crate read_input;
-extern crate url;
-
 use read_input::prelude::*;
 use read_input::shortcut::with_description;
 use url::Url;

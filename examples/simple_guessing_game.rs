@@ -2,10 +2,6 @@
 //This program is based on the guessing game form the rust book.
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 
-extern crate dont_disappear;
-extern crate rand;
-extern crate read_input;
-
 use rand::Rng;
 use read_input::prelude::*;
 use std::cmp::Ordering;
