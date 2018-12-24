@@ -21,19 +21,19 @@ use std::{cmp::PartialOrd, str::FromStr, string::ToString};
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
 pub trait InputBuild<T: FromStr> {
-    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn msg(self, msg: impl ToString) -> Self;
-    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn repeat_msg(self, msg: impl ToString) -> Self;
-    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn err(self, err: impl ToString) -> Self;
-    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self;
-    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self;
     /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
     fn clear_tests(self) -> Self;
-    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
     fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
@@ -84,14 +84,14 @@ impl<T: FromStr> InputBuilder<T> {
             err_match: Box::new(|_| None),
         }
     }
-    /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
         InputBuilderOnce {
             builder: self,
             default: Some(default),
         }
     }
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn get(&self) -> T {
         read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
     }
@@ -173,7 +173,7 @@ pub struct InputBuilderOnce<T: FromStr> {
 }
 
 impl<T: FromStr> InputBuilderOnce<T> {
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn get(self) -> T {
         read_input::<T>(
             &self.builder.msg,
