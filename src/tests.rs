@@ -1,4 +1,3 @@
-
 use crate::{input_new, parse_input, InputBuild, InputBuilder};
 use std::str::FromStr;
 
