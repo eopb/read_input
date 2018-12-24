@@ -6,7 +6,7 @@ fn parse_with_builder<T: FromStr>(builder: InputBuilder<T>, input: String) -> Re
 }
 
 #[test]
-fn test_ranges() {
+fn test_range() {
     assert_eq!(
         parse_with_builder(input_new().inside(4..9).err("1"), "3".to_string()),
         Err("1".to_string())
@@ -14,5 +14,93 @@ fn test_ranges() {
     assert_eq!(
         parse_with_builder(input_new().inside(4..9).err("1"), "4".to_string()),
         Ok(4)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..9).err("1"), "8".to_string()),
+        Ok(8)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..9).err("1"), "9".to_string()),
+        Err("1".to_string())
+    );
+}
+
+#[test]
+fn test_range_from() {
+    assert_eq!(
+        parse_with_builder(input_new().inside(6..).err("1"), "5".to_string()),
+        Err("1".to_string())
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(6..).err("1"), "6".to_string()),
+        Ok(6)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(6..).err("1"), "10".to_string()),
+        Ok(10)
+    );
+}
+
+#[test]
+fn test_range_inclusive() {
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..=9).err("1"), "3".to_string()),
+        Err("1".to_string())
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..=9).err("1"), "4".to_string()),
+        Ok(4)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..=9).err("1"), "8".to_string()),
+        Ok(8)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..=9).err("1"), "9".to_string()),
+        Ok(9)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(4..=9).err("1"), "10".to_string()),
+        Err("1".to_string())
+    );
+}
+
+#[test]
+fn test_range_to() {
+    assert_eq!(
+        parse_with_builder(input_new().inside(..6).err("1"), "2".to_string()),
+        Ok(2)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..6).err("1"), "5".to_string()),
+        Ok(5)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..6).err("1"), "6".to_string()),
+        Err("1".to_string())
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..6).err("1"), "7".to_string()),
+        Err("1".to_string())
+    );
+}
+
+#[test]
+fn test_range_to_inclusive() {
+    assert_eq!(
+        parse_with_builder(input_new().inside(..=6).err("1"), "2".to_string()),
+        Ok(2)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..=6).err("1"), "5".to_string()),
+        Ok(5)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..=6).err("1"), "6".to_string()),
+        Ok(6)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(..=6).err("1"), "7".to_string()),
+        Err("1".to_string())
     );
 }
