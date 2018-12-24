@@ -1,4 +1,4 @@
-use crate::{input_new, parse_input, InputBuild, InputBuilder};
+use crate::{parse_input, shortcut::input_new, InputBuild, InputBuilder};
 use std::str::FromStr;
 
 fn parse_with_builder<T: FromStr>(builder: InputBuilder<T>, input: String) -> Result<T, String> {

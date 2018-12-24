@@ -277,11 +277,6 @@ where
 {
 }
 
-/// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
-pub fn input_new<T: FromStr>() -> InputBuilder<T> {
-    InputBuilder::new()
-}
-
 fn try_flush() {
     io::stdout().flush().unwrap_or(())
 }

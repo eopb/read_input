@@ -3,10 +3,15 @@ pub mod default_builder;
 pub use self::default_builder::input_new_d;
 pub use self::default_builder::DefaultBuilderSettings;
 
-use crate::{input_new, InputBuild, InputConstraints};
+use crate::{InputBuild, InputBuilder, InputConstraints};
 use std::cmp::PartialOrd;
 use std::error::Error;
 use std::str::FromStr;
+
+/// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
+pub fn input_new<T: FromStr>() -> InputBuilder<T> {
+    InputBuilder::new()
+}
 
 /// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/master/README.md)
 pub fn valid_input<T: FromStr + 'static>(test: impl Fn(&T) -> bool + 'static) -> T {

@@ -1,1 +1,1 @@
-pub use crate::{input_new, InputBuild, InputConstraints};
+pub use crate::{shortcut::input_new, InputBuild, InputConstraints};
