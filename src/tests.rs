@@ -104,3 +104,19 @@ fn test_range_to_inclusive() {
         Err("1".to_string())
     );
 }
+
+#[test]
+fn test_array() {
+    assert_eq!(
+        parse_with_builder(input_new().inside(vec![2, 6, 7]).err("1"), "2".to_string()),
+        Ok(2)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(vec![2, 6, 7]).err("1"), "6".to_string()),
+        Ok(6)
+    );
+    assert_eq!(
+        parse_with_builder(input_new().inside(vec![2, 6, 7]).err("1"), "3".to_string()),
+        Err("1".to_string())
+    );
+}
