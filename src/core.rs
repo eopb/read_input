@@ -20,7 +20,7 @@ fn input_str() -> String {
 pub(crate) fn parse_input<T: FromStr>(
     input: String,
     err: &str,
-    test: &[(Box<TestFunc<T>>, Option<String>)],
+    tests: &[(Box<TestFunc<T>>, Option<String>)],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> Result<T, String> {
     match T::from_str(&input.trim()) {
@@ -48,7 +48,7 @@ pub(crate) fn read_input<T: FromStr>(
     prompt: &PromptMsg,
     err: &str,
     default: Option<T>,
-    test: &[(Box<TestFunc<T>>, Option<String>)],
+    tests: &[(Box<TestFunc<T>>, Option<String>)],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     print!("{}", prompt.msg);
@@ -63,7 +63,7 @@ pub(crate) fn read_input<T: FromStr>(
             }
         };
 
-        match parse_input(input, err, test, err_pass) {
+        match parse_input(input, err, tests, err_pass) {
             Ok(v) => return v,
             Err(e) => println!("{}", e),
         };

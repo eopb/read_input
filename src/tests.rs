@@ -4,7 +4,7 @@ use {
 };
 
 fn parse_with_builder<T: FromStr>(builder: InputBuilder<T>, input: String) -> Result<T, String> {
-    parse_input(input, &builder.err, &builder.test, &*builder.err_match)
+    parse_input(input, &builder.err, &builder.tests, &*builder.err_match)
 }
 
 #[test]

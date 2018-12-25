@@ -72,7 +72,7 @@ where
 pub struct InputBuilder<T: FromStr> {
     msg: PromptMsg,
     err: String,
-    test: Vec<(Box<TestFunc<T>>, Option<String>)>,
+    tests: Vec<(Box<TestFunc<T>>, Option<String>)>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
@@ -82,13 +82,13 @@ impl<T: FromStr> InputBuilder<T> {
         InputBuilder {
             msg: PromptMsg::new(),
             err: DEFAULT_ERR.to_string(),
-            test: Vec::new(),
+            tests: Vec::new(),
             err_match: Box::new(|_| None),
         }
     }
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn get(&self) -> T {
-        read_input::<T>(&self.msg, &self.err, None, &self.test, &*self.err_match)
+        read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
     }
     /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
@@ -99,8 +99,8 @@ impl<T: FromStr> InputBuilder<T> {
     }
     fn inside_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
         InputBuilder {
-            test: {
-                let mut x = self.test;
+            tests: {
+                let mut x = self.tests;
                 x.push((is.contains_func(), err));
                 x
             },
@@ -137,7 +137,7 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
     fn clear_tests(self) -> Self {
         InputBuilder {
-            test: Vec::new(),
+            tests: Vec::new(),
             ..self
         }
     }
@@ -181,7 +181,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
             &self.builder.msg,
             &self.builder.err,
             self.default,
-            &self.builder.test,
+            &self.builder.tests,
             &*self.builder.err_match,
         )
     }
