@@ -25,20 +25,12 @@ pub(crate) fn parse_input<T: FromStr>(
 ) -> Result<T, String> {
     match T::from_str(&input.trim()) {
         Ok(value) => {
-            let mut test_err = None;
-            let passes_test = test.iter().all(|f| {
-                if f.0(&value) {
-                    true
-                } else {
-                    test_err = Some(f.1.clone().unwrap_or_else(|| err.to_string()));
-                    false
+            for (test, test_err) in tests {
+                if !test(&value) {
+                    return Err(test_err.clone().unwrap_or_else(|| err.to_string()));
                 }
-            });
-            if passes_test {
-                Ok(value)
-            } else {
-                Err(test_err.unwrap_or_else(|| err.to_string()))
             }
+            Ok(value)
         }
         Err(error) => Err(err_pass(&error).unwrap_or_else(|| err.to_string())),
     }
