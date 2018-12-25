@@ -100,5 +100,5 @@ clippy:
   stage: post-run
   script:
     - rustup component add clippy-preview
-    - cargo clippy --all -- -D clippy::all
+    - cargo clippy
   allow_failure: true
