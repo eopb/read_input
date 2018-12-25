@@ -1,6 +1,6 @@
-pub mod default_builder;
+pub mod default_settings;
 
-pub use self::default_builder::{input_new_d, DefaultBuilderSettings};
+pub use self::default_settings::{input_new_d, DefaultBuilderSettings};
 
 use {
     crate::{is_in_func::IsInFunc, InputBuild, InputBuilder},
