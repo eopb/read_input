@@ -80,7 +80,7 @@ pub struct InputBuilder<T: FromStr> {
 impl<T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
-        InputBuilder {
+        Self {
             msg: PromptMsg::new(),
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
@@ -99,7 +99,7 @@ impl<T: FromStr> InputBuilder<T> {
         }
     }
     fn inside_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
-        InputBuilder {
+        Self {
             tests: {
                 let mut x = self.tests;
                 x.push((is.contains_func(), err));
@@ -112,19 +112,19 @@ impl<T: FromStr> InputBuilder<T> {
 
 impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     fn msg(self, msg: impl ToString) -> Self {
-        InputBuilder {
+        Self {
             msg: PromptMsg::from_str(msg),
             ..self
         }
     }
     fn repeat_msg(self, msg: impl ToString) -> Self {
-        InputBuilder {
+        Self {
             msg: PromptMsg::repeat_from_str(msg),
             ..self
         }
     }
     fn err(self, err: impl ToString) -> Self {
-        InputBuilder {
+        Self {
             err: err.to_string(),
             ..self
         }
@@ -137,13 +137,13 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
         self.inside_err_opt(test, Some(err.to_string()))
     }
     fn clear_tests(self) -> Self {
-        InputBuilder {
+        Self {
             tests: Vec::new(),
             ..self
         }
     }
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
-        InputBuilder {
+        Self {
             err_match: Box::new(err_match),
             ..self
         }
