@@ -186,62 +186,44 @@ impl<T: FromStr> InputBuilderOnce<T> {
             &*self.builder.err_match,
         )
     }
+    fn internal<F>(self, with: F) -> Self
+    where
+        F: FnOnce(InputBuilder<T>) -> InputBuilder<T>,
+    {
+        Self {
+            builder: with(self.builder),
+            ..self
+        }
+    }
 }
 
 impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     fn msg(self, msg: impl ToString) -> Self {
-        Self {
-            builder: self.builder.msg(msg),
-            ..self
-        }
+        self.internal(|x| x.msg(msg))
     }
     fn repeat_msg(self, msg: impl ToString) -> Self {
-        Self {
-            builder: self.builder.repeat_msg(msg),
-            ..self
-        }
+        self.internal(|x| x.repeat_msg(msg))
     }
     fn err(self, err: impl ToString) -> Self {
-        Self {
-            builder: self.builder.err(err),
-            ..self
-        }
+        self.internal(|x| x.err(err))
     }
     fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
-        Self {
-            builder: self.builder.add_test(test),
-            ..self
-        }
+        self.internal(|x| x.add_test(test))
     }
     fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
-        Self {
-            builder: self.builder.add_err_test(test, err),
-            ..self
-        }
+        self.internal(|x| x.add_err_test(test, err))
     }
     fn clear_tests(self) -> Self {
-        Self {
-            builder: self.builder.clear_tests(),
-            ..self
-        }
+        self.internal(|x| x.clear_tests())
     }
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
-        Self {
-            builder: self.builder.err_match(err_match),
-            ..self
-        }
+        self.internal(|x| x.err_match(err_match))
     }
     fn inside<U: IsInFunc<T>>(self, is: U) -> Self {
-        Self {
-            builder: self.builder.inside(is),
-            ..self
-        }
+        self.internal(|x| x.inside(is))
     }
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
-        Self {
-            builder: self.builder.inside_err(is, err),
-            ..self
-        }
+        self.internal(|x| x.inside_err(is, err))
     }
 }
 
