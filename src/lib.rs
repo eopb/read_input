@@ -35,6 +35,7 @@ pub trait InputBuild<T: FromStr> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
     fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
+    fn toggle_msg_repeat() -> Self;
 }
 
 pub trait InputConstraints<T>: InputBuild<T>
@@ -63,7 +64,7 @@ where
         self.inside_err(min..=max, err)
     }
 }
- 
+
 pub(crate) struct Prompt {
     pub msg: String,
     pub repeat: bool,
@@ -171,6 +172,15 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
         self.inside_err_opt(is, Some(err.to_string()))
     }
+    fn toggle_msg_repeat(self) -> Self {
+        Self {
+            msg: Prompt {
+                repeat: !self.repeat,
+                ..self
+            },
+            ..self
+        }
+    }
 }
 
 impl<T: FromStr> Default for InputBuilder<T> {
@@ -241,6 +251,9 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     }
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
         self.internal(|x| x.inside_err(is, err))
+    }
+    fn toggle_msg_repeat(self) -> Self {
+        self.internal(|x| x.toggle_msg_repeat())
     }
 }
 
