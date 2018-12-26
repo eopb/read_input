@@ -1,3 +1,5 @@
+//! Collection of functions that make things a little less verbose.
+
 use {
     crate::{is_in_func::IsInFunc, InputBuild, InputBuilder},
     std::{error::Error, str::FromStr},
