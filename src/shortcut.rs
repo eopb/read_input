@@ -13,7 +13,7 @@ pub fn valid_input<T: FromStr + 'static>(test: impl Fn(&T) -> bool + 'static) ->
     input_new().add_test(test).get()
 }
 
-pub fn input_inside<T: FromStr, U>(is: U) -> T
+pub fn input_inside<T, U>(is: U) -> T
 where
     T: FromStr,
     T: 'static,
