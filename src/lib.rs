@@ -35,7 +35,7 @@ pub trait InputBuild<T: FromStr> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
     fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
     fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
-    fn toggle_msg_repeat() -> Self;
+    fn toggle_msg_repeat(self) -> Self;
 }
 
 pub trait InputConstraints<T>: InputBuild<T>
@@ -175,8 +175,8 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     fn toggle_msg_repeat(self) -> Self {
         Self {
             msg: Prompt {
-                repeat: !self.repeat,
-                ..self
+                repeat: !self.msg.repeat,
+                ..self.msg
             },
             ..self
         }
