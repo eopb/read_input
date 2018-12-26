@@ -55,6 +55,9 @@ where
     fn min_max(self, min: T, max: T) -> Self {
         self.inside(min..=max)
     }
+    fn not(self, this: T) -> Self {
+        self.inside(move |x: &T| *x != this)
+    }
     fn min_err(self, min: T, err: impl ToString) -> Self {
         self.inside_err(min.., err)
     }
@@ -63,6 +66,9 @@ where
     }
     fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
         self.inside_err(min..=max, err)
+    }
+    fn not_err(self, this: T, err: impl ToString) -> Self {
+        self.inside_err(move |x: &T| *x != this, err)
     }
 }
 

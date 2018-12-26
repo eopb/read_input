@@ -94,23 +94,40 @@ let input = input_new::<u32>()
 
 ### Add Checks
 
-You can add your own checks to ensure the value meets your criteria. If you want a integer between 4 and 9 you could write.
+You can add your own checks to ensure the value meets your criteria.
+
+If you want an integer that is not 6 you could write.
 
 ```rust
-let input = input_new().add_test(|x| 4 < *x && *x < 9).get();
+let input = input_new().add_test(|x| *x != 6).get();
 ```
 
-In the same style you can specify custom test errors and multiple tests. If you want a value between 4 and 9 that is not 6 you could write.
+The `.inside()` method can be used to ensure the inputted value is within a range.
+
+If you want an integer from 4 to 9 you could write.
+
+```rust
+let input = input_new().inside(4..=9).get();
+```
+
+`.inside()` can also except a vector as well as ranges. `.inside(4..=9)` is the same as `.inside(vec![4, 5, 6, 7, 8, 9])`
+
+In the same style you can specify custom test errors and multiple checks. Both `.add_test()` and `.inside()` have `.add_err_test()` and `.inside_err()` variants that allow for custom error messages.
+
+If you want a value from 4 to 9 that is not 6 you could write.
 
 ```rust
 let input = input_new()
-    .msg("Please input a number between 4 and 9 that is not 6: ")
-    .add_test(|x| 4 < *x && *x < 9)
+    .msg("Please input a number from 4 to 9 that is not 6: ")
+    .inside_err(
+        4..=9,
+        "That does not look like a number from 4 to 9. Please try again"
+    )
     .add_err_test(
         |x| *x != 6,
         "That value is 6! I dont want 6. Please try again"
     )
-    .err("That does not look like a number between 4 and 9. Please try again")
+    .err("That does not look like a number. Please try again")
     .get();
 ```
 
@@ -189,6 +206,8 @@ use read_input::shortcut::{simple_input, valid_input};
 `simple_input()` is the same as `input_new().get()`.
 
 `valid_input(|x| 4 < *x && *x < 9)` is the same as `input_new().add_test(|x| 4 < *x && *x < 9).get()`.
+
+`input_inside(..)` is the same as `input_new().inside(..).get()`.
 
 ### `input_new_d`
 

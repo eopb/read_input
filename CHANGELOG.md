@@ -10,9 +10,11 @@
 - Added `.min()`.
 - Added `.max()`.
 - Added `.min_max()`.
+- Added `.not()`.
 - Added `.min_err()`.
 - Added `.max_err()`.
 - Added `.min_max_err()`.
+- Added `.not_err()`.
 
 # 0.7.2
 - Update description
