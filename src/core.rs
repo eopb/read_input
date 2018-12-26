@@ -1,9 +1,7 @@
 use {
-    crate::prompt_msg::PromptMsg,
+    crate::{Prompt, Test},
     std::{io, io::Write, str::FromStr, string::ToString},
 };
-
-pub(crate) type TestFunc<T> = Fn(&T) -> bool;
 
 fn try_flush() {
     io::stdout().flush().unwrap_or(())
@@ -20,14 +18,14 @@ fn input_str() -> String {
 pub(crate) fn parse_input<T: FromStr>(
     input: String,
     err: &str,
-    tests: &[(Box<TestFunc<T>>, Option<String>)],
+    tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> Result<T, String> {
     match T::from_str(&input.trim()) {
         Ok(value) => {
-            for (test, test_err) in tests {
-                if !test(&value) {
-                    return Err(test_err.clone().unwrap_or_else(|| err.to_string()));
+            for test in tests {
+                if !(test.func)(&value) {
+                    return Err(test.err.clone().unwrap_or_else(|| err.to_string()));
                 }
             }
             Ok(value)
@@ -37,10 +35,10 @@ pub(crate) fn parse_input<T: FromStr>(
 }
 
 pub(crate) fn read_input<T: FromStr>(
-    prompt: &PromptMsg,
+    prompt: &Prompt,
     err: &str,
     default: Option<T>,
-    tests: &[(Box<TestFunc<T>>, Option<String>)],
+    tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     print!("{}", prompt.msg);

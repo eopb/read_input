@@ -7,17 +7,12 @@
 mod core;
 mod is_in_func;
 pub mod prelude;
-mod prompt_msg;
 pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
 use {
-    crate::{
-        core::{read_input, TestFunc},
-        is_in_func::IsInFunc,
-        prompt_msg::PromptMsg,
-    },
+    crate::{core::read_input, is_in_func::IsInFunc},
     std::{cmp::PartialOrd, str::FromStr, string::ToString},
 };
 
@@ -68,12 +63,22 @@ where
         self.inside_err(min..=max, err)
     }
 }
+ 
+pub(crate) struct Prompt {
+    pub msg: String,
+    pub repeat: bool,
+}
+
+pub(crate) struct Test<T> {
+    pub func: Box<Fn(&T) -> bool>,
+    pub err: Option<String>,
+}
 
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<T: FromStr> {
-    msg: PromptMsg,
+    msg: Prompt,
     err: String,
-    tests: Vec<(Box<TestFunc<T>>, Option<String>)>,
+    tests: Vec<Test<T>>,
     err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
 }
 
@@ -81,7 +86,10 @@ impl<T: FromStr> InputBuilder<T> {
     /// Creates a new instance of `InputBuilder` with default settings.
     pub fn new() -> Self {
         Self {
-            msg: PromptMsg::new(),
+            msg: Prompt {
+                msg: String::new(),
+                repeat: false,
+            },
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
             err_match: Box::new(|_| None),
@@ -102,7 +110,10 @@ impl<T: FromStr> InputBuilder<T> {
         Self {
             tests: {
                 let mut x = self.tests;
-                x.push((is.contains_func(), err));
+                x.push(Test {
+                    func: is.contains_func(),
+                    err,
+                });
                 x
             },
             ..self
@@ -113,13 +124,19 @@ impl<T: FromStr> InputBuilder<T> {
 impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     fn msg(self, msg: impl ToString) -> Self {
         Self {
-            msg: PromptMsg::from_str(msg),
+            msg: Prompt {
+                msg: msg.to_string(),
+                repeat: false,
+            },
             ..self
         }
     }
     fn repeat_msg(self, msg: impl ToString) -> Self {
         Self {
-            msg: PromptMsg::repeat_from_str(msg),
+            msg: Prompt {
+                msg: msg.to_string(),
+                repeat: true,
+            },
             ..self
         }
     }
