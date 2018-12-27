@@ -11,6 +11,7 @@ pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
+use std::rc::Rc;
 use {
     crate::{core::read_input, is_in_func::IsInFunc},
     std::{cmp::PartialOrd, str::FromStr, string::ToString},
@@ -71,22 +72,24 @@ where
     }
 }
 
+#[derive(Clone)]
 pub(crate) struct Prompt {
     pub msg: String,
     pub repeat: bool,
 }
 
 pub(crate) struct Test<T> {
-    pub func: Box<Fn(&T) -> bool>,
+    pub func: Rc<Fn(&T) -> bool>,
     pub err: Option<String>,
 }
+
 
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<T: FromStr> {
     msg: Prompt,
     err: String,
     tests: Vec<Test<T>>,
-    err_match: Box<dyn Fn(&T::Err) -> Option<String>>,
+    err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -99,7 +102,7 @@ impl<T: FromStr> InputBuilder<T> {
             },
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
-            err_match: Box::new(|_| None),
+            err_match: Rc::new(|_| None),
         }
     }
     /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
@@ -168,7 +171,7 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
         Self {
-            err_match: Box::new(err_match),
+            err_match: Rc::new(err_match),
             ..self
         }
     }
@@ -194,6 +197,7 @@ impl<T: FromStr> Default for InputBuilder<T> {
         Self::new()
     }
 }
+
 
 impl<T> InputConstraints<T> for InputBuilder<T>
 where
