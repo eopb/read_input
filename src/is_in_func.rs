@@ -4,7 +4,8 @@ use std::{
         Bound::{Excluded, Included, Unbounded},
         Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive,
     },
-};use std::rc::Rc;
+    rc::Rc,
+};
 
 /// This trait is used to describe constraints with different types.
 pub trait IsInFunc<T> {

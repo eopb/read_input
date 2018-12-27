@@ -11,10 +11,9 @@ pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
-use std::rc::Rc;
 use {
     crate::{core::read_input, is_in_func::IsInFunc},
-    std::{cmp::PartialOrd, str::FromStr, string::ToString},
+    std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString},
 };
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
@@ -83,6 +82,18 @@ pub(crate) struct Test<T> {
     pub err: Option<String>,
 }
 
+impl<T> Clone for Test<T>
+where
+    T: Clone,
+    T: FromStr,
+{
+    fn clone(&self) -> Self {
+        Self {
+            func: self.func.clone(),
+            err: self.err.clone(),
+        }
+    }
+}
 
 /// `InputBuilder` is a 'builder' used to store the settings that are used to fetch input.
 pub struct InputBuilder<T: FromStr> {
@@ -192,19 +203,33 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
 }
 
-impl<T: FromStr> Default for InputBuilder<T> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-
 impl<T> InputConstraints<T> for InputBuilder<T>
 where
     T: FromStr,
     T: PartialOrd,
     T: 'static,
 {
+}
+
+impl<T: FromStr> Default for InputBuilder<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<T> Clone for InputBuilder<T>
+where
+    T: Clone,
+    T: FromStr,
+{
+    fn clone(&self) -> Self {
+        Self {
+            msg: self.msg.clone(),
+            err: self.err.clone(),
+            tests: self.tests.clone(),
+            err_match: self.err_match.clone(),
+        }
+    }
 }
 
 pub struct InputBuilderOnce<T: FromStr> {
@@ -273,4 +298,17 @@ where
     T: PartialOrd,
     T: 'static,
 {
+}
+
+impl<T> Clone for InputBuilderOnce<T>
+where
+    T: Clone,
+    T: FromStr,
+{
+    fn clone(&self) -> Self {
+        Self {
+            default: self.default.clone(),
+            ..self.clone()
+        }
+    }
 }
