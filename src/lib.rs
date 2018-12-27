@@ -308,7 +308,7 @@ where
     fn clone(&self) -> Self {
         Self {
             default: self.default.clone(),
-            ..self.clone()
+            builder: self.builder.clone(),
         }
     }
 }
