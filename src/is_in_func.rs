@@ -3,7 +3,9 @@ use std::{
     ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
 };
 
+/// This trait is used to describe constraints with different types.
 pub trait IsInFunc<T> {
+    /// Returns constraint as a function.
     fn contains_func(self) -> Box<Fn(&T) -> bool>;
 }
 
