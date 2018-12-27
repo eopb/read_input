@@ -131,6 +131,17 @@ let input = input_new()
     .get();
 ```
 
+##### Other check methods
+
+- Set a minimum value. `.min(minimum_value)`.
+- Set a maximum value. `.max(maximum_value)`.
+- Set a minimum and maximum value. `.min_max(minimum_value, maximum_value)`.
+- Set a restricted value. `.not(unwanted_value)`.
+- Set a minimum value with error message. `.min_err(minimum_value, error_message)`.
+- Set a maximum value with error message. `.max_err(maximum_value, error_message)`.
+- Set a minimum and maximum value with error message. `.min_max_err(minimum_value, maximum_value, error_message)`.
+- Sets a restricted value with error message. `.not_err(unwanted_value, error_message)`.
+
 ### Match errors
 
 You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
