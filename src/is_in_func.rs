@@ -19,22 +19,26 @@ impl<T: PartialEq + 'static> IsInFunc<T> for Vec<T> {
     }
 }
 
-impl<T> IsInFunc<T> for [T]
-where
-    Self: Sized,
-    T: PartialEq,
-    T: 'static,
-    T: Sized,
-{
-    fn contains_func(self) -> Rc<Fn(&T) -> bool> {
-        Rc::new(move |x| self.contains(x))
-    }
-}
-
 impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
     fn contains_func(self) -> Rc<Fn(&T) -> bool> {
         Rc::new(self)
     }
+}
+
+macro_rules! impl_is_in_func_for_arrays {
+    ($($e:expr),*) => {$(
+        impl<T: PartialEq + 'static> IsInFunc<T> for [T; $e] {
+            fn contains_func(self) -> Rc<Fn(&T) -> bool> {
+                Rc::new(move |x| self.contains(x))
+            }
+        }
+    )*}
+}
+
+impl_is_in_func_for_arrays! {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+    29, 30, 31, 32
 }
 
 fn range_contains_func<T, U>(range: U) -> Rc<Fn(&T) -> bool>
@@ -55,7 +59,7 @@ where
     })
 }
 
-macro_rules! impl_default_builder_for_whole {
+macro_rules! impl_is_in_func_for_ranges {
     ($($t:ty),*) => {$(
         impl<T: PartialOrd + 'static> IsInFunc<T> for $t {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
@@ -65,6 +69,6 @@ macro_rules! impl_default_builder_for_whole {
     )*}
 }
 
-impl_default_builder_for_whole! {
+impl_is_in_func_for_ranges! {
     Range<T>, RangeInclusive<T>, RangeFrom<T>, RangeTo<T>, RangeToInclusive<T>, RangeFull
 }
