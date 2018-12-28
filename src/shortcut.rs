@@ -1,9 +1,7 @@
 //! Collection of functions that make things a little less verbose.
 
-use {
-    crate::{is_in_func::IsInFunc, InputBuild, InputBuilder},
-    std::{error::Error, str::FromStr},
-};
+use crate::{is_in_func::IsInFunc, InputBuild, InputBuilder};
+use std::{error::Error, str::FromStr};
 
 /// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
 pub fn input_new<T: FromStr>() -> InputBuilder<T> {

@@ -1,6 +1,8 @@
-use {
-    crate::{Prompt, Test},
-    std::{io, io::Write, str::FromStr, string::ToString},
+use crate::{Prompt, Test};
+use std::{
+    io::{self, Write},
+    str::FromStr,
+    string::ToString,
 };
 
 fn try_flush() {
