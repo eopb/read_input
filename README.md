@@ -110,7 +110,7 @@ If you want an integer from 4 to 9 you could write.
 let input = input_new().inside(4..=9).get();
 ```
 
-`.inside()` can also except a vector as well as ranges. `.inside(4..=9)` is the same as `.inside(vec![4, 5, 6, 7, 8, 9])`
+`.inside()` can also except an array or vector as well as ranges. `.inside(4..=9)` is the same as `.inside([4, 5, 6, 7, 8, 9])`
 
 In the same style you can specify custom test errors and multiple checks. Both `.add_test()` and `.inside()` have `.add_err_test()` and `.inside_err()` variants that allow for custom error messages.
 
