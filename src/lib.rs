@@ -24,13 +24,17 @@ pub trait InputBuild<T: FromStr> {
     /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn err(self, err: impl ToString) -> Self;
     /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self;
+    fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
     /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self;
+    fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
+    where
+        F: Fn(&T) -> bool + 'static;
     /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
+    fn err_match<F>(self, err_match: F) -> Self
+    where
+        F: Fn(&T::Err) -> Option<String> + 'static;
     fn inside<U: InsideFunc<T>>(self, is: U) -> Self;
     fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self;
     fn toggle_msg_repeat(self) -> Self;
@@ -163,10 +167,13 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
         }
     }
 
-    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+    fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self {
         self.test_err_opt(Rc::new(test), None)
     }
-    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+    fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
+    where
+        F: Fn(&T) -> bool + 'static,
+    {
         self.test_err_opt(Rc::new(test), Some(err.to_string()))
     }
     fn clear_tests(self) -> Self {
@@ -175,7 +182,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
             ..self
         }
     }
-    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+    fn err_match<F>(self, err_match: F) -> Self
+    where
+        F: Fn(&T::Err) -> Option<String> + 'static,
+    {
         Self {
             err_match: Rc::new(err_match),
             ..self
@@ -264,16 +274,22 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     fn err(self, err: impl ToString) -> Self {
         self.internal(|x| x.err(err))
     }
-    fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
+    fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self {
         self.internal(|x| x.add_test(test))
     }
-    fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
+    fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
+    where
+        F: Fn(&T) -> bool + 'static,
+    {
         self.internal(|x| x.add_err_test(test, err))
     }
     fn clear_tests(self) -> Self {
         self.internal(|x| x.clear_tests())
     }
-    fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
+    fn err_match<F>(self, err_match: F) -> Self
+    where
+        F: Fn(&T::Err) -> Option<String> + 'static,
+    {
         self.internal(|x| x.err_match(err_match))
     }
     fn inside<U: InsideFunc<T>>(self, is: U) -> Self {

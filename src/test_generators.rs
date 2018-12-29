@@ -37,7 +37,7 @@ impl_inside_func_for_arrays! {
 
 fn range_contains_func<T, U>(range: U) -> Rc<Fn(&T) -> bool>
 where
-    T: PartialOrd + 'static,
+    T: PartialOrd,
     U: RangeBounds<T> + 'static,
 {
     Rc::new(move |x| {
