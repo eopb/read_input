@@ -5,9 +5,9 @@
 #![allow(clippy::needless_pass_by_value)]
 
 mod core;
-mod test_generators;
 pub mod prelude;
 pub mod shortcut;
+mod test_generators;
 #[cfg(test)]
 mod tests;
 
