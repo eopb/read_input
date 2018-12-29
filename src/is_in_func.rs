@@ -8,18 +8,18 @@ use std::{
 };
 
 /// This trait is used to describe constraints with different types.
-pub trait IsInFunc<T> {
+pub trait InsideFunc<T> {
     /// Returns constraint as a function.
     fn contains_func(self) -> Rc<Fn(&T) -> bool>;
 }
 
-impl<T: PartialEq + 'static> IsInFunc<T> for Vec<T> {
+impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
     fn contains_func(self) -> Rc<Fn(&T) -> bool> {
         Rc::new(move |x| self.contains(x))
     }
 }
 
-impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
+impl<T: 'static, F: Fn(&T) -> bool + 'static> InsideFunc<T> for F {
     fn contains_func(self) -> Rc<Fn(&T) -> bool> {
         Rc::new(self)
     }
@@ -27,7 +27,7 @@ impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
 
 macro_rules! impl_is_in_func_for_arrays {
     ($($e:expr),*) => {$(
-        impl<T: PartialEq + 'static> IsInFunc<T> for [T; $e] {
+        impl<T: PartialEq + 'static> InsideFunc<T> for [T; $e] {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
                 Rc::new(move |x| self.contains(x))
             }
@@ -61,7 +61,7 @@ where
 
 macro_rules! impl_is_in_func_for_ranges {
     ($($t:ty),*) => {$(
-        impl<T: PartialOrd + 'static> IsInFunc<T> for $t {
+        impl<T: PartialOrd + 'static> InsideFunc<T> for $t {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
                 range_contains_func(self)
             }

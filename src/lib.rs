@@ -11,7 +11,7 @@ pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
-use crate::{core::read_input, is_in_func::IsInFunc};
+use crate::{core::read_input, is_in_func::InsideFunc};
 use std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
@@ -31,8 +31,8 @@ pub trait InputBuild<T: FromStr> {
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self;
-    fn inside<U: IsInFunc<T>>(self, is: U) -> Self;
-    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self;
+    fn inside<U: InsideFunc<T>>(self, is: U) -> Self;
+    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self;
     fn toggle_msg_repeat(self) -> Self;
 }
 
@@ -125,7 +125,7 @@ impl<T: FromStr> InputBuilder<T> {
             default: Some(default),
         }
     }
-    fn inside_err_opt<U: IsInFunc<T>>(self, is: U, err: Option<String>) -> Self {
+    fn inside_err_opt<U: InsideFunc<T>>(self, is: U, err: Option<String>) -> Self {
         Self {
             tests: {
                 let mut x = self.tests;
@@ -184,10 +184,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
             ..self
         }
     }
-    fn inside<U: IsInFunc<T>>(self, is: U) -> Self {
+    fn inside<U: InsideFunc<T>>(self, is: U) -> Self {
         self.inside_err_opt(is, None)
     }
-    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self {
         self.inside_err_opt(is, Some(err.to_string()))
     }
     fn toggle_msg_repeat(self) -> Self {
@@ -279,10 +279,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     fn err_match<F: 'static + Fn(&T::Err) -> Option<String>>(self, err_match: F) -> Self {
         self.internal(|x| x.err_match(err_match))
     }
-    fn inside<U: IsInFunc<T>>(self, is: U) -> Self {
+    fn inside<U: InsideFunc<T>>(self, is: U) -> Self {
         self.internal(|x| x.inside(is))
     }
-    fn inside_err<U: IsInFunc<T>>(self, is: U, err: impl ToString) -> Self {
+    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self {
         self.internal(|x| x.inside_err(is, err))
     }
     fn toggle_msg_repeat(self) -> Self {
