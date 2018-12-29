@@ -19,12 +19,6 @@ impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
     }
 }
 
-impl<T: 'static, F: Fn(&T) -> bool + 'static> InsideFunc<T> for F {
-    fn contains_func(self) -> Rc<Fn(&T) -> bool> {
-        Rc::new(self)
-    }
-}
-
 macro_rules! impl_is_in_func_for_arrays {
     ($($e:expr),*) => {$(
         impl<T: PartialEq + 'static> InsideFunc<T> for [T; $e] {

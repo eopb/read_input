@@ -53,7 +53,7 @@ where
         self.inside(min..=max)
     }
     fn not(self, this: T) -> Self {
-        self.inside(move |x: &T| *x != this)
+        self.add_test(move |x: &T| *x != this)
     }
     fn min_err(self, min: T, err: impl ToString) -> Self {
         self.inside_err(min.., err)
@@ -65,7 +65,7 @@ where
         self.inside_err(min..=max, err)
     }
     fn not_err(self, this: T, err: impl ToString) -> Self {
-        self.inside_err(move |x: &T| *x != this, err)
+        self.add_err_test(move |x: &T| *x != this, err)
     }
 }
 
@@ -125,14 +125,11 @@ impl<T: FromStr> InputBuilder<T> {
             default: Some(default),
         }
     }
-    fn inside_err_opt<U: InsideFunc<T>>(self, is: U, err: Option<String>) -> Self {
+    fn test_err_opt(self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
         Self {
             tests: {
                 let mut x = self.tests;
-                x.push(Test {
-                    func: is.contains_func(),
-                    err,
-                });
+                x.push(Test { func, err });
                 x
             },
             ..self
@@ -167,10 +164,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
     }
 
     fn add_test<F: 'static + Fn(&T) -> bool>(self, test: F) -> Self {
-        self.inside_err_opt(test, None)
+        self.test_err_opt(Rc::new(test), None)
     }
     fn add_err_test<F: 'static + Fn(&T) -> bool>(self, test: F, err: impl ToString) -> Self {
-        self.inside_err_opt(test, Some(err.to_string()))
+        self.test_err_opt(Rc::new(test), Some(err.to_string()))
     }
     fn clear_tests(self) -> Self {
         Self {
@@ -185,10 +182,10 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
         }
     }
     fn inside<U: InsideFunc<T>>(self, is: U) -> Self {
-        self.inside_err_opt(is, None)
+        self.test_err_opt(is.contains_func(), None)
     }
     fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self {
-        self.inside_err_opt(is, Some(err.to_string()))
+        self.test_err_opt(is.contains_func(), Some(err.to_string()))
     }
     fn toggle_msg_repeat(self) -> Self {
         Self {
