@@ -1,41 +1,46 @@
 //! Collection of functions that make things a little less verbose.
 
-use crate::{is_in_func::IsInFunc, InputBuild, InputBuilder};
+use crate::{test_generators::InsideFunc, InputBuild, InputBuilder};
 use std::{error::Error, str::FromStr};
 
-/// Creates a new instance of `InputBuilder` with default settings. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-pub fn input_new<T: FromStr>() -> InputBuilder<T> {
-    InputBuilder::new()
-}
-
-/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
-pub fn valid_input<T: FromStr + 'static>(test: impl Fn(&T) -> bool + 'static) -> T {
+/// Shortcut function. Fetches input that is validated with a test function.
+pub fn valid_input<T, F>(test: F) -> T
+where
+    T: FromStr + 'static,
+    F: Fn(&T) -> bool + 'static,
+{
     input_new().add_test(test).get()
 }
 
+/// Shortcut function. Fetches input that is within a range, array or vector.
 pub fn input_inside<T, U>(is: U) -> T
 where
     T: FromStr,
     T: 'static,
-    U: IsInFunc<T>,
+    U: InsideFunc<T>,
 {
     input_new().inside(is).get()
 }
 
-/// Shortcut function. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+/// Shortcut function. Fetches input that is valid for whatever type needed.
 pub fn simple_input<T: FromStr>() -> T {
     input_new().get()
 }
 
-pub fn with_description<T: Error>(x: &T) -> Option<String> {
-    Some(format!("Error \"{}\"", (*x).description()))
+/// Creates a new instance of `InputBuilder` with generic, minimal settings.
+pub fn input_new<T: FromStr>() -> InputBuilder<T> {
+    InputBuilder::new()
 }
 
+/// Creates a new instance of `InputBuilder` with settings specifically
+/// tailored to the type you want.
 pub fn input_new_d<T: DefaultBuilderSettings>() -> InputBuilder<T> {
     T::settings()
 }
 
+/// Trait for describing specifically tailored input settings for types.
 pub trait DefaultBuilderSettings: FromStr {
+    /// Returns tailored InputBuilder.
     fn settings() -> InputBuilder<Self>;
 }
 
@@ -96,3 +101,8 @@ macro_rules! impl_default_builder_for_float {
 }
 
 impl_default_builder_for_float! { f32, f64 }
+
+/// Produces an error message from an error type. Made for use with `.err_match()`
+pub fn with_description<T: Error>(x: &T) -> Option<String> {
+    Some(format!("Error: \"{}\"", (*x).description()))
+}

@@ -8,26 +8,20 @@ use std::{
 };
 
 /// This trait is used to describe constraints with different types.
-pub trait IsInFunc<T> {
+pub trait InsideFunc<T> {
     /// Returns constraint as a function.
     fn contains_func(self) -> Rc<Fn(&T) -> bool>;
 }
 
-impl<T: PartialEq + 'static> IsInFunc<T> for Vec<T> {
+impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
     fn contains_func(self) -> Rc<Fn(&T) -> bool> {
         Rc::new(move |x| self.contains(x))
     }
 }
 
-impl<T: 'static, F: Fn(&T) -> bool + 'static> IsInFunc<T> for F {
-    fn contains_func(self) -> Rc<Fn(&T) -> bool> {
-        Rc::new(self)
-    }
-}
-
-macro_rules! impl_is_in_func_for_arrays {
+macro_rules! impl_inside_func_for_arrays {
     ($($e:expr),*) => {$(
-        impl<T: PartialEq + 'static> IsInFunc<T> for [T; $e] {
+        impl<T: PartialEq + 'static> InsideFunc<T> for [T; $e] {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
                 Rc::new(move |x| self.contains(x))
             }
@@ -35,7 +29,7 @@ macro_rules! impl_is_in_func_for_arrays {
     )*}
 }
 
-impl_is_in_func_for_arrays! {
+impl_inside_func_for_arrays! {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
     29, 30, 31, 32
@@ -43,7 +37,7 @@ impl_is_in_func_for_arrays! {
 
 fn range_contains_func<T, U>(range: U) -> Rc<Fn(&T) -> bool>
 where
-    T: PartialOrd + 'static,
+    T: PartialOrd,
     U: RangeBounds<T> + 'static,
 {
     Rc::new(move |x| {
@@ -59,9 +53,9 @@ where
     })
 }
 
-macro_rules! impl_is_in_func_for_ranges {
+macro_rules! impl_inside_func_for_ranges {
     ($($t:ty),*) => {$(
-        impl<T: PartialOrd + 'static> IsInFunc<T> for $t {
+        impl<T: PartialOrd + 'static> InsideFunc<T> for $t {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
                 range_contains_func(self)
             }
@@ -69,6 +63,6 @@ macro_rules! impl_is_in_func_for_ranges {
     )*}
 }
 
-impl_is_in_func_for_ranges! {
+impl_inside_func_for_ranges! {
     Range<T>, RangeInclusive<T>, RangeFrom<T>, RangeTo<T>, RangeToInclusive<T>, RangeFull
 }
