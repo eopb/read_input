@@ -5,13 +5,13 @@
 #![allow(clippy::needless_pass_by_value)]
 
 mod core;
-mod is_in_func;
+mod test_generators;
 pub mod prelude;
 pub mod shortcut;
 #[cfg(test)]
 mod tests;
 
-use crate::{core::read_input, is_in_func::InsideFunc};
+use crate::{core::read_input, test_generators::InsideFunc};
 use std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";

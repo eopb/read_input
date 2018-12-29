@@ -19,7 +19,7 @@ impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
     }
 }
 
-macro_rules! impl_is_in_func_for_arrays {
+macro_rules! impl_inside_func_for_arrays {
     ($($e:expr),*) => {$(
         impl<T: PartialEq + 'static> InsideFunc<T> for [T; $e] {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
@@ -29,7 +29,7 @@ macro_rules! impl_is_in_func_for_arrays {
     )*}
 }
 
-impl_is_in_func_for_arrays! {
+impl_inside_func_for_arrays! {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
     29, 30, 31, 32
@@ -53,7 +53,7 @@ where
     })
 }
 
-macro_rules! impl_is_in_func_for_ranges {
+macro_rules! impl_inside_func_for_ranges {
     ($($t:ty),*) => {$(
         impl<T: PartialOrd + 'static> InsideFunc<T> for $t {
             fn contains_func(self) -> Rc<Fn(&T) -> bool> {
@@ -63,6 +63,6 @@ macro_rules! impl_is_in_func_for_ranges {
     )*}
 }
 
-impl_is_in_func_for_ranges! {
+impl_inside_func_for_ranges! {
     Range<T>, RangeInclusive<T>, RangeFrom<T>, RangeTo<T>, RangeToInclusive<T>, RangeFull
 }
