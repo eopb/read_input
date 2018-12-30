@@ -16,27 +16,33 @@ use std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
+/// Trait for comman types that store input settings.
 pub trait InputBuild<T: FromStr> {
-    /// Changes or adds a prompt message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Changes or adds a prompt message that gets printed once when input if fetched.
     fn msg(self, msg: impl ToString) -> Self;
-    /// Changes or adds a prompt message and makes it repeat. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Changes or adds a prompt message and that is repeated each time input is requested.
     fn repeat_msg(self, msg: impl ToString) -> Self;
-    /// Changes fallback error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Changes fallback error message.
     fn err(self, err: impl ToString) -> Self;
-    /// Adds a validation check on input. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Adds a validation check on input.
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
-    /// Adds a validation check on input with custom error message. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Adds a validation check on input with a custom error message printed when the test fails.
     fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
     where
         F: Fn(&T) -> bool + 'static;
-    /// Removes all validation checks made by `.add_test()` and `.add_err_test()`.
+    /// Removes all validation checks made by `.add_test()`, `.add_err_test()`,
+    /// `.inside()` and `.inside_err()`.
     fn clear_tests(self) -> Self;
-    /// Used specify custom error messages that depend on the errors produced by `from_str()`. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Used specify custom error messages that depend on the errors produced by `from_str()`.
     fn err_match<F>(self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
+    /// Ensures that input is within a range, array or vector.
     fn inside<U: InsideFunc<T>>(self, is: U) -> Self;
+    /// Ensures that input is within a range, array or vector with a custom error message
+    /// printed when input fails.
     fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self;
+    /// Toggles whether a prompt message gets printed once or each time input is requested.
     fn toggle_msg_repeat(self) -> Self;
 }
 
