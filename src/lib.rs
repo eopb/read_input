@@ -56,23 +56,23 @@ where
     fn min(self, min: T) -> Self {
         self.inside(min..)
     }
-    fn max(self, max: T) -> Self {
-        self.inside(..=max)
-    }
-    fn min_max(self, min: T, max: T) -> Self {
-        self.inside(min..=max)
-    }
-    fn not(self, this: T) -> Self {
-        self.add_test(move |x: &T| *x != this)
-    }
     fn min_err(self, min: T, err: impl ToString) -> Self {
         self.inside_err(min.., err)
+    }
+    fn max(self, max: T) -> Self {
+        self.inside(..=max)
     }
     fn max_err(self, max: T, err: impl ToString) -> Self {
         self.inside_err(..=max, err)
     }
+    fn min_max(self, min: T, max: T) -> Self {
+        self.inside(min..=max)
+    }
     fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
         self.inside_err(min..=max, err)
+    }
+    fn not(self, this: T) -> Self {
+        self.add_test(move |x: &T| *x != this)
     }
     fn not_err(self, this: T, err: impl ToString) -> Self {
         self.add_err_test(move |x: &T| *x != this, err)
