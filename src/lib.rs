@@ -47,6 +47,8 @@ pub trait InputBuild<T: FromStr> {
     fn toggle_msg_repeat(self) -> Self;
 }
 
+/// Trait for changing input settings by adding constraints that require `PartialOrd`
+/// on the input type.
 pub trait InputConstraints<T>: InputBuild<T>
 where
     T: FromStr,
@@ -54,27 +56,35 @@ where
     T: 'static,
     Self: std::marker::Sized,
 {
+    /// Sets a minimum input value.
     fn min(self, min: T) -> Self {
         self.inside(min..)
     }
-    fn max(self, max: T) -> Self {
-        self.inside(..=max)
-    }
-    fn min_max(self, min: T, max: T) -> Self {
-        self.inside(min..=max)
-    }
-    fn not(self, this: T) -> Self {
-        self.add_test(move |x: &T| *x != this)
-    }
+    /// Sets a minimum input value with custom error message.
     fn min_err(self, min: T, err: impl ToString) -> Self {
         self.inside_err(min.., err)
     }
+    /// Sets a maximum input value.
+    fn max(self, max: T) -> Self {
+        self.inside(..=max)
+    }
+    /// Sets a maximum input value with custom error message.
     fn max_err(self, max: T, err: impl ToString) -> Self {
         self.inside_err(..=max, err)
     }
+    /// Sets a minimum and maximum input value.
+    fn min_max(self, min: T, max: T) -> Self {
+        self.inside(min..=max)
+    }
+    /// Sets a minimum and maximum input value with custom error message.
     fn min_max_err(self, min: T, max: T, err: impl ToString) -> Self {
         self.inside_err(min..=max, err)
     }
+    /// Sets a restricted input value.
+    fn not(self, this: T) -> Self {
+        self.add_test(move |x: &T| *x != this)
+    }
+    /// Sets a restricted input value with custom error message.
     fn not_err(self, this: T, err: impl ToString) -> Self {
         self.add_err_test(move |x: &T| *x != this, err)
     }
