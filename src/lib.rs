@@ -95,22 +95,10 @@ pub(crate) struct Prompt {
     pub repeat: bool,
 }
 
+#[derive(Clone)]
 pub(crate) struct Test<T> {
     pub func: Rc<Fn(&T) -> bool>,
     pub err: Option<String>,
-}
-
-impl<T> Clone for Test<T>
-where
-    T: Clone,
-    T: FromStr,
-{
-    fn clone(&self) -> Self {
-        Self {
-            func: self.func.clone(),
-            err: self.err.clone(),
-        }
-    }
 }
 
 /// `builder' used to store the settings that are used to fetch input.
