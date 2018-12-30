@@ -1,5 +1,4 @@
-#![warn(missing_docs)]
-#![deny(clippy::pedantic)]
+#![deny(clippy::pedantic, missing_docs)]
 //! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
 
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
