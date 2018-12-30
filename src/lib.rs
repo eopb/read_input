@@ -101,7 +101,7 @@ pub(crate) struct Test<T> {
     pub err: Option<String>,
 }
 
-/// `builder' used to store the settings that are used to fetch input.
+/// 'builder' used to store the settings that are used to fetch input.
 ///
 /// `.get()` method only takes these settings by reference so can be called multiple times.
 ///
@@ -245,7 +245,7 @@ where
     }
 }
 
-/// builder' used to store the settings that are used to fetch input.
+/// 'builder' used to store the settings that are used to fetch input.
 ///
 /// `.get()` method takes ownership of the settings so can be called only once without cloning.
 ///
