@@ -5,7 +5,7 @@
 use read_input::shortcut::*;
 
 fn main() {
-    match input_inside(2..=4) {
+    match valid_input(|x| 2 <= *x && *x <= 4) {
         2 => println!("You inputted the number 2"),
         3 => println!("You inputted the number 3"),
         4 => println!("You inputted the number 4"),
