@@ -38,10 +38,10 @@ pub trait InputBuild<T: FromStr> {
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
     /// Ensures that input is within a range, array or vector.
-    fn inside<U: InsideFunc<T>>(self, is: U) -> Self;
+    fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self;
     /// Ensures that input is within a range, array or vector with a custom error message
     /// printed when input fails.
-    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self;
+    fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self;
     /// Toggles whether a prompt message gets printed once or each time input is requested.
     fn toggle_msg_repeat(self) -> Self;
 }
@@ -200,11 +200,11 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
             ..self
         }
     }
-    fn inside<U: InsideFunc<T>>(self, is: U) -> Self {
-        self.test_err_opt(is.contains_func(), None)
+    fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self {
+        self.test_err_opt(constraint.contains_func(), None)
     }
-    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self {
-        self.test_err_opt(is.contains_func(), Some(err.to_string()))
+    fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self {
+        self.test_err_opt(constraint.contains_func(), Some(err.to_string()))
     }
     fn toggle_msg_repeat(self) -> Self {
         Self {
@@ -307,11 +307,11 @@ impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
     {
         self.internal(|x| x.err_match(err_match))
     }
-    fn inside<U: InsideFunc<T>>(self, is: U) -> Self {
-        self.internal(|x| x.inside(is))
+    fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self {
+        self.internal(|x| x.inside(constraint))
     }
-    fn inside_err<U: InsideFunc<T>>(self, is: U, err: impl ToString) -> Self {
-        self.internal(|x| x.inside_err(is, err))
+    fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self {
+        self.internal(|x| x.inside_err(constraint, err))
     }
     fn toggle_msg_repeat(self) -> Self {
         self.internal(|x| x.toggle_msg_repeat())

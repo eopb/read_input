@@ -13,13 +13,13 @@ where
 }
 
 /// Shortcut function. Fetches input that is within a range, array or vector.
-pub fn input_inside<T, U>(is: U) -> T
+pub fn input_inside<T, U>(constraint: U) -> T
 where
     T: FromStr,
     T: 'static,
     U: InsideFunc<T>,
 {
-    input().inside(is).get()
+    input().inside(constraint).get()
 }
 
 /// Shortcut function. Fetches input that is valid for whatever type needed.
