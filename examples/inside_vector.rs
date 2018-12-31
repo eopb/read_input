@@ -5,7 +5,7 @@
 use read_input::prelude::*;
 
 fn main() {
-    input_new()
+    input()
         .repeat_msg("Please input an animal: ")
         .inside(vec![
             "cat".to_string(),

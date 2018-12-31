@@ -7,7 +7,7 @@ use url::Url;
 fn main() {
     println!(
         "You inputted the URL {:#?}",
-        input_new::<Url>()
+        input::<Url>()
             .err_match(with_description)
             .repeat_msg("Please input a URL: ")
             .get()

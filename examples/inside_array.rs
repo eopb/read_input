@@ -5,7 +5,7 @@
 use read_input::prelude::*;
 
 fn main() {
-    input_new()
+    input()
         .repeat_msg("Please input an animal: ")
         .inside(["cat".to_string(), "dog".to_string(), "giraffe".to_string()])
         .err("That is not an animal I know.")

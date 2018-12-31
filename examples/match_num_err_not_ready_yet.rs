@@ -13,7 +13,7 @@ fn main() {
     // use core::num::IntErrorKind::*;
     // println!(
     //     "You inputted {:#?}",
-    //     input_new::<i16>()
+    //     input::<i16>()
     //         .err_match(|x| Some(
     //             match x.kind() {
     //                 Empty => "You did not input any value. Try again.",

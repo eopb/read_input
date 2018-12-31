@@ -12,7 +12,7 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1, 101);
 
     loop {
-        let guess: i32 = input_new().msg("Please input your guess: ").get();
+        let guess: i32 = input().msg("Please input your guess: ").get();
 
         println!("You guessed: {}", guess);
 

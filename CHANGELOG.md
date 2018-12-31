@@ -2,6 +2,8 @@
 ### **Breaking changes**
 - Allow default on empty input all times rather then only on first input. (Thanks NLL)
 - Modules and traits needed have been changed (should not affect prelude)
+- Rename `input_new()` to `input()`.
+- Rename `input_new_d()` to `input_d()`.
 ### Examples updates
 - Small updates and clean ups in examples.
 ### New features

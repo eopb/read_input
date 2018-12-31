@@ -4,7 +4,7 @@ use read_input::prelude::*;
 use read_input::shortcut::{simple_input, valid_input};
 
 fn main() {
-    let settings = input_new()
+    let settings = input()
         .msg("Please input a number between 4 and 9 that is not 6: ")
         .add_test(|x| 4 < *x && *x < 9)
         .add_err_test(

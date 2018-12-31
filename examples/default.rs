@@ -1,18 +1,18 @@
 //To run this example `cargo run --example default --release`
-//This example shows `input_new_d` in use.
+//This example shows `input_d` in use.
 
-use read_input::shortcut::input_new_d;
+use read_input::shortcut::input_d;
 
 fn main() {
     println!("Type i32");
-    input_new_d::<i32>().get();
+    input_d::<i32>().get();
     println!("Type u32");
-    input_new_d::<u32>().get();
+    input_d::<u32>().get();
     println!("Type f32");
-    input_new_d::<f32>().get();
+    input_d::<f32>().get();
     println!("Type bool");
-    input_new_d::<bool>().get();
+    input_d::<bool>().get();
     println!("Type char");
-    input_new_d::<char>().get();
+    input_d::<char>().get();
     dont_disappear::enter_to_continue::default();
 }

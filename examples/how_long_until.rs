@@ -24,7 +24,7 @@ impl FromStr for DateDDMMYY {
 fn main() {
     println!(
         "That date is {} days away!",
-        input_new::<DateDDMMYY>()
+        input::<DateDDMMYY>()
             .msg("Please input a date in the future in the format Y/M/D: ")
             .add_err_test(
                 |time| time.0 > Local::now(),

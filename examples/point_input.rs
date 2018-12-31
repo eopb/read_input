@@ -53,7 +53,7 @@ impl FromStr for Point {
 fn main() {
     println!(
         "You inputted\n{:#?}",
-        input_new::<Point>()
+        input::<Point>()
             .repeat_msg("Please input a point in 2D space in the format (x, y): ")
             .err_match(|e| Some(match e {
                 ParsePointError::FailedParse(s) => format!(
