@@ -137,6 +137,7 @@ impl<T: FromStr> InputBuilder<T> {
             default: Some(default),
         }
     }
+    // Internal function for adding tests and constraints.
     fn test_err_opt(self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
         Self {
             tests: {
@@ -266,6 +267,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
             &*self.builder.err_match,
         )
     }
+    // Function that makes it less verbose to change settings of internal `InputBuilder`.
     fn internal<F>(self, with: F) -> Self
     where
         F: FnOnce(InputBuilder<T>) -> InputBuilder<T>,

@@ -5,11 +5,44 @@ use std::{
     string::ToString,
 };
 
+// Core function when running `.get()`.
+pub(crate) fn read_input<T: FromStr>(
+    prompt: &Prompt,
+    err: &str,
+    default: Option<T>,
+    tests: &[Test<T>],
+    err_pass: &dyn Fn(&T::Err) -> Option<String>,
+) -> T {
+    print!("{}", prompt.msg);
+    try_flush();
+
+    loop {
+        let input = input_as_string();
+
+        if input.trim().is_empty() {
+            if let Some(x) = default {
+                return x;
+            }
+        };
+
+        match parse_input(input, err, tests, err_pass) {
+            Ok(v) => return v,
+            Err(e) => println!("{}", e),
+        };
+
+        if prompt.repeat {
+            print!("{}", prompt.msg);
+            try_flush();
+        };
+    }
+}
+
+// Flush only when possible.
 fn try_flush() {
     io::stdout().flush().unwrap_or(())
 }
 
-fn input_str() -> String {
+fn input_as_string() -> String {
     let mut input = String::new();
     io::stdin()
         .read_line(&mut input)
@@ -33,36 +66,5 @@ pub(crate) fn parse_input<T: FromStr>(
             Ok(value)
         }
         Err(error) => Err(err_pass(&error).unwrap_or_else(|| err.to_string())),
-    }
-}
-
-pub(crate) fn read_input<T: FromStr>(
-    prompt: &Prompt,
-    err: &str,
-    default: Option<T>,
-    tests: &[Test<T>],
-    err_pass: &dyn Fn(&T::Err) -> Option<String>,
-) -> T {
-    print!("{}", prompt.msg);
-    try_flush();
-
-    loop {
-        let input = input_str();
-
-        if input.trim().is_empty() {
-            if let Some(x) = default {
-                return x;
-            }
-        };
-
-        match parse_input(input, err, tests, err_pass) {
-            Ok(v) => return v,
-            Err(e) => println!("{}", e),
-        };
-
-        if prompt.repeat {
-            print!("{}", prompt.msg);
-            try_flush();
-        };
     }
 }
