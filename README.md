@@ -24,9 +24,7 @@ Add
 read_input = "0.8"
 ```
 to your `cargo.toml` under `[dependencies]` and add
-```rust 
-extern crate read_input;
-
+```rust
 use read_input::prelude::*;
 ```
 to your main file.
