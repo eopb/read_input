@@ -172,11 +172,9 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     {
         self.test_err_opt(Rc::new(test), Some(err.to_string()))
     }
-    fn clear_tests(self) -> Self {
-        Self {
-            tests: Vec::new(),
-            ..self
-        }
+    fn clear_tests(mut self) -> Self {
+        self.tests = Vec::new();
+        self
     }
     fn err_match<F>(self, err_match: F) -> Self
     where
