@@ -216,13 +216,7 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     }
 }
 
-impl<T> InputConstraints<T> for InputBuilder<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
-}
+impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilder<T> {}
 
 impl<T: FromStr> Default for InputBuilder<T> {
     fn default() -> Self {
@@ -313,13 +307,7 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
     }
 }
 
-impl<T> InputConstraints<T> for InputBuilderOnce<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
-}
+impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilderOnce<T> {}
 
 impl<T> Clone for InputBuilderOnce<T>
 where
