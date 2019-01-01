@@ -150,14 +150,12 @@ impl<T: FromStr> InputBuilder<T> {
 }
 
 impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
-    fn msg(self, msg: impl ToString) -> Self {
-        Self {
-            msg: Prompt {
-                msg: msg.to_string(),
-                repeat: false,
-            },
-            ..self
-        }
+    fn msg(mut self, msg: impl ToString) -> Self {
+        self.msg = Prompt {
+            msg: msg.to_string(),
+            repeat: false,
+        };
+        self
     }
     fn repeat_msg(self, msg: impl ToString) -> Self {
         Self {
