@@ -6,7 +6,7 @@ use std::{error::Error, str::FromStr};
 /// Shortcut function. Fetches input that is validated with a test function.
 pub fn valid_input<T, F>(test: F) -> T
 where
-    T: FromStr + 'static,
+    T: FromStr,
     F: Fn(&T) -> bool + 'static,
 {
     input().add_test(test).get()
@@ -16,7 +16,6 @@ where
 pub fn input_inside<T, U>(constraint: U) -> T
 where
     T: FromStr,
-    T: 'static,
     U: InsideFunc<T>,
 {
     input().inside(constraint).get()

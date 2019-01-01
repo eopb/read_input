@@ -1,6 +1,6 @@
-#![deny(clippy::pedantic, missing_docs)]
 //! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
 
+#![deny(clippy::pedantic, missing_docs)]
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
 
@@ -26,7 +26,8 @@ pub trait InputBuild<T: FromStr> {
     fn err(self, err: impl ToString) -> Self;
     /// Adds a validation check on input.
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
-    /// Adds a validation check on input with a custom error message printed when the test fails.
+    /// Adds a validation check on input with a custom error message printed when the test
+    /// fails.
     fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
     where
         F: Fn(&T) -> bool + 'static;
@@ -50,10 +51,8 @@ pub trait InputBuild<T: FromStr> {
 /// on the input type.
 pub trait InputConstraints<T>: InputBuild<T>
 where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-    Self: std::marker::Sized,
+    T: FromStr + PartialOrd + 'static,
+    Self: Sized,
 {
     /// Sets a minimum input value.
     fn min(self, min: T) -> Self {
@@ -126,11 +125,11 @@ impl<T: FromStr> InputBuilder<T> {
             err_match: Rc::new(|_| None),
         }
     }
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// 'gets' the input form the user.
     pub fn get(&self) -> T {
         read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
     }
-    /// Changes or adds a default input value. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// Changes or adds a default input value.
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
         InputBuilderOnce {
             builder: self,
@@ -150,7 +149,7 @@ impl<T: FromStr> InputBuilder<T> {
     }
 }
 
-impl<T: FromStr + 'static> InputBuild<T> for InputBuilder<T> {
+impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     fn msg(self, msg: impl ToString) -> Self {
         Self {
             msg: Prompt {
@@ -231,11 +230,7 @@ impl<T: FromStr> Default for InputBuilder<T> {
     }
 }
 
-impl<T> Clone for InputBuilder<T>
-where
-    T: Clone,
-    T: FromStr,
-{
+impl<T: FromStr + Clone> Clone for InputBuilder<T> {
     fn clone(&self) -> Self {
         Self {
             msg: self.msg.clone(),
@@ -257,7 +252,7 @@ pub struct InputBuilderOnce<T: FromStr> {
 }
 
 impl<T: FromStr> InputBuilderOnce<T> {
-    /// 'gets' the input form the user. This is documented in the [readme](https://gitlab.com/efunb/read_input/blob/stable/README.md)
+    /// 'gets' the input form the user.
     pub fn get(self) -> T {
         read_input::<T>(
             &self.builder.msg,
@@ -279,7 +274,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
     }
 }
 
-impl<T: FromStr + 'static> InputBuild<T> for InputBuilderOnce<T> {
+impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
     fn msg(self, msg: impl ToString) -> Self {
         self.internal(|x| x.msg(msg))
     }
