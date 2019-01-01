@@ -137,15 +137,9 @@ impl<T: FromStr> InputBuilder<T> {
         }
     }
     // Internal function for adding tests and constraints.
-    fn test_err_opt(self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
-        Self {
-            tests: {
-                let mut x = self.tests;
-                x.push(Test { func, err });
-                x
-            },
-            ..self
-        }
+    fn test_err_opt(mut self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
+        self.tests.push(Test { func, err });
+        self
     }
 }
 
