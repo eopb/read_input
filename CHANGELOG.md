@@ -1,4 +1,4 @@
-# __Next__
+# __0.8.0__
 ### **Breaking changes**
 - Allow default on empty input all times rather then only on first input. (Thanks NLL)
 - Modules and traits needed have been changed (should not affect prelude)
