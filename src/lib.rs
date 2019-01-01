@@ -109,7 +109,7 @@ pub struct InputBuilder<T: FromStr> {
     msg: Prompt,
     err: String,
     tests: Vec<Test<T>>,
-    err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
+    err_match: Rc<Fn(&T::Err) -> Option<String>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
