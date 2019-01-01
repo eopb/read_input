@@ -176,14 +176,12 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
         self.tests = Vec::new();
         self
     }
-    fn err_match<F>(self, err_match: F) -> Self
+    fn err_match<F>(mut self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static,
     {
-        Self {
-            err_match: Rc::new(err_match),
-            ..self
-        }
+        self.err_match = Rc::new(err_match);
+        self
     }
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self {
         self.test_err_opt(constraint.contains_func(), None)
