@@ -3,9 +3,6 @@
 //This program adapted from the `std::str::FromStr` trait documentation example.
 //The program was written to show the use of the `err_match()` method in `read_input`
 
-extern crate dont_disappear;
-extern crate read_input;
-
 use read_input::prelude::*;
 use std::str::FromStr;
 
@@ -56,7 +53,7 @@ impl FromStr for Point {
 fn main() {
     println!(
         "You inputted\n{:#?}",
-        input_new::<Point>()
+        input::<Point>()
             .repeat_msg("Please input a point in 2D space in the format (x, y): ")
             .err_match(|e| Some(match e {
                 ParsePointError::FailedParse(s) => format!(

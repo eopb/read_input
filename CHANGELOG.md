@@ -1,3 +1,23 @@
+# __0.8.0__
+### **Breaking changes**
+- Allow default on empty input all times rather then only on first input. (Thanks NLL)
+- Modules and traits needed have been changed (should not affect prelude)
+- Rename `input_new()` to `input()`.
+- Rename `input_new_d()` to `input_d()`.
+### Examples updates
+- Small updates and clean ups in examples.
+### New features
+- Added `shortcut::input_inside`.
+- Added `.inside()`.
+- Added `.min()`.
+- Added `.max()`.
+- Added `.min_max()`.
+- Added `.not()`.
+- Added `.min_err()`.
+- Added `.max_err()`.
+- Added `.min_max_err()`.
+- Added `.not_err()`.
+
 # 0.7.2
 - Update description
 

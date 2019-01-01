@@ -3,10 +3,6 @@
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 //This version has some minor improvements.
 
-extern crate dont_disappear;
-extern crate rand;
-extern crate read_input;
-
 use rand::Rng;
 use read_input::prelude::*;
 use std::cmp::Ordering;
@@ -18,16 +14,10 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1, 101);
 
     loop {
-        let guess: i32 = input_new()
-            .msg("Please input your guess: ")
-            .add_err_test(
-                |x| !(*x > 100),
-                "That number is more than 100. Please try again",
-            )
-            .add_err_test(
-                |x| !(*x < 1),
-                "That number is less than 1. Please try again",
-            )
+        let guess: i32 = input()
+            .repeat_msg("Please input your guess: ")
+            .inside_err(..=100, "That number is more than 100. Please try again")
+            .inside_err(1.., "That number is less than 1. Please try again")
             .err("That does not look like a number. Please try again")
             .get();
 

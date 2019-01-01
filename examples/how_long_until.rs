@@ -2,9 +2,6 @@
 //Example program that tells you how long it is until the date you typed in.
 //This program is here to show that types from external crates can uses `read_input`
 
-extern crate chrono;
-extern crate dont_disappear;
-extern crate read_input;
 use chrono::offset::{Local, TimeZone};
 use chrono::prelude::*;
 use read_input::prelude::*;
@@ -27,7 +24,7 @@ impl FromStr for DateDDMMYY {
 fn main() {
     println!(
         "That date is {} days away!",
-        input_new::<DateDDMMYY>()
+        input::<DateDDMMYY>()
             .msg("Please input a date in the future in the format Y/M/D: ")
             .add_err_test(
                 |time| time.0 > Local::now(),

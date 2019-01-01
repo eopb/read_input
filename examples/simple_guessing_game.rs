@@ -2,10 +2,6 @@
 //This program is based on the guessing game form the rust book.
 //https://doc.rust-lang.org/book/second-edition/ch02-00-guessing-game-tutorial.html
 
-extern crate dont_disappear;
-extern crate rand;
-extern crate read_input;
-
 use rand::Rng;
 use read_input::prelude::*;
 use std::cmp::Ordering;
@@ -16,7 +12,7 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1, 101);
 
     loop {
-        let guess: i32 = input_new().msg("Please input your guess: ").get();
+        let guess: i32 = input().msg("Please input your guess: ").get();
 
         println!("You guessed: {}", guess);
 
