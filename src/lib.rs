@@ -164,11 +164,9 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
         };
         self
     }
-    fn err(self, err: impl ToString) -> Self {
-        Self {
-            err: err.to_string(),
-            ..self
-        }
+    fn err(mut self, err: impl ToString) -> Self {
+        self.err = err.to_string();
+        self
     }
 
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self {
