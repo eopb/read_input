@@ -189,14 +189,9 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self {
         self.test_err_opt(constraint.contains_func(), Some(err.to_string()))
     }
-    fn toggle_msg_repeat(self) -> Self {
-        Self {
-            msg: Prompt {
-                repeat: !self.msg.repeat,
-                ..self.msg
-            },
-            ..self
-        }
+    fn toggle_msg_repeat(mut self) -> Self {
+        self.msg.repeat = !self.msg.repeat;
+        self
     }
 }
 
