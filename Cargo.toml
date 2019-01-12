@@ -15,7 +15,7 @@ categories = [ "command-line-interface", "data-structures", "encoding", "rust-pa
 edition = "2018"
 
 [dev-dependencies]
-dont_disappear = "2"
+dont_disappear = "3"
 rand = "0.6"
 chrono = "0.4"
 url = "1.7.2"
