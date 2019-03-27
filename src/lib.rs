@@ -1,5 +1,6 @@
 //! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
-
+#![feature(unboxed_closures)]
+#![feature(fn_traits)]
 #![deny(clippy::pedantic, missing_docs)]
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
@@ -197,6 +198,25 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
 
 impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilder<T> {}
 
+impl<T: FromStr> FnOnce<()> for InputBuilder<T> {
+    type Output = T;
+    extern "rust-call" fn call_once(self, _: ()) -> T {
+        self.get()
+    }
+}
+
+impl<T: FromStr> FnMut<()> for InputBuilder<T> {
+    extern "rust-call" fn call_mut(&mut self, _: ()) -> T {
+        self.get()
+    }
+}
+
+impl<T: FromStr> Fn<()> for InputBuilder<T> {
+    extern "rust-call" fn call(&self, _: ()) -> T {
+        self.get()
+    }
+}
+
 impl<T: FromStr> Default for InputBuilder<T> {
     fn default() -> Self {
         Self::new()
@@ -287,6 +307,13 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
 }
 
 impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilderOnce<T> {}
+
+impl<T: FromStr> FnOnce<()> for InputBuilderOnce<T> {
+    type Output = T;
+    extern "rust-call" fn call_once(self, _: ()) -> T {
+        self.get()
+    }
+}
 
 impl<T> Clone for InputBuilderOnce<T>
 where
