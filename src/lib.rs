@@ -267,7 +267,7 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
         self.internal(|x| x.add_err_test(test, err))
     }
     fn clear_tests(self) -> Self {
-        self.internal(|x| x.clear_tests())
+        self.internal(InputBuild::clear_tests)
     }
     fn err_match<F>(self, err_match: F) -> Self
     where
@@ -282,7 +282,7 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
         self.internal(|x| x.inside_err(constraint, err))
     }
     fn toggle_msg_repeat(self) -> Self {
-        self.internal(|x| x.toggle_msg_repeat())
+        self.internal(InputBuild::toggle_msg_repeat)
     }
 }
 
