@@ -109,7 +109,7 @@ pub struct InputBuilder<T: FromStr> {
     msg: Prompt,
     err: String,
     tests: Vec<Test<T>>,
-    err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
+    err_match: Rc<Fn(&T::Err) -> Option<String>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -137,42 +137,30 @@ impl<T: FromStr> InputBuilder<T> {
         }
     }
     // Internal function for adding tests and constraints.
-    fn test_err_opt(self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
-        Self {
-            tests: {
-                let mut x = self.tests;
-                x.push(Test { func, err });
-                x
-            },
-            ..self
-        }
+    fn test_err_opt(mut self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
+        self.tests.push(Test { func, err });
+        self
     }
 }
 
 impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
-    fn msg(self, msg: impl ToString) -> Self {
-        Self {
-            msg: Prompt {
-                msg: msg.to_string(),
-                repeat: false,
-            },
-            ..self
-        }
+    fn msg(mut self, msg: impl ToString) -> Self {
+        self.msg = Prompt {
+            msg: msg.to_string(),
+            repeat: false,
+        };
+        self
     }
-    fn repeat_msg(self, msg: impl ToString) -> Self {
-        Self {
-            msg: Prompt {
-                msg: msg.to_string(),
-                repeat: true,
-            },
-            ..self
-        }
+    fn repeat_msg(mut self, msg: impl ToString) -> Self {
+        self.msg = Prompt {
+            msg: msg.to_string(),
+            repeat: true,
+        };
+        self
     }
-    fn err(self, err: impl ToString) -> Self {
-        Self {
-            err: err.to_string(),
-            ..self
-        }
+    fn err(mut self, err: impl ToString) -> Self {
+        self.err = err.to_string();
+        self
     }
 
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self {
@@ -184,20 +172,16 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     {
         self.test_err_opt(Rc::new(test), Some(err.to_string()))
     }
-    fn clear_tests(self) -> Self {
-        Self {
-            tests: Vec::new(),
-            ..self
-        }
+    fn clear_tests(mut self) -> Self {
+        self.tests = Vec::new();
+        self
     }
-    fn err_match<F>(self, err_match: F) -> Self
+    fn err_match<F>(mut self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static,
     {
-        Self {
-            err_match: Rc::new(err_match),
-            ..self
-        }
+        self.err_match = Rc::new(err_match);
+        self
     }
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self {
         self.test_err_opt(constraint.contains_func(), None)
@@ -205,24 +189,13 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self {
         self.test_err_opt(constraint.contains_func(), Some(err.to_string()))
     }
-    fn toggle_msg_repeat(self) -> Self {
-        Self {
-            msg: Prompt {
-                repeat: !self.msg.repeat,
-                ..self.msg
-            },
-            ..self
-        }
+    fn toggle_msg_repeat(mut self) -> Self {
+        self.msg.repeat = !self.msg.repeat;
+        self
     }
 }
 
-impl<T> InputConstraints<T> for InputBuilder<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
-}
+impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilder<T> {}
 
 impl<T: FromStr> Default for InputBuilder<T> {
     fn default() -> Self {
@@ -294,7 +267,7 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
         self.internal(|x| x.add_err_test(test, err))
     }
     fn clear_tests(self) -> Self {
-        self.internal(|x| x.clear_tests())
+        self.internal(InputBuild::clear_tests)
     }
     fn err_match<F>(self, err_match: F) -> Self
     where
@@ -309,17 +282,11 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
         self.internal(|x| x.inside_err(constraint, err))
     }
     fn toggle_msg_repeat(self) -> Self {
-        self.internal(|x| x.toggle_msg_repeat())
+        self.internal(InputBuild::toggle_msg_repeat)
     }
 }
 
-impl<T> InputConstraints<T> for InputBuilderOnce<T>
-where
-    T: FromStr,
-    T: PartialOrd,
-    T: 'static,
-{
-}
+impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilderOnce<T> {}
 
 impl<T> Clone for InputBuilderOnce<T>
 where

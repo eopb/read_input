@@ -11,8 +11,21 @@ pub(crate) fn read_input<T: FromStr>(
     err: &str,
     default: Option<T>,
     tests: &[Test<T>],
-    err_pass: &dyn Fn(&T::Err) -> Option<String>,
+    err_pass: &Fn(&T::Err) -> Option<String>,
 ) -> T {
+    // Flush only when possible.
+    fn try_flush() {
+        io::stdout().flush().unwrap_or(())
+    }
+
+    fn input_as_string() -> String {
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+        input
+    }
+
     print!("{}", prompt.msg);
     try_flush();
 
@@ -37,24 +50,11 @@ pub(crate) fn read_input<T: FromStr>(
     }
 }
 
-// Flush only when possible.
-fn try_flush() {
-    io::stdout().flush().unwrap_or(())
-}
-
-fn input_as_string() -> String {
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    input
-}
-
 pub(crate) fn parse_input<T: FromStr>(
     input: String,
     err: &str,
     tests: &[Test<T>],
-    err_pass: &dyn Fn(&T::Err) -> Option<String>,
+    err_pass: &Fn(&T::Err) -> Option<String>,
 ) -> Result<T, String> {
     match T::from_str(&input.trim()) {
         Ok(value) => {
