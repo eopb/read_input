@@ -146,4 +146,4 @@
 - Added guessing game example.
 
 # 0.3.0
-- Started logging changes.# 0.7.2
+- Started logging changes.
