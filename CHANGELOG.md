@@ -1,3 +1,7 @@
+# 0.8.1
+### Other
+- Non-breaking internal code cleanups.
+
 # __0.8.0__
 ### **Breaking changes**
 - Allow default on empty input all times rather then only on first input. (Thanks NLL)
@@ -142,4 +146,4 @@
 - Added guessing game example.
 
 # 0.3.0
-- Started logging changes.
+- Started logging changes.# 0.7.2
