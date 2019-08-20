@@ -290,8 +290,7 @@ impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilderOnce
 
 impl<T> Clone for InputBuilderOnce<T>
 where
-    T: Clone,
-    T: FromStr,
+    T: Clone + FromStr,
 {
     fn clone(&self) -> Self {
         Self {
