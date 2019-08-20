@@ -10,11 +10,11 @@ use std::{
 /// This trait is used to describe constraints with different types.
 pub trait InsideFunc<T> {
     /// Returns constraint as a function.
-    fn contains_func(self) -> Rc<Fn(&T) -> bool>;
+    fn contains_func(self) -> Rc<dyn Fn(&T) -> bool>;
 }
 
 impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
-    fn contains_func(self) -> Rc<Fn(&T) -> bool> {
+    fn contains_func(self) -> Rc<dyn Fn(&T) -> bool> {
         Rc::new(move |x| self.contains(x))
     }
 }
@@ -22,7 +22,7 @@ impl<T: PartialEq + 'static> InsideFunc<T> for Vec<T> {
 macro_rules! impl_inside_func_for_arrays {
     ($($e:expr),*) => {$(
         impl<T: PartialEq + 'static> InsideFunc<T> for [T; $e] {
-            fn contains_func(self) -> Rc<Fn(&T) -> bool> {
+            fn contains_func(self) -> Rc<dyn Fn(&T) -> bool> {
                 Rc::new(move |x| self.contains(x))
             }
         }
@@ -35,7 +35,7 @@ impl_inside_func_for_arrays! {
     29, 30, 31, 32
 }
 
-fn range_contains_func<T, U>(range: U) -> Rc<Fn(&T) -> bool>
+fn range_contains_func<T, U>(range: U) -> Rc<dyn Fn(&T) -> bool>
 where
     T: PartialOrd,
     U: RangeBounds<T> + 'static,
@@ -56,7 +56,7 @@ where
 macro_rules! impl_inside_func_for_ranges {
     ($($t:ty),*) => {$(
         impl<T: PartialOrd + 'static> InsideFunc<T> for $t {
-            fn contains_func(self) -> Rc<Fn(&T) -> bool> {
+            fn contains_func(self) -> Rc<dyn Fn(&T) -> bool> {
                 range_contains_func(self)
             }
         }
