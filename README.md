@@ -209,7 +209,7 @@ Using `input().get()` can be a little verbose in simple situations. The function
 You can bring them into scope so that you can use them with
 
 ```rust
-use read_input::shortcut::{simple_input, valid_input};
+use read_input::shortcut::{input_inside, simple_input, valid_input};
 ```
 
 `simple_input()` is the same as `input().get()`.
