@@ -1,6 +1,6 @@
 [package]
 name = "read_input"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Ethan Brierley <ethanboxx@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -16,6 +16,6 @@ edition = "2018"
 
 [dev-dependencies]
 dont_disappear = "3"
-rand = "0.6"
+rand = "0.7"
 chrono = "0.4"
-url = "1.7.2"
+url = "2.1"

@@ -69,6 +69,7 @@ windows-optimized:
     - echo [target.x86_64-pc-windows-gnu] >> .cargo/config
     - echo     linker = \"x86_64-w64-mingw32-gcc\" >> .cargo/config
     - echo     ar = \"x86_64-w64-mingw32-gcc-ar\" >> .cargo/config
+    - cp /usr/x86_64-w64-mingw32/lib/crt2.o $(dirname $(rustup which rustc))/../lib/rustlib/x86_64-pc-windows-gnu/lib
     - cargo build --examples --release --target=x86_64-pc-windows-gnu
     - rm -r -f files
     - mkdir files

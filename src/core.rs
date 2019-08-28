@@ -11,7 +11,7 @@ pub(crate) fn read_input<T: FromStr>(
     err: &str,
     default: Option<T>,
     tests: &[Test<T>],
-    err_pass: &Fn(&T::Err) -> Option<String>,
+    err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> T {
     // Flush only when possible.
     fn try_flush() {
@@ -54,7 +54,7 @@ pub(crate) fn parse_input<T: FromStr>(
     input: String,
     err: &str,
     tests: &[Test<T>],
-    err_pass: &Fn(&T::Err) -> Option<String>,
+    err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> Result<T, String> {
     match T::from_str(&input.trim()) {
         Ok(value) => {

@@ -96,7 +96,7 @@ pub(crate) struct Prompt {
 
 #[derive(Clone)]
 pub(crate) struct Test<T> {
-    pub func: Rc<Fn(&T) -> bool>,
+    pub func: Rc<dyn Fn(&T) -> bool>,
     pub err: Option<String>,
 }
 
@@ -109,7 +109,7 @@ pub struct InputBuilder<T: FromStr> {
     msg: Prompt,
     err: String,
     tests: Vec<Test<T>>,
-    err_match: Rc<Fn(&T::Err) -> Option<String>>,
+    err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -137,7 +137,7 @@ impl<T: FromStr> InputBuilder<T> {
         }
     }
     // Internal function for adding tests and constraints.
-    fn test_err_opt(mut self, func: Rc<Fn(&T) -> bool>, err: Option<String>) -> Self {
+    fn test_err_opt(mut self, func: Rc<dyn Fn(&T) -> bool>, err: Option<String>) -> Self {
         self.tests.push(Test { func, err });
         self
     }
@@ -290,8 +290,7 @@ impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilderOnce
 
 impl<T> Clone for InputBuilderOnce<T>
 where
-    T: Clone,
-    T: FromStr,
+    T: Clone + FromStr,
 {
     fn clone(&self) -> Self {
         Self {
