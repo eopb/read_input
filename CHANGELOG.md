@@ -1,3 +1,7 @@
+# 0.8.2
+### Other
+- Non-breaking internal code cleanups and warning fixes.
+
 # 0.8.1
 ### Other
 - Non-breaking internal code cleanups.
