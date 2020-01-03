@@ -1,3 +1,7 @@
+# Next
+### New features
+- Added `InputBuilder::try_get` and `InputBuilderOnce::try_get`.
+
 # 0.8.2
 ### Other
 - Non-breaking internal code cleanups and warning fixes.

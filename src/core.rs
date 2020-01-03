@@ -12,34 +12,32 @@ pub(crate) fn read_input<T: FromStr>(
     default: Option<T>,
     tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
-) -> T {
+) -> Option<T> {
     // Flush only when possible.
     fn try_flush() {
         io::stdout().flush().unwrap_or(())
     }
 
-    fn input_as_string() -> String {
+    fn input_as_string() -> Option<String> {
         let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read line");
-        input
+        io::stdin().read_line(&mut input).ok()?;
+        Some(input)
     }
 
     print!("{}", prompt.msg);
     try_flush();
 
     loop {
-        let input = input_as_string();
+        let input = input_as_string()?;
 
         if input.trim().is_empty() {
-            if let Some(x) = default {
-                return x;
+            if default.is_some() {
+                return default;
             }
         };
 
         match parse_input(input, err, tests, err_pass) {
-            Ok(v) => return v,
+            Ok(v) => return Some(v),
             Err(e) => println!("{}", e),
         };
 

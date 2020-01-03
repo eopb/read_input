@@ -127,7 +127,15 @@ impl<T: FromStr> InputBuilder<T> {
         }
     }
     /// 'gets' the input form the user.
+    ///
+    /// Panics if unable to read input line.
     pub fn get(&self) -> T {
+        self.try_get().expect("Failed to read line")
+    }
+    /// 'gets' the input form the user.
+    ///
+    /// Returns `None` if unable to read input line.
+    pub fn try_get(&self) -> Option<T> {
         read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
     }
     /// Changes or adds a default input value.
@@ -227,7 +235,15 @@ pub struct InputBuilderOnce<T: FromStr> {
 
 impl<T: FromStr> InputBuilderOnce<T> {
     /// 'gets' the input form the user.
+    ///
+    /// Panics if unable to read input line.
     pub fn get(self) -> T {
+        self.try_get().expect("Failed to read line")
+    }
+    /// 'gets' the input form the user.
+    ///
+    /// Returns `None` if unable to read input line.
+    pub fn try_get(self) -> Option<T> {
         read_input::<T>(
             &self.builder.msg,
             &self.builder.err,

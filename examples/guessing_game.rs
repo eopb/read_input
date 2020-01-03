@@ -19,7 +19,8 @@ fn main() {
             .inside_err(..=100, "That number is more than 100. Please try again")
             .inside_err(1.., "That number is less than 1. Please try again")
             .err("That does not look like a number. Please try again")
-            .get();
+            .try_get()
+            .expect("Failed to read line");
 
         println!("You guessed: {}", guess);
 
