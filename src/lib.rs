@@ -1,6 +1,7 @@
 //! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
 
 #![deny(clippy::pedantic, missing_docs)]
+#![allow(clippy::must_use_candidate)]
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
 
