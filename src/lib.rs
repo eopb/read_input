@@ -13,7 +13,7 @@ mod test_generators;
 mod tests;
 
 use crate::{core::read_input, test_generators::InsideFunc};
-use std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString};
+use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
@@ -134,8 +134,8 @@ impl<T: FromStr> InputBuilder<T> {
     }
     /// 'gets' the input form the user.
     ///
-    /// Returns `None` if unable to read input line.
-    pub fn try_get(&self) -> Option<T> {
+    /// Returns `Err` if unable to read input line.
+    pub fn try_get(&self) -> io::Result<T> {
         read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
     }
     /// Changes or adds a default input value.
@@ -242,8 +242,8 @@ impl<T: FromStr> InputBuilderOnce<T> {
     }
     /// 'gets' the input form the user.
     ///
-    /// Returns `None` if unable to read input line.
-    pub fn try_get(self) -> Option<T> {
+    /// Returns `Err` if unable to read input line.
+    pub fn try_get(self) -> io::Result<T> {
         read_input::<T>(
             &self.builder.msg,
             &self.builder.err,
