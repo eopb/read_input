@@ -39,7 +39,7 @@ pub fn input_d<T: DefaultBuilderSettings>() -> InputBuilder<T> {
 
 /// Trait for describing specifically tailored input settings for types.
 pub trait DefaultBuilderSettings: FromStr {
-    /// Returns tailored InputBuilder.
+    /// Returns tailored `InputBuilder`.
     fn settings() -> InputBuilder<Self>;
 }
 
