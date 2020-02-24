@@ -1,7 +1,7 @@
 //! Collection of functions that make things a little less verbose.
 
 use crate::{test_generators::InsideFunc, InputBuild, InputBuilder};
-use std::{error::Error, str::FromStr};
+use std::{error::Error, fmt::Display, str::FromStr};
 
 /// Shortcut function. Fetches input that is validated with a test function.
 pub fn valid_input<T, F>(test: F) -> T
@@ -101,7 +101,17 @@ macro_rules! impl_default_builder_for_float {
 
 impl_default_builder_for_float! { f32, f64 }
 
-/// Produces an error message from an error type. Made for use with `.err_match()`
+/// Produces an error message from an error type. Made for use in `.err_match()`
+pub fn with_display<T: Display>(x: &T) -> Option<String> {
+    Some(format!("Error: \"{}\"", x))
+}
+
+#[deprecated(
+    since = "0.8.4",
+    note = "Deprecated due to the depreciation of `std::error::Error::description`. Please use the `with_display` function instead."
+)]
+#[allow(deprecated)]
+/// Produces an error message from an error type. Made for use in `.err_match()`
 pub fn with_description<T: Error>(x: &T) -> Option<String> {
     Some(format!("Error: \"{}\"", (*x).description()))
 }

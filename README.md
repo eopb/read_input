@@ -187,19 +187,19 @@ let input = input::<i16>()
     .get();
 ```
 
-The `with_description` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Error`](https://doc.rust-lang.org/std/error/trait.Error.html). This can give quick error messages.
+The `with_display` function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html). This can give quick error messages.
 
 You will have to bring into scope with 
 
 ```rust
-use read_input::shortcut::with_description;
+use read_input::shortcut::with_display;
 ```
 
 and you can use it like this
 
 ```rust
 let number = input::<i16>()
-    .err_match(with_description)
+    .err_match(with_display)
     .repeat_msg("Please input a number: ")
     .get();
 ```
