@@ -1,4 +1,4 @@
-//! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
+//! Go the the [readme](https://crates.io/crates/read_input) file for extra documentation and tutorial.
 
 #![deny(clippy::pedantic, missing_docs)]
 #![allow(clippy::must_use_candidate)]
@@ -134,6 +134,8 @@ impl<T: FromStr> InputBuilder<T> {
     }
     /// 'gets' the input form the user.
     ///
+    /// # Errors
+    ///
     /// Returns `Err` if unable to read input line.
     pub fn try_get(&self) -> io::Result<T> {
         read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
@@ -241,6 +243,8 @@ impl<T: FromStr> InputBuilderOnce<T> {
         self.try_get().expect("Failed to read line")
     }
     /// 'gets' the input form the user.
+    ///
+    /// # Errors
     ///
     /// Returns `Err` if unable to read input line.
     pub fn try_get(self) -> io::Result<T> {

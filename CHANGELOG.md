@@ -1,3 +1,6 @@
+# 0.8.4
+- `shortcut::with_description` marked as deprecated due to the depreciation of `std::error::Error::description`. Please use `shortcut::with_description` instead.
+
 # 0.8.3
 ### New features
 - Added `InputBuilder::try_get` and `InputBuilderOnce::try_get`.
