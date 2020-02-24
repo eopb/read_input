@@ -1,4 +1,4 @@
-//! Go the the [readme](https://crates.io/crates/read_input) file for documentation.
+//! Go the the [readme](https://crates.io/crates/read_input) file for extra documentation and tutorial.
 
 #![deny(clippy::pedantic, missing_docs)]
 #![allow(clippy::must_use_candidate)]
