@@ -21,7 +21,7 @@ const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
 /// Trait for common types that store input settings.
 pub trait InputBuild<T: FromStr> {
-    ///// Changes or adds a prompt message that gets printed once when input if fetched.
+    /// Changes or adds a prompt message that gets printed once when input if fetched.
     fn msg(self, msg: impl ToString) -> Self;
     /// Changes or adds a prompt message and that is repeated each time input is requested.
     fn repeat_msg(self, msg: impl ToString) -> Self;
