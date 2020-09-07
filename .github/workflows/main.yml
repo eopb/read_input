@@ -19,7 +19,7 @@ jobs:
           profile: minimal
           toolchain: stable
           default: true
-          components: ["rustfmt", "clippy"]
+          components: rustfmt
 
       - name: Build
         run: cargo build
