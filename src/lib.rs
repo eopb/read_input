@@ -13,9 +13,9 @@ mod test_generators;
 mod tests;
 
 use crate::{core::read_input, test_generators::InsideFunc};
-use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
-use std::io::Write;
 use std::cell::RefCell;
+use std::io::Write;
+use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
@@ -131,7 +131,7 @@ impl<T: FromStr> InputBuilder<T> {
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
             err_match: Rc::new(|_| None),
-            prompt_output: RefCell::new(Box::new(std::io::stdout()))
+            prompt_output: RefCell::new(Box::new(std::io::stdout())),
         }
     }
     /// 'gets' the input form the user.
@@ -146,7 +146,14 @@ impl<T: FromStr> InputBuilder<T> {
     ///
     /// Returns `Err` if unable to read input line.
     pub fn try_get(&self) -> io::Result<T> {
-        read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match, &mut (*self.prompt_output.borrow_mut()))
+        read_input::<T>(
+            &self.msg,
+            &self.err,
+            None,
+            &self.tests,
+            &*self.err_match,
+            &mut (*self.prompt_output.borrow_mut()),
+        )
     }
     /// Changes or adds a default input value.
     pub fn default(self, default: T) -> InputBuilderOnce<T> {

@@ -38,7 +38,9 @@ pub(crate) fn read_input<T: FromStr>(
 
         match parse_input(input, err, tests, err_pass) {
             Ok(v) => return Ok(v),
-            Err(e) => { let _ = writeln!(prompt_output, "{}", e); },
+            Err(e) => {
+                let _ = writeln!(prompt_output, "{}", e);
+            }
         };
 
         if prompt.repeat {
