@@ -13,11 +13,13 @@ mod test_generators;
 mod tests;
 
 use crate::{core::read_input, test_generators::InsideFunc};
+use std::cell::RefCell;
+use std::io::Write;
 use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
-/// Trait for comman types that store input settings.
+/// Trait for common types that store input settings.
 pub trait InputBuild<T: FromStr> {
     /// Changes or adds a prompt message that gets printed once when input if fetched.
     fn msg(self, msg: impl ToString) -> Self;
@@ -46,6 +48,10 @@ pub trait InputBuild<T: FromStr> {
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self;
     /// Toggles whether a prompt message gets printed once or each time input is requested.
     fn toggle_msg_repeat(self) -> Self;
+    /// Send prompts to custom writer instead of stdout
+    fn prompting_on(self, prompt_output: RefCell<Box<dyn Write>>) -> Self;
+    /// Send prompts to stderr instead of stdout
+    fn prompting_on_stderr(self) -> Self;
 }
 
 /// Trait for changing input settings by adding constraints that require `PartialOrd`
@@ -111,6 +117,7 @@ pub struct InputBuilder<T: FromStr> {
     err: String,
     tests: Vec<Test<T>>,
     err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
+    prompt_output: RefCell<Box<dyn Write>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -124,6 +131,7 @@ impl<T: FromStr> InputBuilder<T> {
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
             err_match: Rc::new(|_| None),
+            prompt_output: RefCell::new(Box::new(std::io::stdout())),
         }
     }
     /// 'gets' the input form the user.
@@ -138,7 +146,14 @@ impl<T: FromStr> InputBuilder<T> {
     ///
     /// Returns `Err` if unable to read input line.
     pub fn try_get(&self) -> io::Result<T> {
-        read_input::<T>(&self.msg, &self.err, None, &self.tests, &*self.err_match)
+        read_input::<T>(
+            &self.msg,
+            &self.err,
+            None,
+            &self.tests,
+            &*self.err_match,
+            &mut (*self.prompt_output.borrow_mut()),
+        )
     }
     /// Changes or adds a default input value.
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
@@ -204,6 +219,15 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
         self.msg.repeat = !self.msg.repeat;
         self
     }
+
+    fn prompting_on(mut self, prompt_output: RefCell<Box<dyn Write>>) -> Self {
+        self.prompt_output = prompt_output;
+        self
+    }
+
+    fn prompting_on_stderr(self) -> Self {
+        self.prompting_on(RefCell::new(Box::new(std::io::stderr())))
+    }
 }
 
 impl<T: FromStr + PartialOrd + 'static> InputConstraints<T> for InputBuilder<T> {}
@@ -221,6 +245,7 @@ impl<T: FromStr + Clone> Clone for InputBuilder<T> {
             err: self.err.clone(),
             tests: self.tests.clone(),
             err_match: self.err_match.clone(),
+            prompt_output: RefCell::new(Box::new(std::io::stdout())),
         }
     }
 }
@@ -254,6 +279,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
             self.default,
             &self.builder.tests,
             &*self.builder.err_match,
+            &mut (*self.builder.prompt_output.borrow_mut()),
         )
     }
     // Function that makes it less verbose to change settings of internal `InputBuilder`.
@@ -304,6 +330,14 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
     }
     fn toggle_msg_repeat(self) -> Self {
         self.internal(InputBuild::toggle_msg_repeat)
+    }
+
+    fn prompting_on(self, prompt_output: RefCell<Box<dyn Write>>) -> Self {
+        self.internal(|x| x.prompting_on(prompt_output))
+    }
+
+    fn prompting_on_stderr(self) -> Self {
+        self.internal(|x| x.prompting_on(RefCell::new(Box::new(std::io::stderr()))))
     }
 }
 

@@ -12,10 +12,10 @@ pub(crate) fn read_input<T: FromStr>(
     default: Option<T>,
     tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
+    prompt_output: &mut dyn Write,
 ) -> io::Result<T> {
-    // Flush only when possible.
-    fn try_flush() {
-        io::stdout().flush().unwrap_or(())
+    fn try_flush(prompt_output: &mut dyn Write) -> () {
+        prompt_output.flush().unwrap_or(())
     }
 
     fn input_as_string() -> io::Result<String> {
@@ -24,8 +24,8 @@ pub(crate) fn read_input<T: FromStr>(
         Ok(input)
     }
 
-    print!("{}", prompt.msg);
-    try_flush();
+    let _ = write!(prompt_output, "{}", prompt.msg);
+    try_flush(prompt_output);
 
     loop {
         let input = input_as_string()?;
@@ -38,12 +38,14 @@ pub(crate) fn read_input<T: FromStr>(
 
         match parse_input(input, err, tests, err_pass) {
             Ok(v) => return Ok(v),
-            Err(e) => println!("{}", e),
+            Err(e) => {
+                let _ = writeln!(prompt_output, "{}", e);
+            }
         };
 
         if prompt.repeat {
-            print!("{}", prompt.msg);
-            try_flush();
+            let _ = write!(prompt_output, "{}", prompt.msg);
+            try_flush(prompt_output)
         };
     }
 }
