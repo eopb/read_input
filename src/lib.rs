@@ -45,6 +45,15 @@
 //! The `input()` function uses a common pattern called the builder pattern. 
 //! Many settings can be use by adding methods between `input()` and `get()`.
 //! Available methods can be found on the [InputBuild] Trait;
+//! 
+//! ## How to use with custom type
+//! 
+//! To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
+//! 
+//! [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+//! 
+//! [Working example](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)
+
 
 
 #![deny(clippy::pedantic, missing_docs)]
@@ -135,6 +144,49 @@ pub trait InputBuild<T: FromStr> {
     /// `.inside()` and `.inside_err()`.
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`.
+
+/// You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+/// 
+/// Here is an extract from the [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs) example showing this in practice.
+/// 
+/// ```rust
+/// let point = input::<Point>()
+///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
+///     .err_match(|e| {
+///         Some(match e {
+///             ParsePointError::FailedParse(s) => format!(
+///                 "Failed to parse \"{}\" it is not a number that can be parsed.",
+///                 s
+///             ),
+///             ParsePointError::Not2Dimensional(num) => {
+///                 format!("What you inputted was {} dimensional.", num)
+///             }
+///             ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
+///         })
+///     })
+///     .get();
+/// ```
+/// 
+/// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://gitlab.com/efunb/read_input/blob/stable/examples/match_num_err.rs).
+/// 
+/// ```rust
+/// use core::num::IntErrorKind::*;
+/// let input = input::<i16>()
+///     .err_match(|x| {
+///         Some(
+///             match x.kind() {
+///                 Empty => "You did not input any value. Try again.",
+///                 InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
+///                 Overflow => "Integer is too large to store. Try again with a smaller number.",
+///                 Underflow => "Integer is too small to store. Try again with a smaller number.",
+///                 _ => "That value did not pass for an unexpected reason.",
+///             }
+///             .to_string(),
+///         )
+///     })
+///     .repeat_msg("Please input a number: ")
+///     .get();
+/// ```
     fn err_match<F>(self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
