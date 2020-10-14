@@ -109,10 +109,10 @@ macro_rules! impl_default_builder_for_float {
 impl_default_builder_for_float! { f32, f64 }
 
 /// This function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html). This can give quick error messages.
-/// 
-/// 
+///
+///
 /// It is for use in [InputBuild::err_match] it like this
-/// 
+///
 /// ```rust
 /// use read_input::shortcut::with_display;
 /// let number = input::<i16>()
@@ -120,8 +120,8 @@ impl_default_builder_for_float! { f32, f64 }
 ///     .repeat_msg("Please input a number: ")
 ///     .get();
 /// ```
- pub fn with_display<T: Display>(x: &T) -> Option<String> {
-     Some(format!("Error: \"{}\"", x))
+pub fn with_display<T: Display>(x: &T) -> Option<String> {
+    Some(format!("Error: \"{}\"", x))
 }
 
 #[deprecated(

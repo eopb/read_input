@@ -1,9 +1,7 @@
 use crate::{Prompt, Test};
-use std::{
-    io::{self, Write},
-    str::FromStr,
-    string::ToString,
-};
+use std::cell::RefCell;
+use std::io::{self, Write};
+use std::{cmp::PartialOrd, rc::Rc, str::FromStr, string::ToString};
 
 // Core function when running `.get()`.
 pub(crate) fn read_input<T: FromStr>(
@@ -12,17 +10,21 @@ pub(crate) fn read_input<T: FromStr>(
     default: Option<T>,
     tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
+    input_writer: &RefCell<Option<Box<dyn std::io::BufRead>>>,
     prompt_output: &mut dyn Write,
 ) -> io::Result<T> {
     fn try_flush(prompt_output: &mut dyn Write) -> () {
         prompt_output.flush().unwrap_or(())
     }
 
-    fn input_as_string() -> io::Result<String> {
+    let input_as_string = || -> io::Result<String> {
         let mut input = String::new();
-        io::stdin().read_line(&mut input)?;
+        match *input_writer.borrow_mut() {
+            Some(ref mut input_writer) => input_writer.read_line(&mut input)?,
+            None => std::io::stdin().read_line(&mut input)?,
+        };
         Ok(input)
-    }
+    };
 
     let _ = write!(prompt_output, "{}", prompt.msg);
     try_flush(prompt_output);

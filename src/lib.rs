@@ -1,6 +1,6 @@
 //! ## How to use
-//! 
-//! Add 
+//!
+//! Add
 //! ```toml
 //! read_input = "0.8"
 //! ```
@@ -9,11 +9,11 @@
 //! use read_input::prelude::*;
 //! ```
 //! to your main file.
-//! 
+//!
 //! ---
-//! 
+//!
 //! You can get input with.
-//! 
+//!
 //! ```no_run
 //! # use read_input::prelude::*;
 //! # type Type = String;
@@ -42,19 +42,17 @@
 //! # }
 //! ```
 //!
-//! The `input()` function uses a common pattern called the builder pattern. 
+//! The `input()` function uses a common pattern called the builder pattern.
 //! Many settings can be use by adding methods between `input()` and `get()`.
 //! Available methods can be found on the [InputBuild] Trait;
-//! 
+//!
 //! ## How to use with custom type
-//! 
+//!
 //! To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
-//! 
+//!
 //! [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
-//! 
+//!
 //! [Working example](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)
-
-
 
 #![deny(clippy::pedantic, missing_docs)]
 #![allow(clippy::must_use_candidate)]
@@ -78,9 +76,9 @@ const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 /// Trait implemented by [InputBuilder] and [InputBuilderOnce] to standardize input settings.
 pub trait InputBuild<T: FromStr> {
     /// Changes or adds a prompt message that gets printed once when input if fetched.
-    /// 
+    ///
     /// Custom messages are written on the same line as the input cursor.
-    /// 
+    ///
     /// ```rust
     /// let username: String = input().msg("Please input your name: ").get();
     /// ```
@@ -109,9 +107,9 @@ pub trait InputBuild<T: FromStr> {
     /// ```
     fn err(self, err: impl ToString) -> Self;
     /// Adds a validation check on input to ensure the value meets your criteria.
-    /// 
+    ///
     /// If you want an integer that is not 6 you could write.
-    /// 
+    ///
     /// ```rust
     /// let input = input().add_test(|x| *x != 6).get();
     /// ```
@@ -122,7 +120,7 @@ pub trait InputBuild<T: FromStr> {
     ///
     ///
     /// If you want a value from 4 to 9 that is not 6 you could write.
-    /// 
+    ///
     /// ```rust
     /// let input = input()
     ///     .msg("Please input a number from 4 to 9 that is not 6: ")
@@ -145,55 +143,55 @@ pub trait InputBuild<T: FromStr> {
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`.
 
-/// You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
-/// 
-/// Here is an extract from the [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs) example showing this in practice.
-/// 
-/// ```rust
-/// let point = input::<Point>()
-///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
-///     .err_match(|e| {
-///         Some(match e {
-///             ParsePointError::FailedParse(s) => format!(
-///                 "Failed to parse \"{}\" it is not a number that can be parsed.",
-///                 s
-///             ),
-///             ParsePointError::Not2Dimensional(num) => {
-///                 format!("What you inputted was {} dimensional.", num)
-///             }
-///             ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
-///         })
-///     })
-///     .get();
-/// ```
-/// 
-/// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://gitlab.com/efunb/read_input/blob/stable/examples/match_num_err.rs).
-/// 
-/// ```rust
-/// use core::num::IntErrorKind::*;
-/// let input = input::<i16>()
-///     .err_match(|x| {
-///         Some(
-///             match x.kind() {
-///                 Empty => "You did not input any value. Try again.",
-///                 InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
-///                 Overflow => "Integer is too large to store. Try again with a smaller number.",
-///                 Underflow => "Integer is too small to store. Try again with a smaller number.",
-///                 _ => "That value did not pass for an unexpected reason.",
-///             }
-///             .to_string(),
-///         )
-///     })
-///     .repeat_msg("Please input a number: ")
-///     .get();
-/// ```
+    /// You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+    ///
+    /// Here is an extract from the [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs) example showing this in practice.
+    ///
+    /// ```rust
+    /// let point = input::<Point>()
+    ///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
+    ///     .err_match(|e| {
+    ///         Some(match e {
+    ///             ParsePointError::FailedParse(s) => format!(
+    ///                 "Failed to parse \"{}\" it is not a number that can be parsed.",
+    ///                 s
+    ///             ),
+    ///             ParsePointError::Not2Dimensional(num) => {
+    ///                 format!("What you inputted was {} dimensional.", num)
+    ///             }
+    ///             ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
+    ///         })
+    ///     })
+    ///     .get();
+    /// ```
+    ///
+    /// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://gitlab.com/efunb/read_input/blob/stable/examples/match_num_err.rs).
+    ///
+    /// ```rust
+    /// use core::num::IntErrorKind::*;
+    /// let input = input::<i16>()
+    ///     .err_match(|x| {
+    ///         Some(
+    ///             match x.kind() {
+    ///                 Empty => "You did not input any value. Try again.",
+    ///                 InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
+    ///                 Overflow => "Integer is too large to store. Try again with a smaller number.",
+    ///                 Underflow => "Integer is too small to store. Try again with a smaller number.",
+    ///                 _ => "That value did not pass for an unexpected reason.",
+    ///             }
+    ///             .to_string(),
+    ///         )
+    ///     })
+    ///     .repeat_msg("Please input a number: ")
+    ///     .get();
+    /// ```
     fn err_match<F>(self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
     /// Ensures that input is within a range, array or vector.
     ///
     /// If you want an integer from 4 to 9 you could write.
-    /// 
+    ///
     /// ```rust
     /// let input = input().inside([4, 5, 6, 7, 8, 9]).get();
     /// ```
@@ -210,7 +208,7 @@ pub trait InputBuild<T: FromStr> {
     /// Toggles whether a prompt message gets printed once or each time input is requested.
     fn toggle_msg_repeat(self) -> Self;
     /// Send prompts to custom writer instead of stdout
-    fn prompting_on(self, prompt_output: RefCell<Box<dyn Write>>) -> Self;
+    fn prompting_on(self, prompt_output: Rc<RefCell<Box<dyn Write>>>) -> Self;
     /// Send prompts to stderr instead of stdout
     fn prompting_on_stderr(self) -> Self;
 }
@@ -277,7 +275,8 @@ pub struct InputBuilder<T: FromStr> {
     err: String,
     tests: Vec<Test<T>>,
     err_match: Rc<dyn Fn(&T::Err) -> Option<String>>,
-    prompt_output: RefCell<Box<dyn Write>>,
+    prompt_output: Rc<RefCell<Box<dyn Write>>>,
+    input_writer: Rc<RefCell<Option<Box<dyn std::io::BufRead>>>>,
 }
 
 impl<T: FromStr> InputBuilder<T> {
@@ -291,7 +290,8 @@ impl<T: FromStr> InputBuilder<T> {
             err: DEFAULT_ERR.to_string(),
             tests: Vec::new(),
             err_match: Rc::new(|_| None),
-            prompt_output: RefCell::new(Box::new(std::io::stdout())),
+            prompt_output: Rc::new(RefCell::new(Box::new(std::io::stdout()))),
+            input_writer: Rc::new(RefCell::new(None)),
         }
     }
     /// 'gets' the input form the user.
@@ -312,6 +312,7 @@ impl<T: FromStr> InputBuilder<T> {
             None,
             &self.tests,
             &*self.err_match,
+            &*self.input_writer,
             &mut (*self.prompt_output.borrow_mut()),
         )
     }
@@ -331,6 +332,10 @@ impl<T: FromStr> InputBuilder<T> {
     // Internal function for adding tests and constraints.
     fn test_err_opt(mut self, func: Rc<dyn Fn(&T) -> bool>, err: Option<String>) -> Self {
         self.tests.push(Test { func, err });
+        self
+    }
+    fn reading_from(mut self, reader: impl std::io::BufRead + 'static) -> Self {
+        self.input_writer = Rc::new(RefCell::new(Some(Box::new(reader))));
         self
     }
 }
@@ -386,13 +391,13 @@ impl<T: FromStr> InputBuild<T> for InputBuilder<T> {
         self
     }
 
-    fn prompting_on(mut self, prompt_output: RefCell<Box<dyn Write>>) -> Self {
+    fn prompting_on(mut self, prompt_output: Rc<RefCell<Box<dyn Write>>>) -> Self {
         self.prompt_output = prompt_output;
         self
     }
 
     fn prompting_on_stderr(self) -> Self {
-        self.prompting_on(RefCell::new(Box::new(std::io::stderr())))
+        self.prompting_on(Rc::new(RefCell::new(Box::new(std::io::stderr()))))
     }
 }
 
@@ -411,7 +416,8 @@ impl<T: FromStr + Clone> Clone for InputBuilder<T> {
             err: self.err.clone(),
             tests: self.tests.clone(),
             err_match: self.err_match.clone(),
-            prompt_output: RefCell::new(Box::new(std::io::stdout())),
+            prompt_output: self.prompt_output.clone(),
+            input_writer: self.input_writer.clone(),
         }
     }
 }
@@ -445,6 +451,7 @@ impl<T: FromStr> InputBuilderOnce<T> {
             self.default,
             &self.builder.tests,
             &*self.builder.err_match,
+            &*self.builder.input_writer,
             &mut (*self.builder.prompt_output.borrow_mut()),
         )
     }
@@ -498,12 +505,12 @@ impl<T: FromStr> InputBuild<T> for InputBuilderOnce<T> {
         self.internal(InputBuild::toggle_msg_repeat)
     }
 
-    fn prompting_on(self, prompt_output: RefCell<Box<dyn Write>>) -> Self {
+    fn prompting_on(self, prompt_output: Rc<RefCell<Box<dyn Write>>>) -> Self {
         self.internal(|x| x.prompting_on(prompt_output))
     }
 
     fn prompting_on_stderr(self) -> Self {
-        self.internal(|x| x.prompting_on(RefCell::new(Box::new(std::io::stderr()))))
+        self.internal(InputBuild::prompting_on_stderr)
     }
 }
 
