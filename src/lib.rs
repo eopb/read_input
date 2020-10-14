@@ -1,4 +1,51 @@
-//! Go the the [readme](https://crates.io/crates/read_input) file for extra documentation and tutorial.
+//! ## How to use
+//! 
+//! Add 
+//! ```toml
+//! read_input = "0.8"
+//! ```
+//! to your `cargo.toml` under `[dependencies]` and add
+//! ```rust
+//! use read_input::prelude::*;
+//! ```
+//! to your main file.
+//! 
+//! ---
+//! 
+//! You can get input with.
+//! 
+//! ```no_run
+//! # use read_input::prelude::*;
+//! # type Type = String;
+//! input::<Type>().get();
+//! ```
+//!
+//! Where `Type` is the type you want.
+//! You can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html).
+//! This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`.
+//! Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
+//!
+//!
+//! For example, if you want to assign a valid unsigned 32bit value to a variable called `input`, you could write.
+//!
+//! ```no_run
+//! # use read_input::prelude::*;
+//! let input = input::<u32>().get();
+//! ```
+//!
+//! Rust can often work out the type. When this is the case you can skip explicitly stating the type.
+//!
+//! ```no_run
+//! # fn foo() -> String {
+//! # use read_input::prelude::*;
+//! input().get()
+//! # }
+//! ```
+//!
+//! The `input()` function uses a common pattern called the builder pattern. 
+//! Many settings can be use by adding methods between `input()` and `get()`.
+//! Available methods can be found on the [InputBuild] Trait;
+
 
 #![deny(clippy::pedantic, missing_docs)]
 #![allow(clippy::must_use_candidate)]
@@ -19,11 +66,27 @@ use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
-/// Trait for common types that store input settings.
+/// Trait implemented by [InputBuilder] and [InputBuilderOnce] to standardize input settings.
 pub trait InputBuild<T: FromStr> {
     /// Changes or adds a prompt message that gets printed once when input if fetched.
+    /// 
+    /// Custom messages are written on the same line as the input cursor.
+    /// 
+    /// ```rust
+    /// let username: String = input().msg("Please input your name: ").get();
+    /// ```
+    ///
+    /// If you wish to fetch input from the next line append a `\n`.
+    ///
+    /// ```rust
+    /// let username: String = input().msg("Please input your name:\n").get();
+    /// ```
     fn msg(self, msg: impl ToString) -> Self;
     /// Changes or adds a prompt message and that is repeated each time input is requested.
+    ///
+    /// ```rust
+    /// let username: String = input().repeat_msg("Please input your name: ").get();
+    /// ```
     fn repeat_msg(self, msg: impl ToString) -> Self;
     /// Changes fallback error message.
     fn err(self, err: impl ToString) -> Self;
@@ -156,6 +219,12 @@ impl<T: FromStr> InputBuilder<T> {
         )
     }
     /// Changes or adds a default input value.
+    ///
+    /// If the user presses enter before typing anything `.get()` will return a default value when [InputBuilder::default] is used.
+    ///
+    /// ```rust
+    /// let input = input().msg("Please input pi: ").default(3.141).get();
+    /// ```
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
         InputBuilderOnce {
             builder: self,

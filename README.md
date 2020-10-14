@@ -11,55 +11,21 @@ A simple CLI tool that asks for user input until the data inputted is valid.
 
 ## Help
 
-If you run into any issues or need help with using `read_input` in your project please email [incoming+efunb/read_input@incoming.gitlab.com](mailto:incoming+efunb/read_input@incoming.gitlab.com)
+If you run into any issues or need help with using `read_input` in your project please create an issue [https://github.com/ethanboxx/read_input/issues/new](https://github.com/ethanboxx/read_input/issues/new)
 
 ## Why you need it
 
-When writing programs you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
+When command line tools you will often need to take input from the user. If the user inputs invalid information the program needs to ask them again. Having to make this loop distracts from the useful logic in your program.
 
 `read_input` attempts to make it easy to get input from the user without having to think about converting types.
 
-## How to use
+## How to get started.
 
-Add 
-```toml
-read_input = "0.8"
-```
-to your `cargo.toml` under `[dependencies]` and add
-```rust
-use read_input::prelude::*;
-```
-to your main file.
+Everything is covered on our documentation page. [Latest Docs](https://docs.rs/read_input/)
 
----
-
-You can get input with.
-
-```rust
-input::<Type>().get()
-```
-
-Where `Type` is the type you want. You can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html). This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`. Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
-
-For example, if you want to assign a valid unsigned 32bit value to a variable called `input`, you could write.
-
-```rust
-let input = input::<u32>().get();
-```
-
-Rust can often work out the type. When this is the case you can skip explicitly stating the type.
-
-```rust
-input().get()
-```
 
 ### Input message
 
-Custom messages are written on the same line as input and are specified with `.msg()`. Note that the type annotations can been moved from the `input()` function to the variable name when assigning input to variables.
-
-```rust
-let username: String = input().msg("Please input your name: ").get();
-```
 
 Alternatively `.repeat_msg()` can be used. Messages specified with `.repeat_msg()` will be repeated every time input is requested. You should try `.msg()` and `.repeat_msg()` to find what style works best for you.
 
@@ -73,13 +39,6 @@ If you don't like having the message on the same line as input you can force inp
 let username: String = input().repeat_msg("Please input your name: \n").get();
 ```
 
-### Default values
-
-If the user presses enter before typing anything `.get()` will return a default value when `.default()` is used. Note the absence type annotations. Rust can infer the type by looking at the type of value used in `.default()`.
-
-```rust
-let input = input().msg("Please input pi: ").default(3.141).get();
-```
 
 ### Change error message
 
@@ -258,21 +217,6 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 [Working example](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)
 
 ## More complex examples
-
-
-| Example                                                                                                    |                                                                                                                                                                      Download                                                                                                                                                                      |                                                                                                                                       Description |
-| :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) |                                                                                    The guessing game form the rust book made to use `read_input`. |
-| [`guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)               |           [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)            |                                                              The guessing game form the rust book made to use `read_input` + some extra features. |
-| [`how_long_until`](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)             |          [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)          |                                                        Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono). |
-| [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)                   |              [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)               |                                                                                      Program written to show the use of the `err_match()` method. |
-| [`url`](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                                   |                          [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                           | Program that lets users input URLs with the [`url`](https://crates.io/crates/url) crate and prints helpful errors when invalid urls are inputted. |
-| [`default`](https://gitlab.com/efunb/read_input/blob/stable/examples/default.rs)                           |                    [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/default.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/default?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/default.rs)                     |                                                                                                              This example shows `input_d` in use. |
-| [`match`](https://gitlab.com/efunb/read_input/blob/stable/examples/match.rs)                               |                       [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/match.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/match?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/match.rs)                        |                                                                                   This example shows how best to use `match` on a inputted value. |
-| [`inside_vector`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_vector.rs)               |           [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_vector.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_vector?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_vector.rs)            |                                                                                              This example shows use of `.inside()` with a vector. |
-| [`inside_array`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_array.rs)                 |             [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_array.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_array?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_array.rs)             |                                                                                              This example shows use of `.inside()` with an array. |
-| [`inside_range`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_range.rs)                 |             [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_range.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_range?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_range.rs)             |                                                                                               This example shows use of `.inside()` with a range. |
-| [`constraints`](https://gitlab.com/efunb/read_input/blob/stable/examples/constraints.rs)                   |              [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/constraints.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/constraints?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/constraints.rs)               |                                                                                                This example shows use `InputConstraints` methods. |
 
 
 ## Docs
