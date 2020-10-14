@@ -89,11 +89,45 @@ pub trait InputBuild<T: FromStr> {
     /// ```
     fn repeat_msg(self, msg: impl ToString) -> Self;
     /// Changes fallback error message.
+    ///
+    /// The default error message is "That value does not pass. Please try again".
+    ///
+    /// ```rust
+    /// let input = input::<u32>()
+    ///     .msg("Please input a positive number: ")
+    ///     .err("That does not look like a positive number. Please try again")
+    ///     .get();
+    /// ```
     fn err(self, err: impl ToString) -> Self;
-    /// Adds a validation check on input.
+    /// Adds a validation check on input to ensure the value meets your criteria.
+    /// 
+    /// If you want an integer that is not 6 you could write.
+    /// 
+    /// ```rust
+    /// let input = input().add_test(|x| *x != 6).get();
+    /// ```
+    /// However for this example it would be better to use [InputConstraints::not]
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
-    /// Adds a validation check on input with a custom error message printed when the test
+    /// Does the same thing as [InputBuild::err], but with a custom error message printed when the test
     /// fails.
+    ///
+    ///
+    /// If you want a value from 4 to 9 that is not 6 you could write.
+    /// 
+    /// ```rust
+    /// let input = input()
+    ///     .msg("Please input a number from 4 to 9 that is not 6: ")
+    ///     .inside_err(
+    ///         4..=9,
+    ///         "That does not look like a number from 4 to 9. Please try again"
+    ///     )
+    ///     .add_err_test(
+    ///         |x| *x != 6,
+    ///         "That value is 6! I don't want 6. Please try again"
+    ///     )
+    ///     .err("That does not look like a number. Please try again")
+    ///     .get();
+    /// ```
     fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
     where
         F: Fn(&T) -> bool + 'static;
@@ -105,8 +139,20 @@ pub trait InputBuild<T: FromStr> {
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
     /// Ensures that input is within a range, array or vector.
+    ///
+    /// If you want an integer from 4 to 9 you could write.
+    /// 
+    /// ```rust
+    /// let input = input().inside([4, 5, 6, 7, 8, 9]).get();
+    /// ```
+    ///
+    /// or alternatively
+    ///
+    /// ```rust
+    /// let input = input().inside(4..=9).get();
+    /// ```
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self;
-    /// Ensures that input is within a range, array or vector with a custom error message
+    /// Does the same thing as [InputBuild::inside], but with a custom error message
     /// printed when input fails.
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self;
     /// Toggles whether a prompt message gets printed once or each time input is requested.
@@ -117,8 +163,7 @@ pub trait InputBuild<T: FromStr> {
     fn prompting_on_stderr(self) -> Self;
 }
 
-/// Trait for changing input settings by adding constraints that require `PartialOrd`
-/// on the input type.
+/// A set of validation tests that use `InputBuild::test` under the hood.
 pub trait InputConstraints<T>: InputBuild<T>
 where
     T: FromStr + PartialOrd + 'static,

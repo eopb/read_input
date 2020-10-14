@@ -23,83 +23,10 @@ When command line tools you will often need to take input from the user. If the 
 
 Everything is covered on our documentation page. [Latest Docs](https://docs.rs/read_input/)
 
-
-### Input message
-
-
-Alternatively `.repeat_msg()` can be used. Messages specified with `.repeat_msg()` will be repeated every time input is requested. You should try `.msg()` and `.repeat_msg()` to find what style works best for you.
-
-```rust
-let username: String = input().repeat_msg("Please input your name: ").get();
-```
-
-If you don't like having the message on the same line as input you can force input on to a new line by adding `\n` to the end of the message.
-
-```rust
-let username: String = input().repeat_msg("Please input your name: \n").get();
-```
-
-
-### Change error message
-
-The default error message is "That value does not pass. Please try again". You can change the error message with `.err()`. For example.
-
-```rust
-let input = input::<u32>()
-    .msg("Please input a positive number: ")
-    .err("That does not look like a positive number. Please try again")
-    .get();
-```
-
 ### Add Checks
 
-You can add your own checks to ensure the value meets your criteria.
 
-If you want an integer that is not 6 you could write.
 
-```rust
-let input = input().add_test(|x| *x != 6).get();
-```
-
-The `.inside()` method can be used to ensure the inputted value is within a range.
-
-If you want an integer from 4 to 9 you could write.
-
-```rust
-let input = input().inside(4..=9).get();
-```
-
-`.inside()` can also except an array or vector as well as ranges. `.inside(4..=9)` is the same as `.inside([4, 5, 6, 7, 8, 9])`.
-
-In the same style you can specify custom test errors and multiple checks. Both `.add_test()` and `.inside()` have `.add_err_test()` and `.inside_err()` variants that allow for custom error messages.
-
-If you want a value from 4 to 9 that is not 6 you could write.
-
-```rust
-let input = input()
-    .msg("Please input a number from 4 to 9 that is not 6: ")
-    .inside_err(
-        4..=9,
-        "That does not look like a number from 4 to 9. Please try again"
-    )
-    .add_err_test(
-        |x| *x != 6,
-        "That value is 6! I dont want 6. Please try again"
-    )
-    .err("That does not look like a number. Please try again")
-    .get();
-```
-
-##### Other check methods
-
-- Set a minimum value. `.min(minimum_value)`.
-- Set a maximum value. `.max(maximum_value)`.
-- Set a minimum and maximum value. `.min_max(minimum_value, maximum_value)`.
-- Set a restricted value. `.not(unwanted_value)`.
-- Set a minimum value with error message. `.min_err(minimum_value, error_message)`.
-- Set a maximum value with error message. `.max_err(maximum_value, error_message)`.
-- Set a minimum and maximum value with error message. `.min_max_err(minimum_value, maximum_value, error_message)`.
-- Sets a restricted value with error message. `.not_err(unwanted_value, error_message)`.
 
 ### Match errors
 
