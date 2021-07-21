@@ -8,12 +8,10 @@ description = """
 A simple CLI tool that asks for user input until the data inputted is valid.
 """
 documentation = "https://docs.rs/read_input/"
-homepage = "http://efunb.com/"
-repository = "https://gitlab.com/efunb/read_input"
+repository = "https://github.com/eopb/read_input"
 keywords = ["input", "console", "cli", "text", "simple"]
-categories = [ "command-line-interface", "data-structures", "encoding", "rust-patterns" ]
+categories = [ "command-line-interface" ]
 edition = "2018"
-
 exclude = ["examples/"]
 
 [dev-dependencies]
