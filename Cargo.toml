@@ -14,6 +14,8 @@ keywords = ["input", "console", "cli", "text", "simple"]
 categories = [ "command-line-interface", "data-structures", "encoding", "rust-patterns" ]
 edition = "2018"
 
+exclude = ["examples/"]
+
 [dev-dependencies]
 dont_disappear = "3"
 rand = "0.7"
