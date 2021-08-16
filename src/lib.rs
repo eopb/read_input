@@ -1,4 +1,58 @@
-//! Go the the [readme](https://crates.io/crates/read_input) file for extra documentation and tutorial.
+//! ## How to use
+//!
+//! Add
+//! ```toml
+//! read_input = "0.8"
+//! ```
+//! to your `cargo.toml` under `[dependencies]` and add
+//! ```rust
+//! use read_input::prelude::*;
+//! ```
+//! to your main file.
+//!
+//! ---
+//!
+//! You can get input with.
+//!
+//! ```no_run
+//! # use read_input::prelude::*;
+//! # type Type = String;
+//! input::<Type>().get();
+//! ```
+//!
+//! Where `Type` is the type you want.
+//! You can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html).
+//! This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`.
+//! Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
+//!
+//!
+//! For example, if you want to assign a valid unsigned 32bit value to a variable called `input`, you could write.
+//!
+//! ```no_run
+//! # use read_input::prelude::*;
+//! let input = input::<u32>().get();
+//! ```
+//!
+//! Rust can often work out the type. When this is the case you can skip explicitly stating the type.
+//!
+//! ```no_run
+//! # fn foo() -> String {
+//! # use read_input::prelude::*;
+//! input().get()
+//! # }
+//! ```
+//!
+//! The `input()` function uses a common pattern called the builder pattern.
+//! Many settings can be use by adding methods between `input()` and `get()`.
+//! Available methods can be found on the [InputBuild] Trait;
+//!
+//! ## How to use with custom type
+//!
+//! To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
+//!
+//! [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+//!
+//! [Working example](https://github.com/eopb/read_input/blob/master/examples/point_input.rs)
 
 #![deny(clippy::pedantic, missing_docs)]
 #![allow(clippy::must_use_candidate)]
@@ -19,18 +73,68 @@ use std::{cmp::PartialOrd, io, rc::Rc, str::FromStr, string::ToString};
 
 const DEFAULT_ERR: &str = "That value does not pass. Please try again";
 
-/// Trait for common types that store input settings.
+/// Trait implemented by [InputBuilder] and [InputBuilderOnce] to standardize input settings.
 pub trait InputBuild<T: FromStr> {
     /// Changes or adds a prompt message that gets printed once when input if fetched.
+    ///
+    /// Custom messages are written on the same line as the input cursor.
+    ///
+    /// ```rust
+    /// let username: String = input().msg("Please input your name: ").get();
+    /// ```
+    ///
+    /// If you wish to fetch input from the next line append a `\n`.
+    ///
+    /// ```rust
+    /// let username: String = input().msg("Please input your name:\n").get();
+    /// ```
     fn msg(self, msg: impl ToString) -> Self;
     /// Changes or adds a prompt message and that is repeated each time input is requested.
+    ///
+    /// ```rust
+    /// let username: String = input().repeat_msg("Please input your name: ").get();
+    /// ```
     fn repeat_msg(self, msg: impl ToString) -> Self;
     /// Changes fallback error message.
+    ///
+    /// The default error message is "That value does not pass. Please try again".
+    ///
+    /// ```rust
+    /// let input = input::<u32>()
+    ///     .msg("Please input a positive number: ")
+    ///     .err("That does not look like a positive number. Please try again")
+    ///     .get();
+    /// ```
     fn err(self, err: impl ToString) -> Self;
-    /// Adds a validation check on input.
+    /// Adds a validation check on input to ensure the value meets your criteria.
+    ///
+    /// If you want an integer that is not 6 you could write.
+    ///
+    /// ```rust
+    /// let input = input().add_test(|x| *x != 6).get();
+    /// ```
+    /// However for this example it would be better to use [InputConstraints::not]
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
-    /// Adds a validation check on input with a custom error message printed when the test
+    /// Does the same thing as [InputBuild::err], but with a custom error message printed when the test
     /// fails.
+    ///
+    ///
+    /// If you want a value from 4 to 9 that is not 6 you could write.
+    ///
+    /// ```rust
+    /// let input = input()
+    ///     .msg("Please input a number from 4 to 9 that is not 6: ")
+    ///     .inside_err(
+    ///         4..=9,
+    ///         "That does not look like a number from 4 to 9. Please try again"
+    ///     )
+    ///     .add_err_test(
+    ///         |x| *x != 6,
+    ///         "That value is 6! I don't want 6. Please try again"
+    ///     )
+    ///     .err("That does not look like a number. Please try again")
+    ///     .get();
+    /// ```
     fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
     where
         F: Fn(&T) -> bool + 'static;
@@ -38,12 +142,67 @@ pub trait InputBuild<T: FromStr> {
     /// `.inside()` and `.inside_err()`.
     fn clear_tests(self) -> Self;
     /// Used specify custom error messages that depend on the errors produced by `from_str()`.
+
+    /// You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+    ///
+    /// Here is an extract from the [`point_input`](https://github.com/eopb/read_input/blob/master/examples/point_input.rs) example showing this in practice.
+    ///
+    /// ```rust
+    /// let point = input::<Point>()
+    ///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
+    ///     .err_match(|e| {
+    ///         Some(match e {
+    ///             ParsePointError::FailedParse(s) => format!(
+    ///                 "Failed to parse \"{}\" it is not a number that can be parsed.",
+    ///                 s
+    ///             ),
+    ///             ParsePointError::Not2Dimensional(num) => {
+    ///                 format!("What you inputted was {} dimensional.", num)
+    ///             }
+    ///             ParsePointError::NonNumeric => "That contains a invalid character.".to_string(),
+    ///         })
+    ///     })
+    ///     .get();
+    /// ```
+    ///
+    /// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://github.com/eopb/read_input/blob/master/examples/match_num_err.rs).
+    ///
+    /// ```rust
+    /// use core::num::IntErrorKind::*;
+    /// let input = input::<i16>()
+    ///     .err_match(|x| {
+    ///         Some(
+    ///             match x.kind() {
+    ///                 Empty => "You did not input any value. Try again.",
+    ///                 InvalidDigit => "You typed an invalid digit. Try again using only numbers.",
+    ///                 Overflow => "Integer is too large to store. Try again with a smaller number.",
+    ///                 Underflow => "Integer is too small to store. Try again with a smaller number.",
+    ///                 _ => "That value did not pass for an unexpected reason.",
+    ///             }
+    ///             .to_string(),
+    ///         )
+    ///     })
+    ///     .repeat_msg("Please input a number: ")
+    ///     .get();
+    /// ```
     fn err_match<F>(self, err_match: F) -> Self
     where
         F: Fn(&T::Err) -> Option<String> + 'static;
     /// Ensures that input is within a range, array or vector.
+    ///
+    /// If you want an integer from 4 to 9 you could write.
+    ///
+    /// ```rust
+    /// let input = input().inside([4, 5, 6, 7, 8, 9]).get();
+    /// ```
+    ///
+    /// or alternatively
+    ///
+    /// ```rust
+    /// let input = input().inside(4..=9).get();
+    /// ```
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self;
-    /// Ensures that input is within a range, array or vector with a custom error message
+    /// Does the same thing as [InputBuild::inside], but with a custom error message
     /// printed when input fails.
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self;
     /// Toggles whether a prompt message gets printed once or each time input is requested.
@@ -54,8 +213,7 @@ pub trait InputBuild<T: FromStr> {
     fn prompting_on_stderr(self) -> Self;
 }
 
-/// Trait for changing input settings by adding constraints that require `PartialOrd`
-/// on the input type.
+/// A set of validation tests that use `InputBuild::test` under the hood.
 pub trait InputConstraints<T>: InputBuild<T>
 where
     T: FromStr + PartialOrd + 'static,
@@ -156,6 +314,12 @@ impl<T: FromStr> InputBuilder<T> {
         )
     }
     /// Changes or adds a default input value.
+    ///
+    /// If the user presses enter before typing anything `.get()` will return a default value when [InputBuilder::default] is used.
+    ///
+    /// ```rust
+    /// let input = input().msg("Please input pi: ").default(3.141).get();
+    /// ```
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
         InputBuilderOnce {
             builder: self,

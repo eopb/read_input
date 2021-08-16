@@ -1,9 +1,13 @@
 //! Collection of functions that make things a little less verbose.
+//!
+//! Using `input().get()` can be a little verbose in simple situations.
 
 use crate::{test_generators::InsideFunc, InputBuild, InputBuilder};
 use std::{error::Error, fmt::Display, str::FromStr};
 
 /// Shortcut function. Fetches input that is validated with a test function.
+///
+/// `valid_input(|x| 4 < *x && *x < 9)` is the same as `input().add_test(|x| 4 < *x && *x < 9).get()`.
 pub fn valid_input<T, F>(test: F) -> T
 where
     T: FromStr,
@@ -12,6 +16,8 @@ where
     input().add_test(test).get()
 }
 
+/// `input_inside(..)` is the same as `input().inside(..).get()`.
+///
 /// Shortcut function. Fetches input that is within a range, array or vector.
 pub fn input_inside<T, U>(constraint: U) -> T
 where
@@ -21,7 +27,9 @@ where
     input().inside(constraint).get()
 }
 
-/// Shortcut function. Fetches input that is valid for whatever type needed.
+/// `simple_input()` is the same as `input().get()`.
+///
+/// Fetches input that is valid for whatever type needed.
 pub fn simple_input<T: FromStr>() -> T {
     input().get()
 }
@@ -31,8 +39,7 @@ pub fn input<T: FromStr>() -> InputBuilder<T> {
     InputBuilder::new()
 }
 
-/// Creates a new instance of `InputBuilder` with settings specifically
-/// tailored to the type you want.
+/// [input_d] works like [input] but uses the default input settings that are specified by the [DefaultBuilderSettings] trait.
 pub fn input_d<T: DefaultBuilderSettings>() -> InputBuilder<T> {
     T::settings()
 }
@@ -101,7 +108,18 @@ macro_rules! impl_default_builder_for_float {
 
 impl_default_builder_for_float! { f32, f64 }
 
-/// Produces an error message from an error type. Made for use in `.err_match()`
+/// This function can be used if [`Err`](https://doc.rust-lang.org/std/str/trait.FromStr.html#associatedtype.Err) associated type for the [`FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) implementation for the type you are using implements [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html). This can give quick error messages.
+///
+///
+/// It is for use in [InputBuild::err_match] it like this
+///
+/// ```rust
+/// use read_input::shortcut::with_display;
+/// let number = input::<i16>()
+///     .err_match(with_display)
+///     .repeat_msg("Please input a number: ")
+///     .get();
+/// ```
 pub fn with_display<T: Display>(x: &T) -> Option<String> {
     Some(format!("Error: \"{}\"", x))
 }

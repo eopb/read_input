@@ -12,7 +12,6 @@ repository = "https://github.com/eopb/read_input"
 keywords = ["input", "console", "cli", "text", "simple"]
 categories = [ "command-line-interface", "rust-patterns" ]
 edition = "2018"
-
 exclude = ["examples/"]
 
 [dev-dependencies]
