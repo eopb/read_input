@@ -21,10 +21,14 @@
 //! ```
 //!
 //! Where `Type` is the type you want.
-//! You can use all types that implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html).
-//! This currently includes the standard library types `isize`, `usize`, `i8`, `u8`, `i16`, `u16`, `f32`, `i32`, `u32`, `f64`, `i64`, `u64`, `i128`, `u128`, `char`, `Ipv4Addr`, `Ipv6Addr`, `SocketAddrV4`, `SocketAddrV6` and `String`.
-//! Many crates also implement [`std::str::FromStr`](https://doc.rust-lang.org/std/str/trait.FromStr.html) for their types.
+//! You can use all types that implement [`std::str::FromStr`].
+//! This currently includes the standard library types [`isize`], [`usize`], [`i8`], [`u8`], [`i16`], [`u16`], [`f32`], [`i32`], [`u32`], [`f64`], [`i64`], [`u64`], [`i128`], [`u128`], [`char`], [`Ipv4Addr`], [`Ipv6Addr`], [`SocketAddrV4`], [`SocketAddrV6`] and [`String`].
+//! Many crates also implement [`std::str::FromStr`] for their types.
 //!
+//! [`Ipv4Addr`]: std::net::Ipv4Addr
+//! [`Ipv6Addr`]: std::net::Ipv6Addr
+//! [`SocketAddrV4`]: std::net::SocketAddrV4
+//! [`SocketAddrV6`]: std::net::SocketAddrV6
 //!
 //! For example, if you want to assign a valid unsigned 32bit value to a variable called `input`, you could write.
 //!
@@ -42,19 +46,20 @@
 //! # }
 //! ```
 //!
-//! The `input()` function uses a common pattern called the builder pattern.
-//! Many settings can be use by adding methods between `input()` and `get()`.
+//! The [`input()`] function uses a common pattern called the builder pattern.
+//! Many settings can be use by adding methods between [`input()`] and [`get()`].
 //! Available methods can be found on the [InputBuild] Trait;
+//!
+//! [`input()`]: shortcut::input
+//! [`get()`]: InputBuilder::get
 //!
 //! ## How to use with custom type
 //!
-//! To use `read_input` with a custom type you need to implement `std::str::FromStr` for that type.
-//!
-//! [FromStr documentation](https://doc.rust-lang.org/std/str/trait.FromStr.html)
+//! To use `read_input` with a custom type you need to implement [`std::str::FromStr`] for that type.
 //!
 //! [Working example](https://github.com/eopb/read_input/blob/master/examples/point_input.rs)
 
-#![deny(clippy::pedantic, missing_docs)]
+#![deny(missing_docs)]
 #![allow(clippy::must_use_candidate)]
 // `impl ToString` is better than `&impl ToString`. Clippy is not ready for impl trait.
 #![allow(clippy::needless_pass_by_value)]
@@ -79,19 +84,22 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// Custom messages are written on the same line as the input cursor.
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let username: String = input().msg("Please input your name: ").get();
     /// ```
     ///
     /// If you wish to fetch input from the next line append a `\n`.
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let username: String = input().msg("Please input your name:\n").get();
     /// ```
     fn msg(self, msg: impl ToString) -> Self;
     /// Changes or adds a prompt message and that is repeated each time input is requested.
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let username: String = input().repeat_msg("Please input your name: ").get();
     /// ```
     fn repeat_msg(self, msg: impl ToString) -> Self;
@@ -99,7 +107,8 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// The default error message is "That value does not pass. Please try again".
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let input = input::<u32>()
     ///     .msg("Please input a positive number: ")
     ///     .err("That does not look like a positive number. Please try again")
@@ -110,8 +119,9 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// If you want an integer that is not 6 you could write.
     ///
-    /// ```rust
-    /// let input = input().add_test(|x| *x != 6).get();
+    /// ```no_run
+    /// # use read_input::prelude::*; 
+    /// let input = input().add_test(|x: &u8| *x != 6).get();
     /// ```
     /// However for this example it would be better to use [InputConstraints::not]
     fn add_test<F: Fn(&T) -> bool + 'static>(self, test: F) -> Self;
@@ -121,7 +131,8 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// If you want a value from 4 to 9 that is not 6 you could write.
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let input = input()
     ///     .msg("Please input a number from 4 to 9 that is not 6: ")
     ///     .inside_err(
@@ -138,16 +149,17 @@ pub trait InputBuild<T: FromStr> {
     fn add_err_test<F>(self, test: F, err: impl ToString) -> Self
     where
         F: Fn(&T) -> bool + 'static;
-    /// Removes all validation checks made by `.add_test()`, `.add_err_test()`,
-    /// `.inside()` and `.inside_err()`.
+    /// Removes all validation checks made by [`InputBuild::add_test`], [`InputBuild::add_err_test`],
+    /// [`InputBuild::inside`] and [`InputBuild::inside_err`].
     fn clear_tests(self) -> Self;
-    /// Used specify custom error messages that depend on the errors produced by `from_str()`.
-
-    /// You can specify custom error messages that depend on the errors produced by `from_str()` with `.err_match()`.
+    /// Used specify custom error messages that depend on the errors produced by [`FromStr`].
+    ///
+    /// You can specify custom error messages that depend on the errors produced by [`FromStr`] with [`InputBuild::err_match()`].
     ///
     /// Here is an extract from the [`point_input`](https://github.com/eopb/read_input/blob/master/examples/point_input.rs) example showing this in practice.
     ///
-    /// ```rust
+    /// ```ignore
+    /// # use read_input::prelude::*; 
     /// let point = input::<Point>()
     ///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
     ///     .err_match(|e| {
@@ -167,7 +179,8 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://github.com/eopb/read_input/blob/master/examples/match_num_err.rs).
     ///
-    /// ```rust
+    /// ```ignore
+    /// # use read_input::prelude::*; 
     /// use core::num::IntErrorKind::*;
     /// let input = input::<i16>()
     ///     .err_match(|x| {
@@ -192,17 +205,19 @@ pub trait InputBuild<T: FromStr> {
     ///
     /// If you want an integer from 4 to 9 you could write.
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let input = input().inside([4, 5, 6, 7, 8, 9]).get();
     /// ```
     ///
     /// or alternatively
     ///
-    /// ```rust
+    /// ```no_run
+    /// # use read_input::prelude::*; 
     /// let input = input().inside(4..=9).get();
     /// ```
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self;
-    /// Does the same thing as [InputBuild::inside], but with a custom error message
+    /// Does the same thing as [`InputBuild::inside`], but with a custom error message
     /// printed when input fails.
     fn inside_err<U: InsideFunc<T>>(self, constraint: U, err: impl ToString) -> Self;
     /// Toggles whether a prompt message gets printed once or each time input is requested.
@@ -318,6 +333,7 @@ impl<T: FromStr> InputBuilder<T> {
     /// If the user presses enter before typing anything `.get()` will return a default value when [InputBuilder::default] is used.
     ///
     /// ```rust
+    /// # use read_input::prelude::*; 
     /// let input = input().msg("Please input pi: ").default(3.141).get();
     /// ```
     pub fn default(self, default: T) -> InputBuilderOnce<T> {

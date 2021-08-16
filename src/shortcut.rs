@@ -34,7 +34,7 @@ pub fn simple_input<T: FromStr>() -> T {
     input().get()
 }
 
-/// Creates a new instance of `InputBuilder` with generic, minimal settings.
+/// Creates a new instance of [`InputBuilder`] with generic, minimal settings.
 pub fn input<T: FromStr>() -> InputBuilder<T> {
     InputBuilder::new()
 }
@@ -113,8 +113,9 @@ impl_default_builder_for_float! { f32, f64 }
 ///
 /// It is for use in [InputBuild::err_match] it like this
 ///
-/// ```rust
+/// ```no_run
 /// use read_input::shortcut::with_display;
+/// # use read_input::prelude::*;
 /// let number = input::<i16>()
 ///     .err_match(with_display)
 ///     .repeat_msg("Please input a number: ")
@@ -129,7 +130,7 @@ pub fn with_display<T: Display>(x: &T) -> Option<String> {
     note = "Deprecated due to the depreciation of `std::error::Error::description`. Please use the `with_display` function instead."
 )]
 #[allow(deprecated)]
-/// Produces an error message from an error type. Made for use in `.err_match()`
+/// Produces an error message from an error type. Made for use in [InputBuild::err_match]
 pub fn with_description<T: Error>(x: &T) -> Option<String> {
     Some(format!("Error: \"{}\"", (*x).description()))
 }

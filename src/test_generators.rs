@@ -42,12 +42,12 @@ where
 {
     Rc::new(move |x| {
         (match range.start_bound() {
-            Included(ref start) => *start <= x,
-            Excluded(ref start) => *start < x,
+            Included(start) => start <= x,
+            Excluded(start) => start < x,
             Unbounded => true,
         }) && (match range.end_bound() {
-            Included(ref end) => x <= *end,
-            Excluded(ref end) => x < *end,
+            Included(end) => x <= end,
+            Excluded(end) => x < end,
             Unbounded => true,
         })
     })

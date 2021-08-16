@@ -14,7 +14,7 @@ pub(crate) fn read_input<T: FromStr>(
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
     prompt_output: &mut dyn Write,
 ) -> io::Result<T> {
-    fn try_flush(prompt_output: &mut dyn Write) -> () {
+    fn try_flush(prompt_output: &mut dyn Write) {
         prompt_output.flush().unwrap_or(())
     }
 
@@ -56,7 +56,7 @@ pub(crate) fn parse_input<T: FromStr>(
     tests: &[Test<T>],
     err_pass: &dyn Fn(&T::Err) -> Option<String>,
 ) -> Result<T, String> {
-    match T::from_str(&input.trim()) {
+    match T::from_str(input.trim()) {
         Ok(value) => {
             for test in tests {
                 if !(test.func)(&value) {
