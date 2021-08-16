@@ -5,12 +5,7 @@ A simple CLI tool that asks for user input until the data inputted is valid.
 [![Latest version](https://img.shields.io/crates/v/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest Docs](https://docs.rs/read_input/badge.svg)](https://docs.rs/read_input/)
 [![downloads-badge](https://img.shields.io/crates/d/read_input.svg)](https://crates.io/crates/read_input)
-[![dependent-repos](https://img.shields.io/librariesio/dependent-repos/cargo/read_input)](https://crates.io/crates/read_input)
 
-
-## Help
-
-If you run into any issues [please create an issue](https://github.com/ethanboxx/read_input/issues/new). I am very happy to help.
 
 ## Why you need it
 
