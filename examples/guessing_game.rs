@@ -11,7 +11,7 @@ fn main() {
     println!("I am thinking of a number between 1 and 100.");
     println!("Guess the number!");
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let secret_number = rand::thread_rng().gen_range(1..=100);
 
     loop {
         let guess: i32 = input()

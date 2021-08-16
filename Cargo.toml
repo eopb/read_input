@@ -1,23 +1,22 @@
 [package]
 name = "read_input"
-version = "0.8.4"
+version = "0.8.5"
 authors = ["Ethan Brierley <ethanboxx@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 description = """
-A simple CLI tool that asks for user input until the data inputted is valid.
+Ask for user input until the data inputted is valid
 """
 documentation = "https://docs.rs/read_input/"
-homepage = "http://efunb.com/"
-repository = "https://gitlab.com/efunb/read_input"
+repository = "https://github.com/eopb/read_input"
 keywords = ["input", "console", "cli", "text", "simple"]
-categories = [ "command-line-interface", "data-structures", "encoding", "rust-patterns" ]
+categories = [ "command-line-interface", "rust-patterns" ]
 edition = "2018"
 
 exclude = ["examples/"]
 
 [dev-dependencies]
 dont_disappear = "3"
-rand = "0.7"
+rand = "0.8"
 chrono = "0.4"
-url = "2.1"
+url = "2.2"

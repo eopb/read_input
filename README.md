@@ -1,17 +1,11 @@
 # Read Input
 A simple CLI tool that asks for user input until the data inputted is valid.
 
-[![pipeline status](https://gitlab.com/efunb/read_input/badges/stable/pipeline.svg)](https://gitlab.com/efunb/read_input/commits/stable)
 [![License](https://img.shields.io/crates/l/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest version](https://img.shields.io/crates/v/read_input.svg)](https://crates.io/crates/read_input)
 [![Latest Docs](https://docs.rs/read_input/badge.svg)](https://docs.rs/read_input/)
 [![downloads-badge](https://img.shields.io/crates/d/read_input.svg)](https://crates.io/crates/read_input)
-[![dependent-repos](https://img.shields.io/librariesio/dependent-repos/cargo/read_input)](https://crates.io/crates/read_input)
 
-
-## Help
-
-If you run into any issues or need help with using `read_input` in your project please email [incoming+efunb/read_input@incoming.gitlab.com](mailto:incoming+efunb/read_input@incoming.gitlab.com)
 
 ## Why you need it
 
@@ -257,28 +251,7 @@ To use `read_input` with a custom type you need to implement `std::str::FromStr`
 
 [Working example](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)
 
-## More complex examples
-
-
-| Example                                                                                                    |                                                                                                                                                                      Download                                                                                                                                                                      |                                                                                                                                       Description |
-| :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [`simple_guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) | [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/simple_guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/simple_guessing_game.rs) |                                                                                    The guessing game form the rust book made to use `read_input`. |
-| [`guessing_game`](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)               |           [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/guessing_game?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/guessing_game.rs)            |                                                              The guessing game form the rust book made to use `read_input` + some extra features. |
-| [`how_long_until`](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)             |          [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/how_long_until?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/how_long_until.rs)          |                                                        Program that uses `read_input` with the crate [`chrono`](https://crates.io/crates/chrono). |
-| [`point_input`](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)                   |              [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/point_input?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/point_input.rs)               |                                                                                      Program written to show the use of the `err_match()` method. |
-| [`url`](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                                   |                          [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/url?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/url.rs)                           | Program that lets users input URLs with the [`url`](https://crates.io/crates/url) crate and prints helpful errors when invalid urls are inputted. |
-| [`default`](https://gitlab.com/efunb/read_input/blob/stable/examples/default.rs)                           |                    [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/default.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/default?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/default.rs)                     |                                                                                                              This example shows `input_d` in use. |
-| [`match`](https://gitlab.com/efunb/read_input/blob/stable/examples/match.rs)                               |                       [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/match.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/match?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/match.rs)                        |                                                                                   This example shows how best to use `match` on a inputted value. |
-| [`inside_vector`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_vector.rs)               |           [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_vector.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_vector?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_vector.rs)            |                                                                                              This example shows use of `.inside()` with a vector. |
-| [`inside_array`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_array.rs)                 |             [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_array.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_array?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_array.rs)             |                                                                                              This example shows use of `.inside()` with an array. |
-| [`inside_range`](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_range.rs)                 |             [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_range.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/inside_range?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/inside_range.rs)             |                                                                                               This example shows use of `.inside()` with a range. |
-| [`constraints`](https://gitlab.com/efunb/read_input/blob/stable/examples/constraints.rs)                   |              [Windows](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/constraints.exe?job=windows-optimized) [Linux](https://gitlab.com/efunb/read_input/-/jobs/artifacts/stable/raw/files/constraints?job=linux-optimized) [Source](https://gitlab.com/efunb/read_input/blob/stable/examples/constraints.rs)               |                                                                                                This example shows use `InputConstraints` methods. |
-
-
 ## Docs
 
 [API Documentation](https://docs.rs/read_input/)
 
-## **Warning**
-
-**If you are viewing this from GitHub then this is a read only copy. Please contribute to the GitLab copy [here](https://gitlab.com/efunb/read_input).**
