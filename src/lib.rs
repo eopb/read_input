@@ -85,21 +85,21 @@ pub trait InputBuild<T: FromStr> {
     /// Custom messages are written on the same line as the input cursor.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let username: String = input().msg("Please input your name: ").get();
     /// ```
     ///
     /// If you wish to fetch input from the next line append a `\n`.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let username: String = input().msg("Please input your name:\n").get();
     /// ```
     fn msg(self, msg: impl ToString) -> Self;
     /// Changes or adds a prompt message and that is repeated each time input is requested.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let username: String = input().repeat_msg("Please input your name: ").get();
     /// ```
     fn repeat_msg(self, msg: impl ToString) -> Self;
@@ -108,7 +108,7 @@ pub trait InputBuild<T: FromStr> {
     /// The default error message is "That value does not pass. Please try again".
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input::<u32>()
     ///     .msg("Please input a positive number: ")
     ///     .err("That does not look like a positive number. Please try again")
@@ -120,7 +120,7 @@ pub trait InputBuild<T: FromStr> {
     /// If you want an integer that is not 6 you could write.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input().add_test(|x: &u8| *x != 6).get();
     /// ```
     /// However for this example it would be better to use [InputConstraints::not]
@@ -132,7 +132,7 @@ pub trait InputBuild<T: FromStr> {
     /// If you want a value from 4 to 9 that is not 6 you could write.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input()
     ///     .msg("Please input a number from 4 to 9 that is not 6: ")
     ///     .inside_err(
@@ -159,7 +159,7 @@ pub trait InputBuild<T: FromStr> {
     /// Here is an extract from the [`point_input`](https://github.com/eopb/read_input/blob/master/examples/point_input.rs) example showing this in practice.
     ///
     /// ```ignore
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let point = input::<Point>()
     ///     .repeat_msg("Please input a point in 2D space in the format (x, y): ")
     ///     .err_match(|e| {
@@ -180,7 +180,7 @@ pub trait InputBuild<T: FromStr> {
     /// In nightly rust this can also be done with integers with the feature flag `#![feature(int_error_matching)]` shown in the example [`match_num_err`](https://github.com/eopb/read_input/blob/master/examples/match_num_err.rs).
     ///
     /// ```ignore
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// use core::num::IntErrorKind::*;
     /// let input = input::<i16>()
     ///     .err_match(|x| {
@@ -206,14 +206,14 @@ pub trait InputBuild<T: FromStr> {
     /// If you want an integer from 4 to 9 you could write.
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input().inside([4, 5, 6, 7, 8, 9]).get();
     /// ```
     ///
     /// or alternatively
     ///
     /// ```no_run
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input().inside(4..=9).get();
     /// ```
     fn inside<U: InsideFunc<T>>(self, constraint: U) -> Self;
@@ -333,7 +333,7 @@ impl<T: FromStr> InputBuilder<T> {
     /// If the user presses enter before typing anything `.get()` will return a default value when [InputBuilder::default] is used.
     ///
     /// ```rust
-    /// # use read_input::prelude::*; 
+    /// # use read_input::prelude::*;
     /// let input = input().msg("Please input pi: ").default(3.141).get();
     /// ```
     pub fn default(self, default: T) -> InputBuilderOnce<T> {
